@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data_functions import General_plotter
 
-df = pd.read_csv('table (1).csv',
+df = pd.read_csv('test2.csv',
 				 # header=2,
 				 delimiter=';',
 				 )
@@ -47,12 +47,7 @@ def nuclide_extractor(head):
 for header in df2.columns[1:]:
 	nuclide_extractor(head=header)
 
-
-
-
-
 mt102 = pd.DataFrame(columns=['Z', 'A', 'ERG', 'XS'])
-
 
 ERG = []
 Z = []
@@ -71,28 +66,38 @@ for i, row in df2.iterrows():
 				Z.append(z)
 				A.append(a)
 
-				energy = float(row['Incident energy'].strip())
-				ERG.append(float(row['Incident energy'].strip()))
+
+
+				if type(row['Incident energy']) == str:
+					energy = float(row['Incident energy'].strip())
+					ERG.append(energy)
+				elif type(row['Incident energy']) == float:
+					print(row['Incident energy'])
+					ERG.append(row['Incident energy'])
 
 				if parity_bits[-1] == 0:
 					dXS.append(np.nan)
 
-				xs_value = float(row[name].strip())
-				XS.append(xs_value)
+				if type(row[name]) == str:
+					xs_value = float(row[name].strip())
+					XS.append(xs_value)
+				elif type(row[name]) == float:
+					XS.append(row[name])
 				parity_bits.append(0)
 			if 'ds' in name:
 				parity_bits.append(1)
-				dxs_value = float(row[name].strip())
-				dXS.append(dxs_value)
-
-
+				if type(row[name]) == str:
+					dxs_value = float(row[name].strip())
+					dXS.append(dxs_value)
+				elif type(row[name]) == float:
+					dXS.append(row[name])
 
 temp = pd.DataFrame({'Z': Z,
 					 'A': A,
 					 'ERG': ERG,
 					 'XS': XS})
 
-erg, xs = General_plotter(df=temp, nuclides=[[26,56]])
+erg, xs = General_plotter(df=temp, nuclides=[[74,184]])
 logerg = [np.log10(i) for i in erg]
 logxs = [np.log10(i) for i in xs]
 
@@ -102,4 +107,3 @@ plt.xlabel('Energy')
 plt.ylabel('b')
 plt.grid()
 plt.show()
-
