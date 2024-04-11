@@ -2,7 +2,7 @@ import pandas as pd
 import periodictable
 import numpy as np
 import matplotlib.pyplot as plt
-from data_functions import General_plotter
+from matrix_functions import General_plotter
 
 df = pd.read_csv('test2.csv',
 				 # header=2,
