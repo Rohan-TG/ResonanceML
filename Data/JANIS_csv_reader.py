@@ -97,7 +97,8 @@ temp = pd.DataFrame({'Z': Z,
 					 'ERG': ERG,
 					 'XS': XS})
 
-erg, xs = General_plotter(df=temp, nuclides=[[74,184]])
+temptarget = [74,184]
+erg, xs = General_plotter(df=temp, nuclides=[temptarget])
 logerg = [np.log10(i) for i in erg]
 logxs = [np.log10(i) for i in xs]
 
@@ -105,5 +106,6 @@ plt.figure()
 plt.plot(logerg, logxs)
 plt.xlabel('Energy')
 plt.ylabel('b')
+plt.title(f"$\sigma_{{n,\gamma}}$ for {periodictable.elements[temptarget[0]]}-{temptarget[1]}")
 plt.grid()
 plt.show()
