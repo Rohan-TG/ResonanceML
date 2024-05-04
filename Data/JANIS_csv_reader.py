@@ -1,6 +1,7 @@
 import pandas as pd
 import periodictable
 import numpy as np
+import tqdm
 import matplotlib.pyplot as plt
 from matrix_functions import General_plotter
 
@@ -54,8 +55,8 @@ Z = []
 A = []
 XS = []
 dXS = []
-for i, row in df2.iterrows():
-	print(f"{i}/{len(df2)}")
+for i, row in tqdm.tqdm(df2.iterrows(), total=df2.shape[0]):
+	# print(f"{i}/{len(df2)}")
 	if i > 1:
 
 		parity_bits = [1]
@@ -72,14 +73,17 @@ for i, row in df2.iterrows():
 					energy = float(row['Incident energy'].strip())
 					ERG.append(energy)
 				elif type(row['Incident energy']) == float:
-					print(row['Incident energy'])
+					# print(row['Incident energy'])
 					ERG.append(row['Incident energy'])
 
 				if parity_bits[-1] == 0:
 					dXS.append(np.nan)
 
 				if type(row[name]) == str:
-					xs_value = float(row[name].strip())
+					try:
+						xs_value = float(row[name].strip())
+					except ValueError:
+						xs_value = np.nan
 					XS.append(xs_value)
 				elif type(row[name]) == float:
 					XS.append(row[name])
@@ -87,7 +91,10 @@ for i, row in df2.iterrows():
 			if 'ds' in name:
 				parity_bits.append(1)
 				if type(row[name]) == str:
-					dxs_value = float(row[name].strip())
+					try:
+						dxs_value = float(row[name].strip())
+					except ValueError:
+						dxs_value = np.nan
 					dXS.append(dxs_value)
 				elif type(row[name]) == float:
 					dXS.append(row[name])
