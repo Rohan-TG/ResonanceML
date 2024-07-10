@@ -57,13 +57,14 @@ final_level_energies = [] #will contain all values, including nans, for level en
 # 	row_nuclide = [row['Z'], row['A']]
 # 	if row_nuclide in ensdf_nuclide_list:
 # 		fetch_index = ensdf_nuclide_list.index(row_nuclide)
-
-
-for level_set in tqdm.tqdm(full_level_energy_array, total=len(full_level_energy_array)):
-	for level in level_set:
-		for e in energy_grid:
-			if abs(level - e) < 0.001:
-				final_level_energies.append(level)
-				break
-			else:
-				final_level_energies.append(np.nan)
+#
+trial = []
+counter = 0
+for e in tqdm.tqdm(energy_grid, total=len(energy_grid)):
+	if counter > (len(float_nuclide_level_energies) - 1):
+		trial.append(np.nan)
+	elif e < float_nuclide_level_energies[counter]:
+		trial.append(np.nan)
+	else:
+		trial.append(float_nuclide_level_energies[counter])
+		counter += 1
