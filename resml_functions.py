@@ -45,7 +45,7 @@ def range_setter(df, la, ua):
 	for i, j in zip(df['Z'], df['A']):
 		if [i, j] in nucs or j > ua or j < la:
 			continue
-		else
+		else:
 			nucs.append([i, j])
 
 	return nucs
