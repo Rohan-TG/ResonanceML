@@ -9,6 +9,8 @@ fe56 = Nuclide(56,26)
 
 print(fe56)
 
+
+
 fe56_levels = fe56.adopted_levels.levels
 
 fe56_level1 = fe56.adopted_levels.levels[1]
@@ -16,6 +18,7 @@ fe56_level1 = fe56.adopted_levels.levels[1]
 fe56_level1_energy = fe56_level1.energy.val
 
 df = pd.read_csv('ENDFBVIII_MT102_XS_only.csv')
+energy_grid, unused = resml_functions.General_plotter(df=df, nuclides = [[26,56]])
 
 ENDFB_nuclides = resml_functions.range_setter(df=df, la=0, ua=260)
 
@@ -23,6 +26,7 @@ print('Data loaded')
 
 full_level_energy_array = []
 full_level_energy_error_array = []
+ensdf_nuclide_list = []
 
 for endfb_nuclide in ENDFB_nuclides: # for each nuclide in endfb8
 	try:
@@ -39,5 +43,27 @@ for endfb_nuclide in ENDFB_nuclides: # for each nuclide in endfb8
 
 			float_level_error.append(l.energy.pm / 1000)
 			float_nuclide_level_energies.append(MeV_level_energy) # converts to MeV
+
+		full_level_energy_array.append(float_nuclide_level_energies)
+		full_level_energy_error_array.append(float_level_error)
+		ns = temp_nuclide.mass - temp_nuclide.protons
+		ensdf_nuclide_list.append([temp_nuclide.protons, ns])
 	except:
 		print(endfb_nuclide, 'not in ENSDF')
+
+
+final_level_energies = [] #will contain all values, including nans, for level energies across all nuclides
+# for i, row in df.iterrows():
+# 	row_nuclide = [row['Z'], row['A']]
+# 	if row_nuclide in ensdf_nuclide_list:
+# 		fetch_index = ensdf_nuclide_list.index(row_nuclide)
+
+
+for level_set in tqdm.tqdm(full_level_energy_array, total=len(full_level_energy_array)):
+	for level in level_set:
+		for e in energy_grid:
+			if abs(level - e) < 0.001:
+				final_level_energies.append(level)
+				break
+			else:
+				final_level_energies.append(np.nan)
