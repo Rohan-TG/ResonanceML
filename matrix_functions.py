@@ -35,3 +35,17 @@ def General_plotter(df, nuclides):
 	xs = XS_test
 
 	return energies, xs
+
+
+
+
+def range_setter(df, la, ua):
+	nucs = []
+
+	for i, j in zip(df['Z'], df['A']):
+		if [i, j] in nucs or j > ua or j < la:
+			continue
+		else
+			nucs.append([i, j])
+
+	return nucs
