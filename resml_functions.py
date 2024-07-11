@@ -1,4 +1,5 @@
 import numpy as np
+import tqdm
 
 def General_plotter(df, nuclides):
 	"""df: dataframe source of XSs
@@ -66,7 +67,7 @@ def train_matrix(df, val_nuclides, LA, UA):
 
 	XS_train = []
 
-	for i, u in enumerate(Z):
+	for i, u in tqdm.tqdm(enumerate(Z), total=len(Z)):
 		if [Z[i], A[i]] in val_nuclides:
 			continue
 		if A[i] <= UA and A[i] >= LA:
