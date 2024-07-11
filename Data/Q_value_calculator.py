@@ -18,39 +18,39 @@ ENDF6_path = "/mnt/c/Users/TG300/ResonanceML/Data/endftables_data/ENDF-B-VIII.0_
 if os.path.exists(ENDF6_path) and os.path.isdir(ENDF6_path):
 	files = os.listdir(ENDF6_path)
 
-df = pd.DataFrame(columns=['Z', 'A', 'ERG', 'XS'])
+df = pd.DataFrame(columns=['Z', 'A', 'Q'])
 
 for name in tqdm.tqdm(files, total=len(files)):
 	with open(f"/mnt/c/Users/TG300/ResonanceML/Data/endftables_data/ENDF-B-VIII.0_neutrons/ENDF-B-VIII.0_neutrons/{str(name)}", 'r') as f:
 		if len(name) == 15:
 			element = periodictable.elements.symbol(name[6])
-			nucleon_number = int(name[2:5])
+			nucleon_number = int(name[8:11])
 			proton_number = element.number
 		elif len(name) == 16:
 			element = periodictable.elements.symbol(name[6:8])
-			nucleon_number = int(name[2:5])
+			nucleon_number = int(name[9:12])
 			proton_number = element.number
 
-		print(element, nucleon_number, proton_number)
+		# print(element, nucleon_number, proton_number)
 
 		lines = f.readlines()
 
 		try:
-			sec = ENDF6.find_section(lines, MF=3, MT=16)
+			sec = ENDF6.find_section(lines, MF=3, MT=102)
 			x, y = ENDF6.read_table(sec)
-			x = [i / 1e6 for i in x]
 
-			t_ERG = []
-			t_XS = []
+			raw_q = sec[1].split()
+			string_q = raw_q[0]
+			converted_q = float(string_q[:-2] + 'e' + string_q[-1:])
 
-			for ix, iy in zip(x, y):
-				if ix < 20.0:
-					d = {'A': nucleon_number,
-						 'Z': proton_number,
-						 'XS': iy,
-						 'ERG': ix}
+
+			d = {'Z': proton_number,
+				 'A': nucleon_number,
+				 'Q' : converted_q}
+
+			df = df._append(d, ignore_index=True)
 		except:
-			print(f"No MT16 data for {name}")
+			print(f"No MT102 data for {name}")
 			continue
 
 
