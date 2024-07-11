@@ -49,3 +49,76 @@ def range_setter(df, la, ua):
 			nucs.append([i, j])
 
 	return nucs
+
+
+def train_matrix(df, val_nuclides, LA, UA):
+
+	Z = df['Z']
+	A = df['A']
+	Q = df['Q']
+	XS = df['XS']
+	ERG = df['ERG']
+
+	Z_train = []
+	A_train = []
+	Q_train = []
+	ERG_train = []
+
+	XS_train = []
+
+	for i, u in enumerate(Z):
+		if [Z[i], A[i]] in val_nuclides:
+			continue
+		if A[i] <= UA and A[i] >= LA:
+			Z_train.append(Z[i])
+			A_train.append(A[i])
+			ERG_train.append(ERG[i])
+			Q_train.append(Q[i])
+			XS_train.append(XS[i])
+
+	X = np.array([Z_train, A_train, Q_train, ERG_train])
+
+	y = np.array(XS_train)
+
+	X = np.transpose(X)
+	return X, y
+
+
+
+
+
+def test_matrix(df, val_nuclides, ):
+
+	ztest = [nuclide[0] for nuclide in val_nuclides]  # first element is the Z-value of the given test nuclide
+	atest = [nuclide[1] for nuclide in val_nuclides]
+
+	Z = df['Z']
+	A = df['A']
+	Q = df['Q']
+	XS = df['XS']
+	ERG = df['ERG']
+
+	Z_test = []
+	A_test = []
+	Q_test = []
+	ERG_test = []
+
+	XS_test = []
+
+	for nuc_test_z, nuc_test_a in zip(ztest, atest):
+		for j, (zval, aval) in enumerate(zip(Z, A)):
+			if zval == nuc_test_z and aval == nuc_test_a:
+				Z_test.append(Z[j])
+				A_test.append(A[j])
+				Q_test.append(Q[j])
+				ERG_test.append(ERG[j])
+				XS_test.append(XS[j])
+
+
+	xtest = np.array([Z_test, A_test, Q_test, ERG_test])
+
+	xtest = np.transpose(xtest)
+
+	y_test = XS_test
+
+	return xtest, y_test
