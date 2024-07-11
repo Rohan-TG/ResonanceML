@@ -18,7 +18,7 @@ fe56_level1 = fe56.adopted_levels.levels[1]
 
 fe56_level1_energy = fe56_level1.energy.val
 
-df = pd.read_csv('ENDFBVIII_MT102_XS_only.csv')
+df = pd.read_csv('ENDFBVIII_MT102_XS_with_QZA.csv')
 energy_grid, unused = resml_functions.General_plotter(df=df, nuclides = [[26,56]])
 energy_grid = [erg / 1e6 for erg in energy_grid]
 
@@ -38,8 +38,9 @@ full_energies_list = []
 full_xs_list = []
 full_Z_list = []
 full_A_list = []
+full_q_list = df['Q'].values
 
-for endfb_nuclide in tqdm.tqdm(ENDFB_nuclides[:10], total=len(ENDFB_nuclides[:10])): # for each nuclide in endfb8
+for endfb_nuclide in tqdm.tqdm(ENDFB_nuclides, total=len(ENDFB_nuclides)): # for each nuclide in endfb8
 
 	temperg, xs = resml_functions.General_plotter(df=df, nuclides=[endfb_nuclide])
 	for XS in xs:
@@ -129,10 +130,4 @@ for endfb_nuclide in tqdm.tqdm(ENDFB_nuclides[:10], total=len(ENDFB_nuclides[:10
 		break
 
 fakedf = pd.DataFrame({'Z':full_Z_list, 'A':full_A_list, 't_levels': full_level_energy_array, 'c_levels':full_compound_level_list,
-					   'ERG':full_energies_list, 'XS':full_xs_list})
-final_level_energies = [] #will contain all values, including nans, for level energies across all nuclides
-# for i, row in df.iterrows():
-# 	row_nuclide = [row['Z'], row['A']]
-# 	if row_nuclide in ensdf_nuclide_list:
-# 		fetch_index = ensdf_nuclide_list.index(row_nuclide)
-#
+					   'ERG':full_energies_list, 'XS':full_xs_list, 'Q': full_q_list})
