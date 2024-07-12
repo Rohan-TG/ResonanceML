@@ -1,5 +1,6 @@
 import numpy as np
 import tqdm
+import pandas as pd
 
 def General_plotter(df, nuclides):
 	"""df: dataframe source of XSs
@@ -59,11 +60,14 @@ def train_matrix(df, val_nuclides, LA, UA):
 	Q = df['Q']
 	XS = df['XS']
 	ERG = df['ERG']
-
+	c_levels = df['c_levels']
+	print(c_levels)
+	print(XS)
 	Z_train = []
 	A_train = []
 	Q_train = []
 	ERG_train = []
+	c_levels_train = []
 
 	XS_train = []
 
@@ -76,8 +80,9 @@ def train_matrix(df, val_nuclides, LA, UA):
 			ERG_train.append(ERG[i])
 			Q_train.append(Q[i])
 			XS_train.append(XS[i])
+			c_levels_train.append(c_levels[i])
 
-	X = np.array([Z_train, A_train, Q_train, ERG_train])
+	X = np.array([Z_train, A_train, Q_train, ERG_train, c_levels_train])
 
 	y = np.array(XS_train)
 
@@ -98,11 +103,14 @@ def test_matrix(df, val_nuclides, ):
 	Q = df['Q']
 	XS = df['XS']
 	ERG = df['ERG']
+	c_levels = df['c_levels']
+
 
 	Z_test = []
 	A_test = []
 	Q_test = []
 	ERG_test = []
+	c_levels_test = []
 
 	XS_test = []
 
@@ -114,9 +122,10 @@ def test_matrix(df, val_nuclides, ):
 				Q_test.append(Q[j])
 				ERG_test.append(ERG[j])
 				XS_test.append(XS[j])
+				c_levels_test.append(c_levels[j])
 
 
-	xtest = np.array([Z_test, A_test, Q_test, ERG_test])
+	xtest = np.array([Z_test, A_test, Q_test, ERG_test, c_levels_test])
 
 	xtest = np.transpose(xtest)
 
