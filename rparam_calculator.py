@@ -13,11 +13,8 @@ resonance_energy = []
 
 c_levels = df['c_levels']
 
-minidf = df[df.Z == 17]
-minidf = minidf[minidf.A == 35]
-minidf.index = range(len(minidf))
 
-for i, row in tqdm.tqdm(minidf.iterrows(), total=minidf.shape[0]):
+for i, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
 	if not math.isnan(row['c_levels']) and row['c_levels'] != 0:
 
 		qvalue = q_data[(q_data['Z'] == row['Z']) & (q_data['A'] == row['A'])]['Q']
