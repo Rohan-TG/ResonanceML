@@ -19,8 +19,7 @@ fe56_level1 = fe56.adopted_levels.levels[1]
 fe56_level1_energy = fe56_level1.energy.val
 
 df = pd.read_csv('ENDFBVIII_MT102_XS_with_QZA.csv')
-energy_grid, unused = resml_functions.General_plotter(df=df, nuclides = [[26,56]])
-energy_grid = [erg / 1e6 for erg in energy_grid]
+energy_grid, unused = resml_functions.General_plotter(df=df, nuclides = [[17,35]])
 
 ENDFB_nuclides = resml_functions.range_setter(df=df, la=0, ua=260)
 
@@ -59,6 +58,7 @@ for n in ENDFB_nuclides:
 	except:
 		missing_compounds.append([n[0],n[1]+1])
 
+ENDFB_nuclides = [[17,35], [17,36]]
 
 for endfb_nuclide in tqdm.tqdm(ENDFB_nuclides, total=len(ENDFB_nuclides)): # for each nuclide in endfb8
 	comp = [endfb_nuclide[0], endfb_nuclide[1] + 1]
@@ -85,11 +85,10 @@ for endfb_nuclide in tqdm.tqdm(ENDFB_nuclides, total=len(ENDFB_nuclides)): # for
 
 		for lc in compound_level_structure: # loop gives the levels of the compound nucleus in MeV
 			lc_energy = lc.energy.val
-			MeV_comp_level_energy = lc_energy/1000
-			# eV_comp_level_energy = lc_energy * 1000 # in eV
+			eV_comp_level_energy = lc_energy * 1e3 # in eV
 
-			float_comp_level_errors.append(lc.energy.pm /1000)
-			float_comp_level_energies.append(MeV_comp_level_energy)
+			# float_comp_level_errors.append(lc.energy.pm /1000)
+			float_comp_level_energies.append(eV_comp_level_energy)
 			# float_eV_comp.append(eV_comp_level_energy)
 
 		compound_grid_levels = []
