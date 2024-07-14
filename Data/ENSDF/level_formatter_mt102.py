@@ -1,22 +1,23 @@
 import pandas as pd
 
 from nudel.nudel import Nuclide
+import matplotlib.pyplot as plt
 import resml_functions
 import numpy as np
-import traceback
+# import traceback
 import tqdm
 
-fe56 = Nuclide(56,26)
-
-print(fe56)
 
 
 
-fe56_levels = fe56.adopted_levels.levels
 
-fe56_level1 = fe56.adopted_levels.levels[1]
 
-fe56_level1_energy = fe56_level1.energy.val
+
+
+
+
+
+
 
 df = pd.read_csv('ENDFBVIII_MT102_XS_with_QZA.csv')
 energy_grid, unused = resml_functions.General_plotter(df=df, nuclides = [[17,35]])
@@ -58,7 +59,20 @@ for n in ENDFB_nuclides:
 	except:
 		missing_compounds.append([n[0],n[1]+1])
 
-ENDFB_nuclides = [[17,35], [17,36]]
+# ENDFB_nuclides = [[17,35], [17,36]]
+
+
+def logger(energy, xs):
+
+	logerg = [np.log10(erg) for erg in energy]
+	logxs = [np.log10(xval) for xval in xs]
+
+	plt.figure()
+	plt.plot(logerg, logxs)
+	plt.xlabel('lg(E)')
+	plt.ylabel('lg($\sigma_{n,\gamma}$)')
+	plt.grid()
+	plt.show()
 
 for endfb_nuclide in tqdm.tqdm(ENDFB_nuclides, total=len(ENDFB_nuclides)): # for each nuclide in endfb8
 	comp = [endfb_nuclide[0], endfb_nuclide[1] + 1]
@@ -123,7 +137,7 @@ for endfb_nuclide in tqdm.tqdm(ENDFB_nuclides, total=len(ENDFB_nuclides)): # for
 
 		for l in nuclide_levels:
 			level_energy = l.energy.val
-			MeV_level_energy = level_energy / 1000
+			MeV_level_energy = level_energy * 1e3
 
 			float_level_error.append(l.energy.pm / 1000)
 			float_nuclide_level_energies.append(MeV_level_energy) # converts to MeV
@@ -152,4 +166,6 @@ for endfb_nuclide in tqdm.tqdm(ENDFB_nuclides, total=len(ENDFB_nuclides)): # for
 		print(endfb_nuclide, 'not in ENSDF')
 
 fakedf = pd.DataFrame({'Z':full_Z_list, 'A':full_A_list, 't_levels': full_level_energy_array, 'c_levels':full_compound_level_list,
-					   'ERG':full_energies_list, 'XS':full_xs_list, 'Q': full_q_list})
+					   'ERG':full_energies_list, 'XS':full_xs_list,
+					   'Q': full_q_list,
+					   })
