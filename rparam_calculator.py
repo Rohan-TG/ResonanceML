@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import math
+from resml_functions import General_plotter
 import tqdm
 print('Imports successful...')
 
@@ -9,7 +10,8 @@ print('Q values loaded')
 df = pd.read_csv('ENDFBVIII_MT102_levels.csv')
 print('Mainframe loaded')
 
-resonance_energy = []
+energy_grid, unused_xs = General_plotter(df=df, nuclides=[[17,35]])
+
 
 c_levels = df['c_levels']
 
@@ -38,3 +40,10 @@ def closest_energy(neutron_energies, level_energy_value):
 #
 # 	else:
 # 		resonance_energy.append(np.nan)
+resonance_energy = np.zeros(len(energy_grid))
+
+for compound_level in nuclide_c_level:
+if not math.isnan(row['c_levels']):
+	fill = range(i-100, i+100)
+	for idx in fill:
+		resonance_energy[idx] = True
