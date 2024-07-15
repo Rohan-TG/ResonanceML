@@ -13,7 +13,7 @@ import os
 
 
 
-ENDF6_path = "/mnt/c/Users/TG300/ResonanceML/Data/JENDL5_u20/jendl5-n-u20/jendl5-n-u20"
+ENDF6_path = "/mnt/c/Users/TG300/ResonanceML/Data/TENDL2021/TENDL-n"
 
 if os.path.exists(ENDF6_path) and os.path.isdir(ENDF6_path):
 	files = os.listdir(ENDF6_path)
@@ -50,7 +50,12 @@ for name in tqdm.tqdm(files, total=len(files)):
 
 			df = df._append(d, ignore_index=True)
 		except:
-			print(f"No MT102 data for {name}")
+			d = {'Z': proton_number,
+				 'A': nucleon_number,
+				 'Q' : np.nan}
+
+			df = df._append(d, ignore_index=True)
+			print(f"No MT102 data for {name}.")
 			continue
 
 
