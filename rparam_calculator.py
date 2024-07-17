@@ -20,7 +20,7 @@ df = pd.read_csv('ENDFBVIII_MT102_XS_Q_ZA.csv')
 print('Mainframe loaded')
 
 
-endfbnuclides = range_setter(df=df, la=0, ua=260)
+endfbnuclides = range_setter(df=df, la=0, ua=260, use_tqdm=True)
 compound_levels = pd.read_csv('ENDFBVIII_compound_level_data.csv')
 
 param_lbound = 30
