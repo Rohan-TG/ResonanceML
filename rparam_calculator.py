@@ -1,21 +1,11 @@
 import numpy as np
 import pandas as pd
 from pygments.lexers import math
-
+import math
 from resml_functions import General_plotter, range_setter
 import tqdm
 print('Imports successful...')
 
-df = pd.read_csv('ENDFBVIII_MT102_XS_Q_ZA.csv')
-print('Mainframe loaded')
-
-energy_grid, unused_xs = General_plotter(df=df, nuclides=[[17,35]])
-
-endfbnuclides = range_setter(df=df, la=0, ua=260)
-compound_levels = pd.read_csv('ENDFBVIII_compound_level_data.csv')
-
-param_lbound = 30
-param_ubound = 70
 
 
 def closest_energy(neutron_energies, search_energy_value):
@@ -26,62 +16,57 @@ def closest_energy(neutron_energies, search_energy_value):
 	return(closest_value, closest_index)
 
 
+df = pd.read_csv('ENDFBVIII_MT102_XS_Q_ZA.csv')
+print('Mainframe loaded')
+
+
+endfbnuclides = range_setter(df=df, la=0, ua=260)
+compound_levels = pd.read_csv('ENDFBVIII_compound_level_data.csv')
+
+param_lbound = 30
+param_ubound = 100
+
+
+
 print('Beginning iteration')
 #
 # for nuclide in tqdm.tqdm(endfbnuclides, total=len(endfbnuclides)):
+energy_grid, unused_xs = General_plotter(df=df, nuclides=[[27,59]])
 
-nuclide = [17,35]
+full_resparam_list = []
 
-dummy_list = [np.nan for i in energy_grid]
+for nuclide in tqdm.tqdm(endfbnuclides, total=len(endfbnuclides)):
 
-nucdf = df[(df['Z'] == nuclide[0]) & (df['A'] == nuclide[1])]
-nucdf.index = range(len(nucdf))
-qvalue = nucdf['Q'].values[0]
+	dummy_list = [np.nan for i in energy_grid]
 
-nucleveldf = compound_levels[(compound_levels['Z'] == nuclide[0]) & (compound_levels['A'] == nuclide[1])]
-nucleveldf.index = range(len(nucleveldf))
+	nucdf = df[(df['Z'] == nuclide[0]) & (df['A'] == nuclide[1])]
+	nucdf.index = range(len(nucdf))
+	qvalue = nucdf['Q'].values[0]
 
-
-for i, row in tqdm.tqdm(nucleveldf.iterrows(),total = nucleveldf.shape[0]):
-	lc = row['c_levels'] # compound energy level
-
-
-	predicted_resonance_energy = lc - qvalue
-
-	if predicted_resonance_energy >= 0:
-
-		match_grid_energy, match_index = closest_energy(energy_grid,
-														search_energy_value=predicted_resonance_energy)
-
-		fill_indices = range(match_index-param_lbound, match_index+param_ubound)
-		for r in fill_indices:
-			dummy_list[r] = predicted_resonance_energy
+	nucleveldf = compound_levels[(compound_levels['Z'] == nuclide[0]) & (compound_levels['A'] == nuclide[1])]
+	nucleveldf.index = range(len(nucleveldf))
 
 
+	for i, row in nucleveldf.iterrows():
+		lc = row['c_levels'] # compound energy level
+
+		predicted_resonance_energy = lc - qvalue
+
+		if predicted_resonance_energy >= 0:
+
+			match_grid_energy, match_index = closest_energy(energy_grid,
+															search_energy_value=predicted_resonance_energy)
+
+			fill_indices = range(match_index-param_lbound, match_index+param_ubound)
+			for r in fill_indices:
+				dummy_list[r] = predicted_resonance_energy
+
+
+	for rp in dummy_list:
+		full_resparam_list.append(rp)
 
 
 
-
-
-
-
-loge = [np.log10(e) for e in energy_grid]
-logxs = [np.log10(xs) for xs in unused_xs]
-
-logparam = []
-for r in dummy_list:
-	if not math.isnan(r):
-		logparam.append(0)
-	else:
-		logparam.append(np.nan)
-
-import matplotlib.pyplot as plt
-
-plt.figure()
-plt.grid()
-plt.plot(loge[45000:50000], logparam[45000:50000])
-plt.plot(loge[45000:50000],logxs[45000:50000])
-plt.show()
 
 # resonance_energy = np.zeros(len(energy_grid))
 # for i, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
