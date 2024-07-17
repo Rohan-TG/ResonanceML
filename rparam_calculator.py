@@ -58,6 +58,8 @@ for nuclide in tqdm.tqdm(endfbnuclides, total=len(endfbnuclides)):
 															search_energy_value=predicted_resonance_energy)
 
 			fill_indices = range(match_index-param_lbound, match_index+param_ubound)
+			if match_index+param_ubound > 61506:
+				fill_indices = range(match_index+param_lbound, 61506)
 			for r in fill_indices:
 				dummy_list[r] = predicted_resonance_energy
 
