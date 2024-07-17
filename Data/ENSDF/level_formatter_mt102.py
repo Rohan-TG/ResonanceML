@@ -7,7 +7,9 @@ import numpy as np
 # import traceback
 import tqdm
 
-
+### NOTE
+# This script is obsolete as it produces an outdated level representation. New
+# script is called level_data_formatter.py
 
 
 
