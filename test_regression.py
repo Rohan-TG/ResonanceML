@@ -1,66 +1,55 @@
 import xgboost as xg
 import pandas as pd
-from resml_functions import General_plotter
+from resml_functions import General_plotter, range_setter
 import matplotlib.pyplot as plt
 import math
 import numpy as np
 import tqdm
 import periodictable
 print('Imports successful...')
-df = pd.read_csv('ENDFBVIII_MT102_with_resonance_energies_and_levels.csv')
+df = pd.read_csv('ENDFBVIII_resonance_parameter_trial_1.csv')
 
 eV_levels = []
 
-
-# for i, row in tqdm.tqdm(df.iterrows(), total=df.shape[0]):
-# 	cval = row['c_levels']
-# 	if not math.isnan(cval):
-#
-# 		eV_cval = cval * 1e6
-# 		eV_levels.append(eV_cval)
-# 		print(cval)
-# 		break
-# 	else:
-# 		eV_levels.append(np.nan)
+print('Data loaded')
 
 
 min_energy = 1
 max_energy = 21e6
 
 
-def train_matrix(df, val_nuclides, LA, UA):
+def train_matrix(df, train_nuclides, val_nuclides, LA, UA, use_tqdm=False):
 
 	Z = df['Z']
 	A = df['A']
 	Q = df['Q']
 	XS = df['XS']
 	ERG = df['ERG']
-	c_levels = df['c_levels']
-	res_erg = df['res_erg']
-	print(c_levels)
-	print(XS)
+	res_erg = df['res_e']
 	Z_train = []
 	A_train = []
 	Q_train = []
 	ERG_train = []
-	c_levels_train = []
 	res_erg_train = []
 
 	XS_train = []
 
-	for i, u in tqdm.tqdm(enumerate(Z), total=len(Z)):
+	iterator = tqdm.tqdm(enumerate(Z), total=len(Z)) if use_tqdm == True else enumerate(Z)
+
+	for i, u in iterator:
 		if [Z[i], A[i]] in val_nuclides:
 			continue
-		if A[i] <= UA and A[i] >= LA and ERG[i]*1e6 > min_energy and ERG[i]*1e6 < max_energy:
+		if [Z[i], A[i]] not in train_nuclides:
+			continue
+		if A[i] <= UA and A[i] >= LA and ERG[i] > min_energy and ERG[i] < max_energy:
 			Z_train.append(Z[i])
 			A_train.append(A[i])
-			ERG_train.append(ERG[i]*1e6)
+			ERG_train.append(ERG[i])
 			Q_train.append(Q[i])
 			XS_train.append(XS[i])
 			res_erg_train.append(res_erg[i])
-			c_levels_train.append(c_levels[i]*1e6)
 
-	X = np.array([Z_train, A_train, Q_train, ERG_train, c_levels_train, res_erg_train])
+	X = np.array([Z_train, A_train, Q_train, ERG_train, res_erg_train])
 
 	y = np.array(XS_train)
 
@@ -78,32 +67,29 @@ def test_matrix(df, val_nuclides, ):
 	Q = df['Q']
 	XS = df['XS']
 	ERG = df['ERG']
-	c_levels = df['c_levels']
-	res_erg = df['res_erg']
+	res_erg = df['res_e']
 
 
 	Z_test = []
 	A_test = []
 	Q_test = []
 	ERG_test = []
-	c_levels_test = []
 	res_erg_test = []
 
 	XS_test = []
 
 	for nuc_test_z, nuc_test_a in zip(ztest, atest):
 		for j, (zval, aval) in enumerate(zip(Z, A)):
-			if zval == nuc_test_z and aval == nuc_test_a and ERG[j]*1e6 > min_energy and ERG[j]*1e6 < max_energy:
+			if zval == nuc_test_z and aval == nuc_test_a and ERG[j] > min_energy and ERG[j] < max_energy:
 				Z_test.append(Z[j])
 				A_test.append(A[j])
 				Q_test.append(Q[j])
-				ERG_test.append(ERG[j]*1e6)
+				ERG_test.append(ERG[j])
 				XS_test.append(XS[j])
 				res_erg_test.append(res_erg[j])
-				c_levels_test.append(c_levels[j] * 1e6)
 
 
-	xtest = np.array([Z_test, A_test, Q_test, ERG_test, c_levels_test, res_erg_test])
+	xtest = np.array([Z_test, A_test, Q_test, ERG_test, res_erg_test])
 
 	xtest = np.transpose(xtest)
 
@@ -122,20 +108,19 @@ def test_matrix(df, val_nuclides, ):
 
 
 
+# tempsmall = df[df.A > 10]
+# tempsmall2 = tempsmall[tempsmall.A < 60]
+# tempsmall2.index = range(len(tempsmall2))
+al = range_setter(df=df, la=0, ua=260, use_tqdm=True)
+
+# erg, xs = General_plotter(df=df, nuclides=[[82,208]])
+#
+target = [82,208]
+energy_grid, zrxs = General_plotter(df=df, nuclides=[target])
 
 
+t_n = [[17,35], [17,36], [14,29], [14,28], [82,207], [20,40], [19,39], [82,206]]
 
-
-# al = resml_functions.range_setter(df=df, la=38, ua=42)
-
-tempsmall = df[df.A > 20]
-tempsmall2 = tempsmall[tempsmall.A < 70]
-tempsmall2.index = range(len(tempsmall2))
-
-energy_grid, zrxs = General_plotter(df=tempsmall2, nuclides=[[17,35]])
-
-
-energy_grid = [e*1e6 for e in energy_grid]
 plot_energy_grid = []
 plotxs = []
 
@@ -146,15 +131,16 @@ for e, xs in zip(energy_grid, zrxs):
 
 print('Data loaded. Forming matrices...')
 
-validation_nuclides = [[17,35]]
+validation_nuclides = [target]
 
-X_train, y_train = train_matrix(df=tempsmall2, val_nuclides=validation_nuclides, LA=20, UA=70)
+X_train, y_train = train_matrix(df=df,train_nuclides=t_n, val_nuclides=validation_nuclides, LA=0, UA=270,
+								use_tqdm=True)
 
-X_test, y_test = test_matrix(df=tempsmall2, val_nuclides=validation_nuclides)
+X_test, y_test = test_matrix(df=df, val_nuclides=validation_nuclides)
 
 print('Matrices formed. Training...')
 
-model = xg.XGBRegressor(n_estimators= 500,
+model = xg.XGBRegressor(n_estimators= 800,
 						max_depth=6,
 						learning_rate=0.1,
 						# subsample=0.5,
@@ -170,8 +156,20 @@ logp = [np.log(abs(p)) for p in predictions]
 loge = [np.log(e) for e in plot_energy_grid]
 logxs = [np.log(x) for x in plotxs]
 
+
+rps = df[(df['Z'] == target[0]) & (df['A'] == target[1])]['res_e'].values
+
+logrp = []
+for i in rps:
+	if not math.isnan(i):
+		logrp.append(0)
+	else:
+		logrp.append(np.nan)
+
+logrp = logrp[25001:]
 plt.figure()
 plt.plot(loge, logxs, label = 'ENDF/B-VIII')
+plt.plot(loge,logrp, label = 'Labels')
 plt.plot(loge, logp, color='red', label = 'Predictions')
 plt.title(f"$\sigma_{{n,\gamma}}$ predictions for {periodictable.elements[validation_nuclides[0][0]]}-{validation_nuclides[0][1]}")
 plt.legend()
@@ -181,7 +179,7 @@ plt.ylabel('Log XS')
 plt.show()
 
 
-model.get_booster().feature_names = ['Z', 'A', 'Q', 'ERG', 'c_levels', 'res_erg']
+model.get_booster().feature_names = ['Z', 'A', 'Q', 'ERG', 'res_erg']
 
 plt.figure()
 plt.title('Gain')
