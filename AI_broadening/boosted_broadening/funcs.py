@@ -11,6 +11,9 @@ def single_nuclide_make_train(df, val_temperatures=[], test_temperatures=[], min
 	XS_train = []
 	ERG_train = []
 	T_train = []
+	XS_0K_train = []
+
+
 
 	if use_tqdm:
 		iterator = tqdm.tqdm(df.iterrows(), total = len(df))
