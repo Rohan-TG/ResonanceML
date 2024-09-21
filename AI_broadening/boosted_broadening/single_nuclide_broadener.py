@@ -11,11 +11,19 @@ print('Data loaded')
 minerg = 500 # in eV
 maxerg = 1 * 2.9e4 # in eV
 
-test_temperatures = [1800]
+test_temperatures = [500]
+validation_temperatures = [1700,
+						   1600,
+						   1500,
+						   1400,
+						   # 1300,
+						   # 1200,
+						   # 1100,
+						   ]
 nuclide = [26,56]
 
 X_train, y_train = single_nuclide_make_train(df=df,
-											 val_temperatures=[1700, 1600, 1500],
+											 val_temperatures=validation_temperatures,
 											 test_temperatures=test_temperatures,
 											 minERG=minerg,
 											 maxERG=maxerg,
@@ -27,6 +35,12 @@ X_test, y_test = single_nuclide_make_test(df=df,
 										  maxERG=maxerg,
 										  test_temperatures=test_temperatures)
 
+X_val, y_val = single_nuclide_make_test(df=df,
+										use_tqdm=True,
+										minERG=minerg,
+										maxERG=maxerg,
+										test_temperatures=validation_temperatures)
+
 progress = dict()
 
 model = xg.XGBRegressor(n_estimators = 2000,
@@ -37,7 +51,7 @@ model = xg.XGBRegressor(n_estimators = 2000,
 
 
 model.fit(X_train, y_train, verbose = True,
-		  eval_set = [(X_train, y_train), (X_test, y_test)],)
+		  eval_set = [(X_train, y_train), (X_val, y_val), (X_test, y_test)],)
 
 
 predictions = model.predict(X_test)
@@ -58,7 +72,7 @@ plt.grid()
 plt.plot(test_energies, predictions, label = 'Predictions', color = 'red')
 plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
-plt.plot(test_energies, y_test, '--', label = 'JEFF-3.3', color = 'mediumvioletred')
+plt.plot(test_energies, y_test, '--', label = f'{test_temperatures[0]} K JEFF-3.3', color = 'lightgreen')
 plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
