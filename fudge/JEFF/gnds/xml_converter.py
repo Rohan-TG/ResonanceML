@@ -17,5 +17,6 @@ for file in tqdm.tqdm(single_endf_filenames,total=len(single_endf_filenames)):
 		f'source /Users/rntg/PycharmProjects/ResonanceML/fudge/fudge/bin/activate && endf2gnds.py {file} {xmlFileName} --skipBadData --continuumSpectraFix',
 		shell=True, text=True)
 
+# add: && rm {file} to delete the ENDF-6 after processing.
 
 
