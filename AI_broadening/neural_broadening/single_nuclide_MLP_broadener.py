@@ -23,8 +23,8 @@ validation_temperatures = [1700,
 nuclide = [26,56]
 
 
-min_energy = 100
-max_energy = 2e6
+min_energy = 400
+max_energy = 6000
 X_train, y_train, unscaled_erg_train, unscaled_xs_train = single_nuclide_make_train(df=df,
 											 val_temperatures=validation_temperatures,
 											 test_temperatures=test_temperatures,
@@ -77,21 +77,26 @@ for pair in X_test:
 	scaled_energies.append(pair[0])
 
 
-all_energies = df['ERG'].values
-all_xs = df['XS'].values
 
-max_all_energy = max(unscaled_energy) * 1e6
-min_all_energy = min(unscaled_energy) * 1e6
+max_test_energy = max(unscaled_energy) * 1e6
+min_test_energy = min(unscaled_energy) * 1e6
 
-max_all_xs = max(unscaled_xs)
-min_all_xs = min(unscaled_xs)
+max_test_xs = max(unscaled_xs)
+min_test_xs = min(unscaled_xs)
 
-rescaled_energies = np.array(scaled_energies)* (max_all_energy - min_all_energy) + min_all_energy
+max_train_xs = max(unscaled_xs_train)
+min_train_xs = min(unscaled_xs_train)
 
-rescaled_test_xs = np.array(y_test) * (max_all_xs - min_all_xs) + min_all_xs
+max_train_erg = max(unscaled_erg_train)
+min_train_erg = min(unscaled_erg_train)
 
 
-rescaled_predictions = np.array(predictions) * (max_all_xs - min_all_xs) + min_all_xs
+
+rescaled_energies = np.array(scaled_energies)* (max_test_energy - min_test_energy) + min_test_energy
+
+rescaled_test_xs = np.array(y_test) * (max_test_xs - min_test_xs) + min_test_xs
+
+rescaled_predictions = np.array(predictions) * (max_test_xs - min_test_xs) + min_test_xs
 
 
 unheated_energies = df[(df['T'] == 0) & (df['ERG'] > (min_energy/1e6)) & (df['ERG'] < (max_energy/1e6))]['ERG'].values
