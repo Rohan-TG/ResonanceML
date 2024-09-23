@@ -14,10 +14,10 @@ df =pd.read_csv('Fe56_MT_102_Delta100K_0K_1800K.csv')
 test_temperatures = [1800]
 validation_temperatures = [1700,
 						   1600,
-						   1500,
+						   # 1500,
 						   1400,
-						   # 1300,
-						   # 1200,
+						   1300,
+						   1200,
 						   # 1100,
 						   ]
 nuclide = [26,56]
@@ -52,16 +52,16 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 restore_best_weights=True)
 
 model = keras.Sequential()
-model.add(keras.layers.Dense(10, input_shape=(X_train.shape[1],), kernel_initializer='normal', activation='relu'))
-model.add(keras.layers.Dense(10, activation='relu'))
-model.add(keras.layers.Dense(50,activation='relu'))
+model.add(keras.layers.Dense(100, input_shape=(X_train.shape[1],), kernel_initializer='normal', activation='relu'))
+model.add(keras.layers.Dense(100, activation='relu'))
+model.add(keras.layers.Dense(500,activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 
 model.compile(loss='mean_squared_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=5,
+					epochs=20,
 					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_val, y_val),
