@@ -93,3 +93,19 @@ plt.xlabel('N. Trees')
 plt.grid()
 plt.legend()
 plt.show()
+
+
+def error_plotter(libraryXS, predictedXS, energyGrid):
+	percentageError = []
+	for p, xs in zip(predictedXS, libraryXS):
+		percentageError.append((p/xs * 100) - 100)
+
+	plt.figure()
+	plt.plot(energyGrid, percentageError, label = 'Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('% Error')
+	plt.xscale('log')
+	plt.grid()
+	plt.show()
+
+error_plotter(y_test, predictions, test_energies)
