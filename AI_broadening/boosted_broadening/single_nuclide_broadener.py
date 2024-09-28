@@ -11,11 +11,11 @@ print('Data loaded')
 minerg = 500 # in eV
 maxerg = 1 * 2.9e4 # in eV
 
-test_temperatures = [500]
+test_temperatures = [1500]
 validation_temperatures = [1700,
-						   1600,
-						   1500,
-						   1400,
+						   # 1600,
+						   # 1500,
+						   # 1400,
 						   # 1300,
 						   # 1200,
 						   # 1100,
@@ -45,7 +45,7 @@ progress = dict()
 
 model = xg.XGBRegressor(n_estimators = 2000,
 						max_depth = 9,
-						learning_rate = 0.05,
+						learning_rate = 0.06,
 						reg_lambda = 2
 						)
 
@@ -93,3 +93,19 @@ plt.xlabel('N. Trees')
 plt.grid()
 plt.legend()
 plt.show()
+
+
+def error_plotter(libraryXS, predictedXS, energyGrid):
+	percentageError = []
+	for p, xs in zip(predictedXS, libraryXS):
+		percentageError.append((p/xs * 100) - 100)
+
+	plt.figure()
+	plt.plot(energyGrid, percentageError, label = 'Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('% Error')
+	plt.xscale('log')
+	plt.grid()
+	plt.show()
+
+error_plotter(y_test, predictions, test_energies)
