@@ -125,8 +125,8 @@ validation_temperatures = [1700,
 nuclide = [26,56]
 
 
-min_energy = 0
-max_energy = 10000
+min_energy = 0.00001
+max_energy = 1e4
 # X_train, y_train, unscaled_erg_train, unscaled_xs_train = single_nuclide_make_train(df=df,
 # 											 val_temperatures=validation_temperatures,
 # 											 test_temperatures=test_temperatures,
@@ -155,23 +155,35 @@ X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 min_delta=0.0001,
-										 patience=10,
+										 patience=50,
 										 mode='min',
-										 start_from_epoch=3,
+										 start_from_epoch=20,
 										 restore_best_weights=True)
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(500, input_shape=(X_train.shape[1],), kernel_initializer='normal', activation='relu'))
-model.add(keras.layers.Dense(500, activation='relu'))
-model.add(keras.layers.Dense(500, activation='relu'))
-model.add(keras.layers.Dense(200,activation='relu'))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dropout(0.05))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(1000, activation='relu', bias_regularizer=keras.regularizers.L2(0.01)))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dropout(0.05))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dropout(0.05))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dropout(0.05))
+model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(600,activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 
 model.compile(loss='mean_squared_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=5,
+					epochs=500,
 					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_val, y_val),
@@ -220,7 +232,7 @@ rescaled_test_xs = np.array(y_test) * np.std(XS_train) + np.mean(XS_train)
 
 
 plt.figure()
-plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions')
+plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
 plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
 plt.plot(rescaled_energies, rescaled_test_xs, '--', label = 'JEFF-3.3 1,800 K')
 plt.legend()
@@ -229,4 +241,14 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
+plt.show()
+
+plt.figure()
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.plot(history.history['loss'], label='Training Loss')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid()
 plt.show()
