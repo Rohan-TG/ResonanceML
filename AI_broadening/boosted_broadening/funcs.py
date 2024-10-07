@@ -23,10 +23,10 @@ def single_nuclide_make_train(df, val_temperatures=[], test_temperatures=[], min
 	for i, row in iterator:
 		if row['T'] in val_temperatures or row['T'] in test_temperatures:
 			continue
-		if (row['ERG'] * 1e6) > maxERG or (row['ERG'] * 1e6) < minERG:
+		if row['ERG'] > maxERG or row['ERG'] < minERG:
 			continue
 		XS_train.append(row['XS'])
-		ERG_train.append(row['ERG'] * 1e6)
+		ERG_train.append(row['ERG'])
 		T_train.append(row['T'])
 
 	X = np.array([ERG_train, T_train])
@@ -53,11 +53,11 @@ def single_nuclide_make_test(df, test_temperatures = [], use_tqdm = False, minER
 		iterator = DF.iterrows()
 
 	for i, row in iterator:
-		if (row['ERG'] * 1e6) > maxERG or (row['ERG'] * 1e6) < minERG:
+		if row['ERG'] > maxERG or row['ERG'] < minERG:
 			continue
 		if row['T'] in test_temperatures:
 			XS_test.append(row['XS'])
-			ERG_test.append(row['ERG'] * 1e6)
+			ERG_test.append(row['ERG'])
 			T_test.append(row['T'])
 		else:
 			continue

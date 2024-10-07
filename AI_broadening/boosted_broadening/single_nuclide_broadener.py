@@ -5,10 +5,10 @@ import periodictable
 from funcs import single_nuclide_make_train, single_nuclide_make_test
 
 
-df = pd.read_csv('Fe56_MT_102_Delta100K_0K_1800K.csv')
+df = pd.read_csv('Co59_MT_102_Delta100K_0K_1700K.csv')
 print('Data loaded')
 
-minerg = 500 # in eV
+minerg = 0 # in eV
 maxerg = 1 * 2.9e4 # in eV
 
 test_temperatures = [1500]
@@ -20,7 +20,7 @@ validation_temperatures = [1700,
 						   # 1200,
 						   # 1100,
 						   ]
-nuclide = [26,56]
+nuclide = [27,59]
 
 X_train, y_train = single_nuclide_make_train(df=df,
 											 val_temperatures=validation_temperatures,
@@ -61,9 +61,9 @@ history = model.evals_result()
 test_energies = X_test.transpose()[0]
 # test_energies = [e * 1e6 for e in test_energies]
 
-unheated_energies = df[(df['T'] == 0) & (df['ERG'] > (minerg/1e6)) & (df['ERG'] < (maxerg/1e6))]['ERG'].values
-unheated_energies = [e * 1e6 for e in unheated_energies]
-unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (minerg/1e6)) & (df['ERG'] < (maxerg/1e6))]['XS'].values
+unheated_energies = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['ERG'].values
+unheated_energies = [e for e in unheated_energies]
+unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['XS'].values
 
 
 plt.figure()
