@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 import subprocess
+import tqdm
 import periodictable
 
 isotope = [27, 59]
@@ -52,6 +53,29 @@ master_heated_directory = f'{master_directory}/heated'
 heated_dirs = os.listdir(master_heated_directory)
 heated_dirs.remove('.DS_Store') # may need to run if on Mac
 
-for heatedFolder in heated_dirs:
+
+capture_filename = f'0{capture_index}_102.dat'
+
+T_list = []
+xs_list = []
+erg_list = []
+Z_list = []
+A_list = []
+
+for heatedFolder in tqdm.tqdm(heated_dirs, total = len(heated_dirs)):
 	T_index = procs_names.index(heatedFolder)
 	associatedTemperature = temps[T_index]
+	XSFileAddress = f'{master_heated_directory}/{heatedFolder}/{capture_filename}'
+	currentFile = np.loadtxt(XSFileAddress)
+	for pair in currentFile:
+		erg_list.append(float(pair[0]))
+		xs_list.append(float(pair[1]))
+		T_list.append(int(associatedTemperature))
+		Z_list.append(int(isotope[0]))
+		A_list.append(int(isotope[1]))
+
+df = pd.DataFrame({'Z': Z_list,
+				   'A': A_list,
+				   'ERG': erg_list,
+				   'XS': xs_list,
+				   'T': T_list})
