@@ -51,7 +51,7 @@ for i, item in enumerate(full_split_stdout):
 master_heated_directory = f'{master_directory}/heated'
 
 heated_dirs = os.listdir(master_heated_directory)
-heated_dirs.remove('.DS_Store') # may need to run if on Mac
+# heated_dirs.remove('.DS_Store') # may need to run if on Mac
 
 
 capture_filename = f'0{capture_index}_102.dat'
