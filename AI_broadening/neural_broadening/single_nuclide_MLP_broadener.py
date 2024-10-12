@@ -7,6 +7,8 @@ import tqdm
 
 import pandas as pd
 
+min_energy = 0.00001
+max_energy = 1e4
 
 def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use_tqdm=False, minERG=0, maxERG=30e6):
 	XS_train = []
@@ -27,7 +29,7 @@ def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use
 		iterator = df.iterrows()
 
 	for i, row in iterator:
-		if (row['ERG'] * 1e6) > maxERG or (row['ERG'] * 1e6) < minERG:
+		if row['ERG'] > maxERG or row['ERG'] < minERG:
 			continue
 		if row['T'] in val_temperatures:
 			XS_val.append(row['XS'])
@@ -111,7 +113,7 @@ def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use
 	return X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_test, ERG_test, XS_test, feature_means, feature_stds
 
 
-df =pd.read_csv('Fe56_MT_102_Delta100K_0K_1800K.csv')
+df =pd.read_csv('Fe56_MT_102_Delta50K_0K_1800K.csv')
 
 test_temperatures = [1800]
 validation_temperatures = [1700,
@@ -125,39 +127,22 @@ validation_temperatures = [1700,
 nuclide = [26,56]
 
 
-min_energy = 0.00001
-max_energy = 1e4
-# X_train, y_train, unscaled_erg_train, unscaled_xs_train = single_nuclide_make_train(df=df,
-# 											 val_temperatures=validation_temperatures,
-# 											 test_temperatures=test_temperatures,
-# 											 minERG=min_energy,
-# 											 maxERG=max_energy,
-# 											 use_tqdm=True)
-#
-# X_test, y_test, unscaled_energy, unscaled_xs = single_nuclide_make_test(df=df,
-# 										  test_temperatures=test_temperatures,
-# 										  use_tqdm=True,
-# 										  minERG=min_energy,
-# 										  maxERG=max_energy)
-#
-# X_val, y_val, unscaled_val_energies = single_nuclide_make_val(df=df,
-# 										use_tqdm=True,
-# 										minERG=min_energy,
-# 										maxERG=max_energy,
-# 										val_temperatures=validation_temperatures)
-unheated_energies = df[(df['T'] == 0) & (df['ERG'] > (min_energy/1e6)) & (df['ERG'] < (max_energy/1e6))]['ERG'].values
-unheated_energies = [e * 1e6 for e in unheated_energies]
-unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (min_energy/1e6)) & (df['ERG'] < (max_energy/1e6))]['XS'].values
+
+
+unheated_energies = df[(df['T'] == 0) & (df['ERG'] > min_energy) & (df['ERG'] < max_energy)]['ERG'].values
+unheated_XS = df[(df['T'] == 0) & (df['ERG'] > min_energy) & (df['ERG'] < max_energy)]['XS'].values
 
 X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_test, ERG_test, XS_test, feature_means, feature_stds = single_nuclide_data_maker(df, val_temperatures=validation_temperatures,
 																																								 test_temperatures=test_temperatures,
-																																								 use_tqdm=True, minERG=min_energy, maxERG=max_energy,)
+																																								 use_tqdm=True,
+																																								 minERG=min_energy,
+																																								 maxERG=max_energy,)
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
-										 min_delta=0.0001,
+										 min_delta=0.00005,
 										 patience=50,
 										 mode='min',
-										 start_from_epoch=20,
+										 start_from_epoch=10,
 										 restore_best_weights=True)
 
 model = keras.Sequential()
@@ -165,14 +150,14 @@ model.add(keras.layers.Dense(500, input_shape=(X_train.shape[1],), kernel_initia
 model.add(keras.layers.Dense(1000, activation='relu'))
 model.add(keras.layers.Dense(1000, activation='relu'))
 model.add(keras.layers.Dropout(0.05))
-model.add(keras.layers.Dense(1000, activation='relu'))
-model.add(keras.layers.Dense(1000, activation='relu', bias_regularizer=keras.regularizers.L2(0.01)))
-model.add(keras.layers.Dense(1000, activation='relu'))
-model.add(keras.layers.Dropout(0.05))
-model.add(keras.layers.Dense(1000, activation='relu'))
-model.add(keras.layers.Dense(1000, activation='relu'))
-model.add(keras.layers.Dropout(0.05))
-model.add(keras.layers.Dense(1000, activation='relu'))
+# model.add(keras.layers.Dense(1000, activation='relu'))
+# model.add(keras.layers.Dense(1000, activation='relu', bias_regularizer=keras.regularizers.L2(0.01)))
+# model.add(keras.layers.Dense(1000, activation='relu'))
+# model.add(keras.layers.Dropout(0.05))
+# model.add(keras.layers.Dense(1000, activation='relu'))
+# model.add(keras.layers.Dense(1000, activation='relu'))
+# model.add(keras.layers.Dropout(0.05))
+# model.add(keras.layers.Dense(1000, activation='relu'))
 model.add(keras.layers.Dense(1000, activation='relu'))
 model.add(keras.layers.Dropout(0.05))
 model.add(keras.layers.Dense(1000, activation='relu'))
@@ -183,7 +168,7 @@ model.compile(loss='mean_squared_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=500,
+					epochs=100,
 					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_val, y_val),
