@@ -5,14 +5,14 @@ import periodictable
 from funcs import single_nuclide_make_train, single_nuclide_make_test
 
 
-df = pd.read_csv('Co59_MT_102_Delta100K_0K_1700K.csv')
+df = pd.read_csv('Fe56_MT_102_Delta50K_0K_1800K.csv')
 print('Data loaded')
 
 minerg = 0 # in eV
 maxerg = 1 * 2.9e4 # in eV
 
 test_temperatures = [1500]
-validation_temperatures = [1700,
+validation_temperatures = [1500,
 						   # 1600,
 						   # 1500,
 						   # 1400,
@@ -20,7 +20,7 @@ validation_temperatures = [1700,
 						   # 1200,
 						   # 1100,
 						   ]
-nuclide = [27,59]
+nuclide = [26,56]
 
 X_train, y_train = single_nuclide_make_train(df=df,
 											 val_temperatures=validation_temperatures,
@@ -43,9 +43,9 @@ X_val, y_val = single_nuclide_make_test(df=df,
 
 progress = dict()
 
-model = xg.XGBRegressor(n_estimators = 2000,
+model = xg.XGBRegressor(n_estimators = 3000,
 						max_depth = 9,
-						learning_rate = 0.06,
+						learning_rate = 0.04,
 						reg_lambda = 2
 						)
 
