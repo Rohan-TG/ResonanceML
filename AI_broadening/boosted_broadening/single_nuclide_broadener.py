@@ -2,7 +2,7 @@ import xgboost as xg
 import pandas as pd
 import matplotlib.pyplot as plt
 import periodictable
-from funcs import single_nuclide_make_train, single_nuclide_make_test
+from funcs import single_nuclide_data_maker
 
 
 df = pd.read_csv('Fe56_MT_102_Delta50K_0K_1800K.csv')
@@ -22,28 +22,17 @@ validation_temperatures = [1500,
 						   ]
 nuclide = [26,56]
 
-X_train, y_train = single_nuclide_make_train(df=df,
+X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
 											 val_temperatures=validation_temperatures,
 											 test_temperatures=test_temperatures,
 											 minERG=minerg,
 											 maxERG=maxerg,
 											 use_tqdm=True)
 
-X_test, y_test = single_nuclide_make_test(df=df,
-										  use_tqdm=True,
-										  minERG=minerg,
-										  maxERG=maxerg,
-										  test_temperatures=test_temperatures)
-
-X_val, y_val = single_nuclide_make_test(df=df,
-										use_tqdm=True,
-										minERG=minerg,
-										maxERG=maxerg,
-										test_temperatures=validation_temperatures)
 
 progress = dict()
 
-model = xg.XGBRegressor(n_estimators = 3000,
+model = xg.XGBRegressor(n_estimators = 1000,
 						max_depth = 9,
 						learning_rate = 0.04,
 						reg_lambda = 2
