@@ -10,23 +10,23 @@ import h5py
 
 # --- User-defined parameters ---
 file_path    = r"/Users/ru/FFT/Fe-56_MT_102_0K_cross_sections.csv"
-end_index    = 1000
-start_index  = 200
-sampling_size = 1000
+end_index     = 1000
+start_index   = 250
+sampling_size = end_index - start_index    # base sampling freq
 window_size   = 1
 step_size     = 0.1
 
 # --- 1) Read the CSV and extract columns ---
 try:
     data = pd.read_csv(file_path)
-    print("Data preview:")
+    # print("Data preview:")
     print(data.head())
 
     if 'ERG' in data.columns and 'XS' in data.columns:
         E  = data['ERG'].to_numpy()
         xs = data['XS'].to_numpy()
-        print("\nEnergy (E):", E)
-        print("\nCross Section (xs):", xs)
+        # print("\nEnergy (E):", E)
+        # print("\nCross Section (xs):", xs)
     else:
         print("\nRequired columns 'ERG' and 'XS' not found.")
 except FileNotFoundError:
@@ -34,24 +34,25 @@ except FileNotFoundError:
 except Exception as e:
     print(f"An error occurred: {e}")
 
-# --- 2) Plot the initial non-uniform data snippet ---
-plt.figure()
-plt.plot(E[start_index:end_index], xs[start_index:end_index])
-plt.xscale("log")
-plt.yscale("log")
-plt.title("Non-Uniform Data (Snippet)")
-plt.xlabel("Energy (eV) - Log Scale")
-plt.ylabel("Cross Section (barns) - Log Scale")
-plt.show()
+# # --- 2) Plot the initial non-uniform data snippet ---
+# plt.figure()
+# plt.plot(E[start_index:end_index], xs[start_index:end_index])
+# plt.xscale("log")
+# plt.yscale("log")
+# plt.title("Non-Uniform Data (Snippet)")
+# plt.xlabel("Energy (eV) - Log Scale")
+# plt.ylabel("Cross Section (barns) - Log Scale")
+# plt.show()
 
 # --- 3) Generate Non-Uniformly Sampled Data ---
 t_nonuniform = E[start_index:end_index]
+print(t_nonuniform)
 signal_nonuniform = xs[start_index:end_index]
 T = t_nonuniform.max()
 
 # --- 4) Define a higher-rate Uniform Grid & Interpolate ---
 fs_nonuniform = sampling_size              # original approx. sampling
-fs_uniform    = sampling_size * 5          # desired uniform sampling
+fs_uniform    = sampling_size * 3          # desired uniform sampling
 t_uniform     = np.linspace(E[start_index], T, int(fs_uniform * T), endpoint=False)
 
 interp_func    = interp1d(t_nonuniform, signal_nonuniform, kind='linear', fill_value="extrapolate")
@@ -112,7 +113,7 @@ print("Spectrogram saved to spectrogram.h5")
 
 # print("Spectrogram saved to spectrogram.json")
 
-# --- 6) Plot the Spectrogram ---
+# # --- 6) Plot the Spectrogram ---
 plt.figure(figsize=(12, 6))
 plt.pcolormesh(
     time_bins,
@@ -151,7 +152,7 @@ reconstructed_signal = reconstructed_signal[pad : -pad]
 amp_corr             = np.max(signal_uniform) / np.max(reconstructed_signal)
 reconstructed_signal *= amp_corr
 
-# --- 8) Plot Original vs Reconstructed Signal ---
+# # --- 8) Plot Original vs Reconstructed Signal ---
 plt.figure(figsize=(12, 6))
 plt.plot(t_uniform, signal_uniform, label='Original Signal', alpha=0.8)
 plt.plot(t_uniform, reconstructed_signal, label='Reconstructed Signal', linestyle='--', alpha=0.8)
@@ -161,5 +162,20 @@ plt.ylabel('Amplitude')
 plt.title('Original vs Reconstructed Signal')
 plt.xscale("log")
 plt.yscale("log")
+plt.tight_layout()
+plt.show()
+
+# Example calculation for relative errors
+relative_error = np.abs(signal_uniform - reconstructed_signal) / np.abs(signal_uniform)
+
+# --- Plot Relative Errors ---
+plt.figure(figsize=(12, 6))
+plt.plot(t_uniform, relative_error, label='Relative Error', color='red', alpha=0.8)
+plt.legend()
+plt.xlabel('Time (s)')
+plt.ylabel('Relative Error')
+plt.title('Relative Error: Original vs Reconstructed Signal')
+plt.xscale("log")
+plt.yscale("log")  # Optional, if errors span multiple orders of magnitude
 plt.tight_layout()
 plt.show()

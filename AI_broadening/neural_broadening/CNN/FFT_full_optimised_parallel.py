@@ -14,11 +14,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 file_path     = r"/Users/ru/FFT/Fe-56_MT_102_0K_cross_sections.csv"
 end_index     = 1000
-start_index   = 200
-sampling_size = 1000    # base sampling freq
+start_index   = 250
+sampling_size = end_index - start_index    # base sampling freq
 window_size   = 1.0     # seconds for each FFT window
 step_size     = 0.1     # seconds step for sliding window
-num_threads   = 2     # None => use default number of threads
+num_threads   = 4     # None => use default number of threads
 
 # ------------------------------------------------------------------
 # 1) Load CSV and extract columns
@@ -39,15 +39,15 @@ print(f"Loaded CSV with {len(E)} rows. Using rows {start_index} to {end_index} f
 # ------------------------------------------------------------------
 # 2) Quick plot of the non-uniform snippet
 # ------------------------------------------------------------------
-# plt.figure()
-# plt.plot(E[start_index:end_index], xs[start_index:end_index])
-# plt.title("Non-Uniform Data (Snippet)")
-# plt.xscale("log")
-# plt.yscale("log")
-# plt.xlabel("Energy (log)")
-# plt.ylabel("Cross Section (log)")
-# plt.tight_layout()
-# plt.show()
+plt.figure()
+plt.plot(E[start_index:end_index], xs[start_index:end_index])
+plt.title("Non-Uniform Data (Snippet)")
+plt.xscale("log")
+plt.yscale("log")
+plt.xlabel("Energy (log)")
+plt.ylabel("Cross Section (log)")
+plt.tight_layout()
+plt.show()
 
 # ------------------------------------------------------------------
 # 3) Non-uniform to uniform interpolation
@@ -57,7 +57,7 @@ signal_nonuniform = xs[start_index:end_index]
 T                 = t_nonuniform.max()
 
 fs_nonuniform = sampling_size               # approximate sampling freq
-fs_uniform    = sampling_size * 5           # up-sample for uniform grid
+fs_uniform    = sampling_size * 3           # up-sample for uniform grid
 t_uniform     = np.linspace(E[start_index], T, int(fs_uniform * T), endpoint=False)
 
 interp_func    = interp1d(t_nonuniform, signal_nonuniform, kind='linear', fill_value="extrapolate")
