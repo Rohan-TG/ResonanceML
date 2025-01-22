@@ -243,8 +243,9 @@ def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use
 
 
 
-df =pd.read_csv('Fe56_MT_102_Delta50K_0K_1800K.csv')
+# df =pd.read_csv('Fe56_MT_102_Delta50K_0K_1800K.csv')
 
+df = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
 test_temperatures = [1400]
 validation_temperatures = [#1700,
 						   # 1600,
@@ -252,7 +253,16 @@ validation_temperatures = [#1700,
 						   # 1400,
 						   # 1300,
 						   # 1200,
-						   1100,
+						   1100, 2000, 2020, 2040, 2060, 2080, 2100, 2120, 2140, 2160, 2180, 2200,
+       2220, 2240, 2260, 2280, 2300, 2320, 2340, 2360, 2380, 2400, 2420,
+       2440, 2460, 2480, 2500, 2520, 2540, 2560, 2580, 2600, 2620, 2640,
+       2660, 2680, 2700, 2720, 2740, 2760, 2780, 2800, 2820, 2840, 2860,
+       2880, 2900, 2920, 2940, 2960, 2980, 3000, 3020, 3040, 3060, 3080,
+       3100, 3120, 3140, 3160, 3180, 3200, 3220, 3240, 3260, 3280, 3300,
+       3320, 3340, 3360, 3380, 3400, 3420, 3440, 3460, 3480, 3500, 3520,
+       3540, 3560, 3580, 3600, 3620, 3640, 3660, 3680, 3700, 3720, 3740,
+       3760, 3780, 3800, 3820, 3840, 3860, 3880, 3900, 3920, 3940, 3960,
+       3980, 4000
 						   ]
 nuclide = [26,56]
 
@@ -304,7 +314,7 @@ history = model.fit(X_train,
 					epochs=200,
 					batch_size=64,
 					callbacks=callback,
-					validation_data=(X_val, y_val),
+					# validation_data=(X_val, y_val),
 					verbose=1)
 
 predictions = model.predict(X_test)
