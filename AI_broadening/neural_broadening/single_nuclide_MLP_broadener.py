@@ -7,8 +7,8 @@ import tqdm
 
 import pandas as pd
 
-min_energy = 0.0000
-max_energy = 3e6
+min_energy = 200
+max_energy = 10000
 
 def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use_tqdm=False, minERG=0, maxERG=30e6):
 	XS_train = []
@@ -45,8 +45,11 @@ def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use
 			T_train.append(row['T'])
 
 	normalised_T_train = []
+
+	alltemps = df['T'].values
+	maxtemp = max(alltemps)
 	for x in T_train:
-		normalised_T_train.append(x / (max(df['T'].values)))
+		normalised_T_train.append(x / maxtemp)
 
 	X_train = np.array([ERG_train, normalised_T_train])
 	y_train = np.array(XS_train)
@@ -100,7 +103,7 @@ def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use
 		scaled_ERG_val.append((v - ERG_val_mean) / ERG_val_std)
 
 	for v in T_val:
-		scaled_T_val.append(v / (max(df['T'].values)))
+		scaled_T_val.append(v / maxtemp)
 
 	for v in XS_val:
 		scaled_XS_val.append((v - XS_val_mean) / XS_val_std)
@@ -122,7 +125,7 @@ def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use
 		scaled_ERG_test.append((v - ERG_test_mean) / ERG_test_std)
 
 	for v in T_test:
-		scaled_T_test.append(v / (max(df['T'].values)))
+		scaled_T_test.append(v / maxtemp)
 
 
 	X_test = np.array([scaled_ERG_test, scaled_T_test])
@@ -242,14 +245,14 @@ def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use
 
 df =pd.read_csv('Fe56_MT_102_Delta50K_0K_1800K.csv')
 
-test_temperatures = [1800]
-validation_temperatures = [1700,
-						   1600,
+test_temperatures = [1400]
+validation_temperatures = [#1700,
+						   # 1600,
 						   # 1500,
-						   1400,
+						   # 1400,
 						   # 1300,
-						   1200,
-						   # 1100,
+						   # 1200,
+						   1100,
 						   ]
 nuclide = [26,56]
 
@@ -265,29 +268,32 @@ X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_
 																																								 minERG=min_energy,
 																																								 maxERG=max_energy,)
 
+
+
+
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 min_delta=0.00005,
-										 patience=50,
+										 patience=100,
 										 mode='min',
 										 start_from_epoch=10,
 										 restore_best_weights=True)
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(500, input_shape=(X_train.shape[1],), kernel_initializer='normal', activation='relu'))
-model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 model.add(keras.layers.Dropout(0.05))
-# model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(300, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu', bias_regularizer=keras.regularizers.L2(0.01)))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
-# model.add(keras.layers.Dense(1000, activation='relu'))
+# model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
-model.add(keras.layers.Dense(1000, activation='relu'))
+# model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 model.add(keras.layers.Dropout(0.05))
-model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(300, activation='relu'))
 model.add(keras.layers.Dense(600,activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 
@@ -295,8 +301,8 @@ model.compile(loss='mean_squared_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=100,
-					batch_size=32,
+					epochs=200,
+					batch_size=64,
 					callbacks=callback,
 					validation_data=(X_val, y_val),
 					verbose=1)
@@ -333,9 +339,9 @@ for pair in X_test:
 # rescaled_predictions = np.array(predictions) * (max_test_xs - min_test_xs) + min_test_xs
 
 
-rescaled_energies = np.array(scaled_energies) * np.std(df['ERG'].values) + np.mean(df['ERG'].values)
+rescaled_energies = np.array(scaled_energies) * np.std(ERG_test) + np.mean(ERG_test)
 
-# rescaled_predictions = np.array(predictions) * np.std(df['XS'].values) + np.mean(df['XS'].values)
+rescaled_predictions = np.array(predictions) * np.std(y_test) + np.mean(y_test)
 
 rescaled_test_xs = np.array(y_test) #* np.std(df['XS'].values) + np.mean(df['XS'].values)
 
@@ -344,9 +350,9 @@ rescaled_test_xs = np.array(y_test) #* np.std(df['XS'].values) + np.mean(df['XS'
 
 
 plt.figure()
-# plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
+plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
 plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
-plt.plot(rescaled_energies, rescaled_test_xs, '--', label = 'JEFF-3.3 1,800 K')
+plt.plot(ERG_test, y_test, '--', label = 'JEFF-3.3 1,800 K')
 plt.legend()
 plt.grid()
 plt.xlabel('Energy / eV')
