@@ -1,39 +1,31 @@
+import random
+
 import xgboost as xg
 import pandas as pd
 import matplotlib.pyplot as plt
 import periodictable
+import numpy as np
 from funcs import single_nuclide_data_maker
 
 
 df = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
+# df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
 print('Data loaded')
 
-minerg = 200 # in eV
-maxerg = 4000 # in eV
+minerg = 900 # in eV
+maxerg = 1300 # in eV
 
 
-
+all_temperatures = np.arange(0, 1801, 20)
 
 
 test_temperatures = [1500]
-validation_temperatures = [1500,
-						   # 1600,
-						   # 1500,
-						   # 1400,
-						   1300,
-						   # 1200,
-						   1100,
-						   2000, 2020, 2040, 2060, 2080, 2100, 2120, 2140, 2160, 2180, 2200,
-       2220, 2240, 2260, 2280, 2300,
-						   2320, 2340, 2360, 2380, 2400, 2420,
-       2440, 2460, 2480, 2500, 2520, 2540, 2560, 2580, 2600, 2620, 2640,
-       2660, 2680, 2700, 2720, 2740, 2760, 2780, 2800, 2820, 2840, 2860,
-       2880, 2900, 2920, 2940, 2960, 2980, 3000, 3020, 3040, 3060, 3080,
-       3100, 3120, 3140, 3160, 3180, 3200, 3220, 3240, 3260, 3280, 3300,
-       3320, 3340, 3360, 3380, 3400, 3420, 3440, 3460, 3480, 3500, 3520,
-       3540, 3560, 3580, 3600, 3620, 3640, 3660, 3680, 3700, 3720, 3740,
-       3760, 3780, 3800, 3820, 3840, 3860, 3880, 3900, 3920, 3940, 3960,
-       3980, 4000]
+validation_temperatures = []
+while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
+	choice = random.choice(all_temperatures)
+	if choice not in validation_temperatures and choice not in test_temperatures:
+		validation_temperatures.append(choice)
+
 nuclide = [26,56]
 
 X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
@@ -49,7 +41,7 @@ progress = dict()
 model = xg.XGBRegressor(n_estimators = 2800,
 						max_depth = 11,
 						learning_rate = 0.254,
-						reg_lambda = 93,
+						reg_lambda = 10,
 						subsample = 0.55
 						)
 
@@ -124,15 +116,35 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.show()
 
 
+	relativeError = []
 	percentageError = []
 	for p, xs in zip(predictions_limited, test_XS_limited):
+		relativeError.append(abs((p-xs)/xs))
 		percentageError.append((p/xs * 100) - 100)
 
+
+
 	plt.figure()
-	plt.plot(test_energies_limited, percentageError, label = 'Error')
+	plt.plot(test_energies_limited, relativeError, label = 'Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('Relative error')
+	plt.xscale('log')
+	plt.legend()
+	plt.yscale('log')
+	plt.grid()
+	plt.show()
+
+	plt.figure()
+	plt.plot(test_energies_limited, percentageError, label='Error')
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
-	plt.xscale('log')
+	plt.grid()
+	plt.show()
+
+	plt.figure()
+	plt.hist(percentageError, bins=50)
+	plt.ylabel('Frequency')
+	plt.xlabel('% Error')
 	plt.grid()
 	plt.show()
 
