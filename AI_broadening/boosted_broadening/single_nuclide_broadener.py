@@ -8,76 +8,6 @@ import numpy as np
 from funcs import single_nuclide_data_maker
 
 
-df = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
-# df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
-print('Data loaded')
-
-minerg = 900 # in eV
-maxerg = 1300 # in eV
-
-
-all_temperatures = np.arange(0, 1801, 20)
-
-
-test_temperatures = [1500]
-validation_temperatures = []
-while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
-	choice = random.choice(all_temperatures)
-	if choice not in validation_temperatures and choice not in test_temperatures:
-		validation_temperatures.append(choice)
-
-nuclide = [26,56]
-
-X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
-											 val_temperatures=validation_temperatures,
-											 test_temperatures=test_temperatures,
-											 minERG=minerg,
-											 maxERG=maxerg,
-											 use_tqdm=True)
-
-
-progress = dict()
-
-model = xg.XGBRegressor(n_estimators = 2800,
-						max_depth = 11,
-						learning_rate = 0.254,
-						reg_lambda = 10,
-						subsample = 0.55
-						)
-
-
-model.fit(X_train, y_train, verbose = True,
-		  eval_set = [(X_train, y_train),
-					  # (X_val, y_val),
-					  (X_test, y_test)],)
-
-
-predictions = model.predict(X_test)
-history = model.evals_result()
-
-
-test_energies = X_test.transpose()[0]
-# test_energies = [e * 1e6 for e in test_energies]
-
-unheated_energies = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['ERG'].values
-unheated_energies = [e for e in unheated_energies]
-unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['XS'].values
-
-
-plt.figure()
-plt.plot(unheated_energies, unheated_XS, label = '0 K JEFF-3.3')
-plt.grid()
-plt.plot(test_energies, predictions, label = 'Predictions', color = 'red')
-plt.xlabel('Energy / eV')
-plt.ylabel('$\sigma_{n,\gamma} / b$')
-plt.plot(test_energies, y_test, '--', label = f'{test_temperatures[0]} K JEFF-3.3', color = 'lightgreen')
-plt.legend()
-plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-plt.yscale('log')
-plt.xscale('log')
-plt.show()
-
-
 def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	unheated_energies_limited = []
 	unheated_XS_limited = []
@@ -147,6 +77,76 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('% Error')
 	plt.grid()
 	plt.show()
+
+
+df = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
+# df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
+print('Data loaded')
+
+minerg = 700 # in eV
+maxerg = 10000 # in eV
+
+all_temperatures = np.arange(0, 1801, 20)
+
+
+test_temperatures = [1500]
+validation_temperatures = []
+while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
+	choice = random.choice(all_temperatures)
+	if choice not in validation_temperatures and choice not in test_temperatures:
+		validation_temperatures.append(choice)
+
+nuclide = [26,56]
+
+X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
+											 val_temperatures=validation_temperatures,
+											 test_temperatures=test_temperatures,
+											 minERG=minerg,
+											 maxERG=maxerg,
+											 use_tqdm=True)
+
+
+
+model = xg.XGBRegressor(n_estimators = 2800,
+						max_depth = 11,
+						learning_rate = 0.254,
+						reg_lambda = 30,
+						subsample = 0.55
+						)
+
+
+model.fit(X_train, y_train, verbose = True,
+		  eval_set = [(X_train, y_train),
+					  # (X_val, y_val),
+					  (X_test, y_test)],)
+
+
+predictions = model.predict(X_test)
+history = model.evals_result()
+
+
+test_energies = X_test.transpose()[0]
+# test_energies = [e * 1e6 for e in test_energies]
+
+unheated_energies = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['ERG'].values
+unheated_energies = [e for e in unheated_energies]
+unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['XS'].values
+
+
+plt.figure()
+plt.plot(unheated_energies, unheated_XS, label = '0 K JEFF-3.3')
+plt.grid()
+plt.plot(test_energies, predictions, label = 'Predictions', color = 'red')
+plt.xlabel('Energy / eV')
+plt.ylabel('$\sigma_{n,\gamma} / b$')
+plt.plot(test_energies, y_test, '--', label = f'{test_temperatures[0]} K JEFF-3.3', color = 'lightgreen')
+plt.legend()
+plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
+plt.yscale('log')
+plt.xscale('log')
+plt.show()
+
+
 
 
 
