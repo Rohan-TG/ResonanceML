@@ -8,42 +8,39 @@ from sklearn.metrics import mean_squared_error
 import hyperopt.early_stop
 from hyperopt import  hp, fmin, tpe, STATUS_OK, Trials
 
-df = pd.read_csv('Fe56_MT_102_Delta50K_0K_1800K.csv')
+df = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
 
 
 ntreeguess = np.arange(500, 10000, 100)
-depthguess = [3,4,5,6,7,8,9,10,11,12]
+depthguess = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
-		 'subsample': hp.uniform('subsample', 0.01, 0.99),
+		 'subsample': hp.uniform('subsample', 0.01, 1.0),
 		 'max_leaves': 0,
 		 'max_depth': hp.choice('max_depth', depthguess),
 		 'reg_lambda': hp.uniform('reg_lambda', 0, 100),
-		 'learning_rate': hp.uniform('learning_rate', 0.0001, 0.2)}
+		 'learning_rate': hp.uniform('learning_rate', 0.0001, 0.8)}
 
 
 nuclide = [26, 56]
-minerg = 0 # in eV
-maxerg = 1 * 2.9e4 # in eV
+minerg = 900 # in eV
+maxerg = 1300 # in eV
 
-all_temperatures = [   0,   50,  100,  150,  200,  250,  300,  350,  400,  450,  500,
-        550,  600,  650,  700,  750,  800,  850,  900,  950, 1000, 1050,
-       1100, 1150, 1200, 1250, 1300, 1350, 1400, 1450, 1500, 1550, 1600,
-       1650, 1700, 1750, 1800]
+all_temperatures = np.arange(0, 1801, 20)
 def optimiser(space):
 	test_temperatures = [random.choice(all_temperatures)]
 	validation_temperatures = []
-	while len(validation_temperatures) < 2:
-		valchoice = random.choice(all_temperatures)
-		if valchoice not in test_temperatures:
-			validation_temperatures.append(valchoice)
+	while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
+		choice = random.choice(all_temperatures)
+		if choice not in validation_temperatures and choice not in test_temperatures:
+			validation_temperatures.append(choice)
 
 	X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
 												 val_temperatures=validation_temperatures,
 												 test_temperatures=test_temperatures,
 												 minERG=minerg,
 												 maxERG=maxerg,
-												 use_tqdm=False)
+												 use_tqdm=True)
 
 
 	model = xg.XGBRegressor(**space, seed=42)
@@ -64,7 +61,6 @@ def optimiser(space):
 	unheated_energies = [e for e in unheated_energies]
 	unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['XS'].values
 
-
 	mse_loss = mean_squared_error(predictions, y_test)
 
 	return {'loss': mse_loss, 'status': STATUS_OK, 'model': model}
@@ -74,7 +70,7 @@ best = fmin(fn=optimiser,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=100,
+			max_evals=200,
 			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
