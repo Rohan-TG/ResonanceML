@@ -79,8 +79,8 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.show()
 
 
-df = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
-# df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
+df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
+df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
 print('Data loaded')
 
 minerg = 700 # in eV
