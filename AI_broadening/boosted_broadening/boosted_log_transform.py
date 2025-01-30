@@ -129,6 +129,8 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.grid()
 	plt.show()
 
+	print(f'Max error: {np.max(abs(np.array(percentageError)))}')
+
 
 df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
 df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
@@ -136,13 +138,16 @@ print('Data loaded')
 
 
 
-minerg = 700 # in eV
-maxerg = 1200 # in eV
+# minerg = 700 # in eV
+# maxerg = 1200 # in eV
+
+minerg = 900 # in eV
+maxerg = 300000 # in eV
 
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
-all_temperatures = np.arange(0, 1801, 1)
+all_temperatures = np.arange(200, 1801, 1)
 
 
 test_temperatures = [1500]
@@ -152,15 +157,29 @@ while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 	if choice not in validation_temperatures and choice not in test_temperatures:
 		validation_temperatures.append(choice)
 
+training_temperatures = []
+for T in all_temperatures:
+	if T not in test_temperatures and T not in validation_temperatures:
+		training_temperatures.append(T)
 nuclide = [26,56]
 
-X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
-											 val_temperatures=validation_temperatures,
-											 test_temperatures=test_temperatures,
-											 minERG=minerg,
-											 maxERG=maxerg,
-											 use_tqdm=True)
+# X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
+# 											 val_temperatures=validation_temperatures,
+# 											 test_temperatures=test_temperatures,
+# 											 minERG=minerg,
+# 											 maxERG=maxerg,
+# 											 use_tqdm=True)
 
+# validation_dataframe = df[df['T'].isin(validation_temperatures)]
+test_dataframe = df[df['T'].isin(test_temperatures)]
+training_dataframe = df[df['T'].isin(training_temperatures)]
+X_train = np.array([np.log(training_dataframe['ERG'].values), training_dataframe['T'].values])
+X_train = np.transpose(X_train)
+y_train = np.array(np.log(training_dataframe['XS'].values))
+
+X_test = np.array([np.log(test_dataframe['ERG'].values), test_dataframe['T'].values])
+X_test = np.transpose(X_test)
+y_test = np.array(np.log(test_dataframe['XS'].values))
 
 
 model = xg.XGBRegressor(n_estimators = 2800,
