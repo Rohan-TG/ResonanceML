@@ -7,57 +7,6 @@ import numpy as np
 import tqdm
 
 
-def single_nuclide_data_maker(df, val_temperatures = [], test_temperatures = [], use_tqdm = False,
-							  minERG = 0, maxERG = 30e6):
-
-	XS_train = []
-	ERG_train = []
-	T_train = []
-
-	XS_val = []
-	ERG_val =[]
-	T_val = []
-
-	XS_test = []
-	ERG_test = []
-	T_test = []
-
-	if use_tqdm:
-		iterator = tqdm.tqdm(df.iterrows(), total = len(df))
-	else:
-		iterator = df.iterrows()
-
-	for i, row in iterator:
-		if row['ERG'] > maxERG or row['ERG'] < minERG:
-			continue
-		if row['T'] in val_temperatures:
-			XS_val.append(row['XS'])
-			ERG_val.append(row['ERG'])
-			T_val.append(row['T'])
-		if row['T'] in test_temperatures:
-			XS_test.append(row['XS'])
-			ERG_test.append(row['ERG'])
-			T_test.append(row['T'])
-		if row['T'] not in val_temperatures and row['T'] not in test_temperatures:
-			XS_train.append(row['XS'])
-			ERG_train.append(row['ERG'])
-			T_train.append(row['T'])
-
-	X_train = np.array([np.log(ERG_train), T_train])
-	y_train = np.array(np.log(XS_train))
-	X_train = np.transpose(X_train)
-
-
-	X_val = np.array([np.log(ERG_val), T_val])
-	y_val = np.array(np.log(XS_val))
-	X_val = np.transpose(X_val)
-
-
-	X_test = np.array([np.log(ERG_test), T_test])
-	y_test = np.array(np.log(XS_test))
-	X_test = np.transpose(X_test)
-
-	return X_train, y_train, X_val, y_val, X_test, y_test
 
 def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	unheated_energies_limited = []
