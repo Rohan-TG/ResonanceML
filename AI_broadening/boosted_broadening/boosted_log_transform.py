@@ -34,15 +34,17 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.plot(test_energies_limited, test_XS_limited, '--', label=f'{test_temperatures[0]} K JEFF-3.3', color='lightgreen',
 			 alpha=0.7)
 	plt.legend()
+	plt.xscale('log')
+	plt.yscale('log')
 	plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-	if scaley == 'log':
-		plt.yscale('log')
-	else:
-		plt.yscale('linear')
-	if scalex ==' log':
-		plt.xscale('log')
-	else:
-		plt.xscale('linear')
+	# if scaley == 'log':
+	# 	plt.yscale('log')
+	# else:
+	# 	plt.yscale('linear')
+	# if scalex ==' log':
+	# 	plt.xscale('log')
+	# else:
+	# 	plt.xscale('linear')
 	plt.show()
 
 
@@ -79,6 +81,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.show()
 
 	print(f'Max error: {np.max(abs(np.array(percentageError)))}')
+	print(f'Mean error: {np.mean(abs(np.array(percentageError)))}')
 
 
 df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
@@ -90,8 +93,8 @@ print('Data loaded')
 # minerg = 700 # in eV
 # maxerg = 1200 # in eV
 
-minerg = 900 # in eV
-maxerg = 300000 # in eV
+minerg = 10000 # in eV
+maxerg = 25000 # in eV
 
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
