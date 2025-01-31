@@ -62,8 +62,8 @@ capture_filename = f'0{capture_index}_102.dat'
 T_list = []
 xs_list = []
 erg_list = []
-Z_list = []
-A_list = []
+# Z_list = []
+# A_list = []
 
 for heatedFolder in tqdm.tqdm(heated_dirs, total = len(heated_dirs)):
 	T_index = procs_names.index(heatedFolder)
@@ -74,11 +74,9 @@ for heatedFolder in tqdm.tqdm(heated_dirs, total = len(heated_dirs)):
 		erg_list.append(float(pair[0]))
 		xs_list.append(float(pair[1]))
 		T_list.append(int(associatedTemperature))
-		Z_list.append(int(isotope[0]))
-		A_list.append(int(isotope[1]))
+		# Z_list.append(int(isotope[0]))
+		# A_list.append(int(isotope[1]))
 
-df = pd.DataFrame({'Z': Z_list,
-				   'A': A_list,
-				   'ERG': erg_list,
+df = pd.DataFrame({				   'ERG': erg_list,
 				   'XS': xs_list,
 				   'T': T_list})
