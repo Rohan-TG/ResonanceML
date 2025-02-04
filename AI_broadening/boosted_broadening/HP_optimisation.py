@@ -8,7 +8,9 @@ from sklearn.metrics import mean_squared_error
 import hyperopt.early_stop
 from hyperopt import  hp, fmin, tpe, STATUS_OK, Trials
 
-df = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
+df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
+
+
 
 
 ntreeguess = np.arange(500, 10000, 100)
@@ -24,9 +26,11 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 
 nuclide = [26, 56]
 minerg = 900 # in eV
-maxerg = 1300 # in eV
+maxerg = 2500 # in eV
 
-all_temperatures = np.arange(0, 1801, 20)
+df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
+
+all_temperatures = np.arange(200, 1801, 1)
 def optimiser(space):
 	test_temperatures = [random.choice(all_temperatures)]
 	validation_temperatures = []
@@ -35,21 +39,34 @@ def optimiser(space):
 		if choice not in validation_temperatures and choice not in test_temperatures:
 			validation_temperatures.append(choice)
 
-	X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
-												 val_temperatures=validation_temperatures,
-												 test_temperatures=test_temperatures,
-												 minERG=minerg,
-												 maxERG=maxerg,
-												 use_tqdm=True)
+	training_temperatures = []
+	for T in all_temperatures:
+		if T not in test_temperatures and T not in validation_temperatures:
+			training_temperatures.append(T)
 
+	# X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
+	# 											 val_temperatures=validation_temperatures,
+	# 											 test_temperatures=test_temperatures,
+	# 											 minERG=minerg,
+	# 											 maxERG=maxerg,
+	# 											 use_tqdm=True)
+
+	test_dataframe = df[df['T'].isin(test_temperatures)]
+	training_dataframe = df[df['T'].isin(training_temperatures)]
+	X_train = np.array([np.log(training_dataframe['ERG'].values), training_dataframe['T'].values])
+	X_train = np.transpose(X_train)
+	y_train = np.array(np.log(training_dataframe['XS'].values))
+
+	X_test = np.array([np.log(test_dataframe['ERG'].values), test_dataframe['T'].values])
+	X_test = np.transpose(X_test)
+	y_test = np.array(np.log(test_dataframe['XS'].values))
 
 	model = xg.XGBRegressor(**space, seed=42)
 
-	evaluation = [(X_train, y_train), (X_val, y_val)]
-	model.fit(X_train, y_train,
-			  eval_set=evaluation,
-			  eval_metric='rmse',
-			  verbose=True)
+	model.fit(X_train, y_train, verbose=True,
+			  eval_set=[(X_train, y_train),
+						# (X_val, y_val),
+						(X_test, y_test)], )
 
 	predictions = model.predict(X_test)
 	history = model.evals_result()
@@ -58,8 +75,13 @@ def optimiser(space):
 	# test_energies = [e * 1e6 for e in test_energies]
 
 	unheated_energies = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['ERG'].values
-	unheated_energies = [e for e in unheated_energies]
-	unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['XS'].values
+	# unheated_energies = [e for e in unheated_energies]
+	# unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['XS'].values
+
+	# rescaled_test_energies = [np.e ** E for E in test_energies]
+	# rescaled_test_XS = [np.e ** XS for XS in y_test]
+
+	# rescaled_predictions = [np.e ** p for p in predictions]
 
 	mse_loss = mean_squared_error(predictions, y_test)
 
