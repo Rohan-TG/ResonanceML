@@ -56,15 +56,15 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 
-	plt.figure()
-	plt.plot(test_energies_limited, relativeError, label = 'Error')
-	plt.xlabel('Energy / eV')
-	plt.ylabel('Relative error')
-	plt.xscale('log')
-	plt.legend()
-	plt.yscale('log')
-	plt.grid()
-	plt.show()
+	# plt.figure()
+	# plt.plot(test_energies_limited, relativeError, label = 'Error')
+	# plt.xlabel('Energy / eV')
+	# plt.ylabel('Relative error')
+	# plt.xscale('log')
+	# plt.legend()
+	# plt.yscale('log')
+	# plt.grid()
+	# plt.show()
 
 	plt.figure()
 	plt.plot(test_energies_limited, percentageError, label='Error')
@@ -93,8 +93,8 @@ print('Data loaded')
 # minerg = 700 # in eV
 # maxerg = 1200 # in eV
 
-minerg = 10000 # in eV
-maxerg = 25000 # in eV
+minerg = 1000 # in eV
+maxerg = 2500 # in eV
 
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
