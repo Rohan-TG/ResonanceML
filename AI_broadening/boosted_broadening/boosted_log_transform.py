@@ -115,14 +115,8 @@ for T in all_temperatures:
 		training_temperatures.append(T)
 nuclide = [26,56]
 
-# X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(df=df,
-# 											 val_temperatures=validation_temperatures,
-# 											 test_temperatures=test_temperatures,
-# 											 minERG=minerg,
-# 											 maxERG=maxerg,
-# 											 use_tqdm=True)
 
-# validation_dataframe = df[df['T'].isin(validation_temperatures)]
+
 test_dataframe = df[df['T'].isin(test_temperatures)]
 training_dataframe = df[df['T'].isin(training_temperatures)]
 X_train = np.array([np.log(training_dataframe['ERG'].values), training_dataframe['T'].values])
@@ -134,9 +128,9 @@ X_test = np.transpose(X_test)
 y_test = np.array(np.log(test_dataframe['XS'].values))
 
 
-model = xg.XGBRegressor(n_estimators = 2800,
-						max_depth = 11,
-						learning_rate = 0.254,
+model = xg.XGBRegressor(n_estimators = 4800,
+						max_depth = 10,
+						learning_rate = 0.274,
 						reg_lambda = 30,
 						subsample = 0.55
 						)
