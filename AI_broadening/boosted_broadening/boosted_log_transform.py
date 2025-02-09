@@ -80,8 +80,16 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.grid()
 	plt.show()
 
+	countoverthreshold = 0
+	for XX in percentageError:
+		if XX >= 0.1:
+			countoverthreshold += 1
+
+	percentageOverThreshold = (countoverthreshold / (len(percentageError))) * 100
+
 	print(f'Max error: {np.max(abs(np.array(percentageError)))}')
 	print(f'Mean error: {np.mean(abs(np.array(percentageError)))}')
+	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
 
 
 df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
@@ -129,8 +137,8 @@ y_test = np.array(np.log(test_dataframe['XS'].values))
 
 
 model = xg.XGBRegressor(n_estimators = 4800,
-						max_depth = 10,
-						learning_rate = 0.274,
+						max_depth = 11,
+						learning_rate = 0.4,
 						reg_lambda = 30,
 						subsample = 0.55
 						)
