@@ -4,14 +4,14 @@ import scipy
 import matplotlib.pyplot as plt
 import numpy as np
 import tqdm
-from neural_broadening_functions import single_nuclide_data_maker
+from neural_broadening_functions import log_single_nuclide_data_maker
 import pandas as pd
 
 minerg = 800
 maxerg = 1500
 
 
-all_temperatures = np.arange(0, 1801, 20) # all temperatures in the data file
+all_temperatures = np.arange(0, 1801, 1) # all temperatures in the data file
 
 
 df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
@@ -31,7 +31,7 @@ df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
 unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['ERG'].values
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
 
-X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_test, ERG_test, feature_means, feature_stds = single_nuclide_data_maker(df, val_temperatures=validation_temperatures,
+X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_test, ERG_test, feature_means, feature_stds = log_single_nuclide_data_maker(df, val_temperatures=validation_temperatures,
 																																								 test_temperatures=test_temperatures,
 																																								 use_tqdm=True,
 																																								 minERG=minerg,
@@ -50,14 +50,14 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 model = keras.Sequential()
 model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
 model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.add(keras.layers.Dense(200))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.add(keras.layers.Dense(200))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.add(keras.layers.Dense(200))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.add(keras.layers.Dense(200))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
+# model.add(keras.layers.Dense(200))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
+# model.add(keras.layers.Dense(200))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
+# model.add(keras.layers.Dense(200))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
+# model.add(keras.layers.Dense(200))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
 # model.add(keras.layers.Dense(300, activation='relu'))
@@ -77,7 +77,7 @@ model.compile(loss='mean_absolute_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=500,
+					epochs=30,
 					batch_size=64,
 					callbacks=callback,
 					validation_data=(X_train, y_train),
@@ -95,13 +95,17 @@ for pair in X_test:
 
 
 
+logged_ERG_test = np.log(ERG_test)
+logged_y_test = np.log(y_test)
 
+rescaled_energies = np.array(scaled_energies) * np.std(logged_ERG_test) + np.mean(logged_ERG_test)
+rescaled_energies = np.e ** rescaled_energies
 
-rescaled_energies = np.array(scaled_energies) * np.std(ERG_test) + np.mean(ERG_test)
-
-rescaled_predictions = np.array(predictions) * np.std(y_test) + np.mean(y_test)
+rescaled_predictions = np.array(predictions) * np.std(logged_y_test) + np.mean(logged_y_test)
+rescaled_predictions = np.e ** rescaled_predictions
 
 rescaled_test_xs = np.array(y_test) #* np.std(df['XS'].values) + np.mean(df['XS'].values)
+
 
 
 
