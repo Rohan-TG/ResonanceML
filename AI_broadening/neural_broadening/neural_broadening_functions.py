@@ -273,6 +273,129 @@ def single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use
 	return X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_test, ERG_test, feature_means, feature_stds
 
 
+def log_single_nuclide_data_maker(df, val_temperatures=[], test_temperatures=[], use_tqdm=False, minERG=0, maxERG=30e6):
+	XS_train = []
+	ERG_train = []
+	T_train = []
+
+	XS_val = []
+	ERG_val = []
+	T_val = []
+
+	XS_test = []
+	ERG_test = []
+	T_test = []
+
+	if use_tqdm:
+		iterator = tqdm.tqdm(df.iterrows(), total=len(df))
+	else:
+		iterator = df.iterrows()
+
+	for i, row in iterator:
+		if row['ERG'] > maxERG or row['ERG'] < minERG:
+			continue
+		if row['T'] in val_temperatures:
+			XS_val.append(row['XS'])
+			ERG_val.append(row['ERG'])
+			T_val.append(row['T'])
+		if row['T'] in test_temperatures:
+			XS_test.append(row['XS'])
+			ERG_test.append(row['ERG'])
+			T_test.append(row['T'])
+		if row['T'] not in val_temperatures and row['T'] not in test_temperatures:
+			XS_train.append(row['XS'])
+			ERG_train.append(row['ERG'])
+			T_train.append(row['T'])
+
+	normalised_T_train = []
+
+	alltemps = df['T'].values
+	for x in T_train:
+		normalised_T_train.append(np.log(x))
+
+	X_train = np.array([ERG_train, normalised_T_train])
+	X_train = np.log(X_train)
+	y_train = np.array(XS_train)
+	y_train = np.log(y_train)
+	y_train = scipy.stats.zscore(y_train)
+
+	feature_means = []
+	feature_stds = []
+	for j_idx, feature_list in enumerate(X_train[:-1]):
+		X_train[j_idx] = scipy.stats.zscore(feature_list)
+		feature_means.append(np.mean(feature_list))
+		feature_stds.append(np.std(feature_list))
+
+	X_train = np.transpose(X_train)
+
+
+	########## Validation params
+
+	ERG_val_mean = np.mean(ERG_val)
+	ERG_val_std = np.std(ERG_val)
+
+	# T_val_mean = np.mean(T_val)
+	# T_val_std = np.std(T_val)
+
+	XS_val_mean = np.mean(XS_val)
+	XS_val_std = np.std(XS_val)
+
+	########## Test params
+
+	ERG_test_mean = np.mean(ERG_test)
+	ERG_test_std = np.std(ERG_test)
+
+	# T_test_mean = np.mean(T_test)
+	# T_test_std = np.std(T_test)
+
+
+
+
+	scaled_ERG_val = []
+	scaled_T_val = []
+
+	log_XS_val = []
+
+	logERGval = []
+	for v in ERG_val:
+		logERGval.append(np.log(v))
+
+	scaled_ERG_val = scipy.stats.zscore(logERGval)
+
+	for v in T_val:
+		scaled_T_val.append(np.log(v))
+
+	for v in XS_val:
+		log_XS_val.append(np.log(v))
+
+	scaled_XS_val = scipy.stats.zscore(log_XS_val)
+
+	X_val = np.array([scaled_ERG_val, scaled_T_val])
+	X_val = np.transpose(X_val)
+	y_val = np.array(scaled_XS_val)
+
+
+
+
+
+
+	log_ERG_test = []
+
+	scaled_T_test = np.log(T_test)
+
+	for v in ERG_test:
+		log_ERG_test.append(np.log(v))
+
+	scaled_ERG_test = scipy.stats.zscore(log_ERG_test)
+
+
+
+
+	X_test = np.array([scaled_ERG_test, scaled_T_test])
+	X_test = np.transpose(X_test)
+	y_test = np.array(XS_test)
+
+	return X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_test, ERG_test, feature_means, feature_stds
 
 # def scaler(X_matrix):
 #
