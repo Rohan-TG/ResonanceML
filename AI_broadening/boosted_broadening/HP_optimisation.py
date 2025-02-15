@@ -13,7 +13,7 @@ df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
 
 
 
-ntreeguess = np.arange(500, 10000, 100)
+ntreeguess = np.arange(50, 10050, 50)
 depthguess = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
@@ -21,18 +21,18 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 		 'max_leaves': 0,
 		 'max_depth': hp.choice('max_depth', depthguess),
 		 'reg_lambda': hp.uniform('reg_lambda', 0, 100),
-		 'learning_rate': hp.uniform('learning_rate', 0.0001, 0.8)}
+		 'learning_rate': hp.loguniform('learning_rate', np.log(1e-4), np.log(1))}
 
 
 nuclide = [26, 56]
 minerg = 900 # in eV
-maxerg = 2500 # in eV
+maxerg = 20000 # in eV
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
 all_temperatures = np.arange(200, 1801, 1)
 def optimiser(space):
-	test_temperatures = [random.choice(all_temperatures)]
+	test_temperatures = [1500]
 	validation_temperatures = []
 	while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 		choice = random.choice(all_temperatures)
@@ -51,7 +51,7 @@ def optimiser(space):
 	# 											 maxERG=maxerg,
 	# 											 use_tqdm=True)
 
-	test_dataframe = df[df['T'].isin(test_temperatures)]
+	test_dataframe = df[df['T'].isin(validation_temperatures)]
 	training_dataframe = df[df['T'].isin(training_temperatures)]
 	X_train = np.array([np.log(training_dataframe['ERG'].values), training_dataframe['T'].values])
 	X_train = np.transpose(X_train)
@@ -92,7 +92,7 @@ best = fmin(fn=optimiser,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=200,
+			max_evals=500,
 			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
