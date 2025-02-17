@@ -93,7 +93,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
-df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
+df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
 print('Data loaded')
 
 
@@ -135,6 +135,15 @@ X_test = np.array([np.log(test_dataframe['ERG'].values), test_dataframe['T'].val
 X_test = np.transpose(X_test)
 y_test = np.array(np.log(test_dataframe['XS'].values))
 
+def log_loss_obj(y_pred, dtrain):
+	y_true = dtrain.get_label()
+	eps = 1e-15  # Prevent log(0)
+	y_pred = np.clip(y_pred, eps, 1 - eps)
+	grad = (y_pred - y_true) / (y_pred * (1 - y_pred))  # First derivative
+	hess = (y_true - 2 * y_true * y_pred + y_pred**2) / (y_pred**2 * (1 - y_pred)**2)  # Second derivative
+	return grad, hess
+
+
 
 model = xg.XGBRegressor(n_estimators = 4800,
 						max_depth = 11,
@@ -147,7 +156,8 @@ model = xg.XGBRegressor(n_estimators = 4800,
 model.fit(X_train, y_train, verbose = True,
 		  eval_set = [(X_train, y_train),
 					  # (X_val, y_val),
-					  (X_test, y_test)],)
+					  (X_test, y_test)],
+		  )
 
 
 predictions = model.predict(X_test)
@@ -193,24 +203,12 @@ plt.plot(history['validation_0']['rmse'], label='Training loss')
 plt.plot(history['validation_1']['rmse'], label='Validation loss')
 plt.title('Loss plots')
 plt.ylabel('RMSE / b')
+plt.yscale('log')
 plt.xlabel('N. Trees')
 plt.grid()
 plt.legend()
 plt.show()
 
 
-# def error_plotter(libraryXS, predictedXS, energyGrid):
-# 	percentageError = []
-# 	for p, xs in zip(predictedXS, libraryXS):
-# 		percentageError.append((p/xs * 100) - 100)
-#
-# 	plt.figure()
-# 	plt.plot(energyGrid, percentageError, label = 'Error')
-# 	plt.xlabel('Energy / eV')
-# 	plt.ylabel('% Error')
-# 	plt.xscale('log')
-# 	plt.grid()
-# 	plt.show()
 
-# error_plotter(y_test, predictions, test_energies)
 bounds(minerg, maxerg)
