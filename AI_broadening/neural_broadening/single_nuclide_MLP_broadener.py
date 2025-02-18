@@ -42,7 +42,7 @@ X_train, y_train, ERG_train, XS_train, X_val, y_val, ERG_val, XS_val, X_test, y_
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=10,
+										 patience=5,
 										 mode='min',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
