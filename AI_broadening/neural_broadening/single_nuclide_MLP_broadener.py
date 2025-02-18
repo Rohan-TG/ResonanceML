@@ -11,7 +11,7 @@ minerg = 800
 maxerg = 1500
 
 
-all_temperatures = np.arange(0, 1801, 1) # all temperatures in the data file
+all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
 
 
 df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
