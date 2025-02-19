@@ -14,7 +14,7 @@ maxerg = 1500
 all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
 
 
-df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
+df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
@@ -27,7 +27,7 @@ nuclide = [26,56]
 
 
 
-df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
+df0 = pd.read_csv('../AI_data/Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
 unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['ERG'].values
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
 
@@ -49,16 +49,16 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-# model.add(keras.layers.Dense(200))
 # model.add(keras.layers.LeakyReLU(alpha=0.05))
-# model.add(keras.layers.Dense(200))
-# model.add(keras.layers.LeakyReLU(alpha=0.05))
-# model.add(keras.layers.Dense(200))
-# model.add(keras.layers.LeakyReLU(alpha=0.05))
-# model.add(keras.layers.Dense(200))
-# model.add(keras.layers.LeakyReLU(alpha=0.05))
-# model.add(keras.layers.Dense(1000, activation='relu'))
+model.add(keras.layers.Dense(400, activation='relu'))
+model.add(keras.layers.Dense(400, activation='relu'))
+model.add(keras.layers.Dense(400, activation='relu'))
+model.add(keras.layers.Dense(400, activation='relu'))
+model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
 # model.add(keras.layers.Dense(300, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu', bias_regularizer=keras.regularizers.L2(0.01)))
@@ -67,7 +67,8 @@ model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
-# model.add(keras.layers.Dense(100, activation='relu'))
+model.add(keras.layers.Dense(50, activation='relu'))
+model.add(keras.layers.Dense(20, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
 # model.add(keras.layers.Dense(300, activation='relu'))
@@ -77,8 +78,8 @@ model.compile(loss='mean_absolute_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=30,
-					batch_size=64,
+					epochs=50,
+					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_train, y_train),
 					verbose=1)
