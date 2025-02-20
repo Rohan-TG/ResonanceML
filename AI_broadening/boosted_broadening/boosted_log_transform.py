@@ -92,8 +92,8 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
 
 
-df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
-df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
+df0 = pd.read_csv('../AI_data/Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
+df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 print('Data loaded')
 
 
