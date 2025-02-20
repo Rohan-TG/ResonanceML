@@ -32,6 +32,7 @@ maxerg = 1600 # in eV
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
 all_temperatures = np.arange(200, 1801, 1)
+all_temperatures = all_temperatures[all_temperatures != 1250]
 def optimiser(space):
 	test_temperatures = [1500]
 	validation_temperatures = []
