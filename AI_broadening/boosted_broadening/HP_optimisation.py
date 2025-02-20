@@ -8,7 +8,7 @@ from sklearn.metrics import mean_squared_error
 import hyperopt.early_stop
 from hyperopt import  hp, fmin, tpe, STATUS_OK, Trials
 
-df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
+df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 
 
 
@@ -93,7 +93,7 @@ best = fmin(fn=optimiser,
 			algo=tpe.suggest,
 			trials=trials,
 			max_evals=500,
-			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
+			early_stop_fn=hyperopt.early_stop.no_progress_loss(100))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
 
