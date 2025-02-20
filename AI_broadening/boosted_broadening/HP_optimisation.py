@@ -25,8 +25,8 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 
 
 nuclide = [26, 56]
-minerg = 900 # in eV
-maxerg = 20000 # in eV
+minerg = 800 # in eV
+maxerg = 1600 # in eV
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
