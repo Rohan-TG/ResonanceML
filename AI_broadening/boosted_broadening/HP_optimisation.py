@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error
 import hyperopt.early_stop
 from hyperopt import  hp, fmin, tpe, STATUS_OK, Trials
+import pickle
 
 df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 
@@ -98,3 +99,6 @@ best = fmin(fn=optimiser,
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
 
 print(best_model)
+
+with open("best_xgboost_model.pkl", "wb") as f:
+	pickle.dump(best_model, f)
