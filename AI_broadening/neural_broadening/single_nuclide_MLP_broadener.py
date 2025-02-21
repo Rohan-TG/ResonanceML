@@ -10,6 +10,7 @@ import pandas as pd
 minerg = 800
 maxerg = 1500
 
+print('Modules loaded, training started')
 
 all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
 
