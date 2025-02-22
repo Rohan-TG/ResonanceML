@@ -30,7 +30,7 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 		 'max_leaves': 0,
 		 'max_depth': hp.choice('max_depth', depthguess),
 		 'reg_lambda': hp.uniform('reg_lambda', 0, 100),
-		 'gamma': hp.loguniform('gamma', 0, 100),
+		 'gamma': hp.loguniform('gamma', 0, 40),
 		 'learning_rate': hp.loguniform('learning_rate', np.log(1e-4), np.log(1))}
 
 
