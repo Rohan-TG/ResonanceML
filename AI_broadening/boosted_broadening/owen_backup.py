@@ -1,14 +1,12 @@
 import random
-
 import xgboost as xg
 import pandas as pd
 import matplotlib.pyplot as plt
 import periodictable
 import numpy as np
-from sklearn import preprocessing
-from sklearn.pipeline import make_pipeline
-from sklearn.metrics import mean_squared_error
-from funcs import single_nuclide_data_maker
+import tqdm
+
+
 
 def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	unheated_energies_limited = []
@@ -21,7 +19,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	test_energies_limited = []
 	predictions_limited = []
 	test_XS_limited = []
-	for o, p, qx in zip(test_energies, predictions, y_test):
+	for o, p, qx in zip(rescaled_test_energies, rescaled_predictions, rescaled_test_XS):
 		if o <= upper_bound and o >= lower_bound:
 			test_energies_limited.append(o)
 			predictions_limited.append(p)
@@ -36,15 +34,17 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.plot(test_energies_limited, test_XS_limited, '--', label=f'{test_temperatures[0]} K JEFF-3.3', color='lightgreen',
 			 alpha=0.7)
 	plt.legend()
+	plt.xscale('log')
+	plt.yscale('log')
 	plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-	if scaley == 'log':
-		plt.yscale('log')
-	else:
-		plt.yscale('linear')
-	if scalex ==' log':
-		plt.xscale('log')
-	else:
-		plt.xscale('linear')
+	# if scaley == 'log':
+	# 	plt.yscale('log')
+	# else:
+	# 	plt.yscale('linear')
+	# if scalex ==' log':
+	# 	plt.xscale('log')
+	# else:
+	# 	plt.xscale('linear')
 	plt.show()
 
 
@@ -80,21 +80,30 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.grid()
 	plt.show()
 
+	countoverthreshold = 0
+	for XX in percentageError:
+		if XX >= 0.1:
+			countoverthreshold += 1
 
-df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
-df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
+	percentageOverThreshold = (countoverthreshold / (len(percentageError))) * 100
+
+	print(f'Max error: {np.max(abs(np.array(percentageError)))}')
+	print(f'Mean error: {np.mean(abs(np.array(percentageError)))}')
+	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
 
 
+df0 = pd.read_csv('../AI_data/Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
+df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 print('Data loaded')
 
-# minerg = 12350 # in eV
-# maxerg = 12550 # in eV
 
-# minerg = 20000
-# maxerg = 35000
 
-minerg = 20050
-maxerg = 20250
+# minerg = 700 # in eV
+# maxerg = 1200 # in eV
+
+minerg = 800 # in eV
+maxerg = 1500 # in eV
+
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
@@ -108,43 +117,51 @@ while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 	if choice not in validation_temperatures and choice not in test_temperatures:
 		validation_temperatures.append(choice)
 
+training_temperatures = []
+for T in all_temperatures:
+	if T not in test_temperatures and T not in validation_temperatures:
+		training_temperatures.append(T)
 nuclide = [26,56]
 
-X_train, y_train, X_val, y_val, X_test, y_test = single_nuclide_data_maker(
-	df=df,
-	val_temperatures=validation_temperatures,
-	test_temperatures=test_temperatures,
-	minERG=minerg,
-	maxERG=maxerg,
-	use_tqdm=True,
-)
 
 
-model = xg.XGBRegressor(
-	# n_estimators = 1900,
-	n_estimators = 5000,
-	max_depth = 7,
-	# learning_rate = 0.607457,
-	learning_rate = 0.4,
-	# reg_lambda = 40,
-	# subsample = 0.53,
-	n_jobs = 6,
-	objective="reg:squarederror",
-	)
+test_dataframe = df[df['T'].isin(test_temperatures)]
+training_dataframe = df[df['T'].isin(training_temperatures)]
+X_train = np.array([np.log(training_dataframe['ERG'].values), training_dataframe['T'].values])
+X_train = np.transpose(X_train)
+y_train = np.array(np.log(training_dataframe['XS'].values))
 
-model = make_pipeline(preprocessing.StandardScaler(), model)
+X_test = np.array([np.log(test_dataframe['ERG'].values), test_dataframe['T'].values])
+X_test = np.transpose(X_test)
+y_test = np.array(np.log(test_dataframe['XS'].values))
+
+def log_loss_obj(y_pred, dtrain):
+	y_true = dtrain.get_label()
+	eps = 1e-15  # Prevent log(0)
+	y_pred = np.clip(y_pred, eps, 1 - eps)
+	grad = (y_pred - y_true) / (y_pred * (1 - y_pred))  # First derivative
+	hess = (y_true - 2 * y_true * y_pred + y_pred**2) / (y_pred**2 * (1 - y_pred)**2)  # Second derivative
+	return grad, hess
 
 
-# model.fit(X_train, y_train, verbose = True,
-# 		  eval_set = [(X_train, y_train),
-# 					  # (X_val, y_val),
-# 					  (X_test, y_test)],)
 
-model.fit(X_train, y_train)
+model = xg.XGBRegressor(n_estimators = 4800,
+						max_depth = 11,
+						learning_rate = 0.4,
+						reg_lambda = 30,
+						subsample = 0.55
+						)
+
+
+model.fit(X_train, y_train, verbose = True,
+		  eval_set = [(X_train, y_train),
+					  # (X_val, y_val),
+					  (X_test, y_test)],
+		  )
 
 
 predictions = model.predict(X_test)
-# history = model.evals_result()
+history = model.evals_result()
 
 
 test_energies = X_test.transpose()[0]
@@ -154,14 +171,18 @@ unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg)) & (df0['ERG'] 
 unheated_energies = [e for e in unheated_energies]
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg)) & (df0['ERG'] < (maxerg))]['XS'].values
 
+rescaled_test_energies = [np.e ** E for E in test_energies]
+rescaled_test_XS = [np.e ** XS for XS in y_test]
+
+rescaled_predictions = [np.e ** p for p in predictions]
 
 plt.figure()
-plt.plot(unheated_energies, unheated_XS, label = '0 K JEFF-3.3')
+plt.plot(np.array(unheated_energies), np.array(unheated_XS), label = '0 K JEFF-3.3')
 plt.grid()
-plt.plot(test_energies, predictions, label = 'Predictions', color = 'red')
+plt.plot(np.array(rescaled_test_energies), np.array(rescaled_predictions), label = 'Predictions', color = 'red')
 plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
-plt.plot(test_energies, y_test, '--', label = f'{test_temperatures[0]} K JEFF-3.3', color = 'lightgreen')
+plt.plot(np.array(rescaled_test_energies), np.array(rescaled_test_XS), '--', label = f'{test_temperatures[0]} K JEFF-3.3', color = 'lightgreen')
 plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
@@ -172,36 +193,22 @@ plt.show()
 
 
 
-# model.get_booster().feature_names = ['ERG', 'T']
-# plt.figure(figsize=(10, 12))
-# xg.plot_importance(model, ax=plt.gca(), importance_type='total_gain', max_num_features=60)  # metric is total gain
-# plt.show()
+model.get_booster().feature_names = ['ERG', 'T']
+plt.figure(figsize=(10, 12))
+xg.plot_importance(model, ax=plt.gca(), importance_type='total_gain', max_num_features=60)  # metric is total gain
+plt.show()
 
-# plt.figure()
-# plt.plot(history['validation_0']['rmse'], label='Training loss')
-# plt.plot(history['validation_1']['rmse'], label='Validation loss')
-# plt.title('Loss plots')
-# plt.ylabel('RMSE / b')
-# plt.xlabel('N. Trees')
-# plt.grid()
-# plt.legend()
-# plt.show()
+plt.figure()
+plt.plot(history['validation_0']['rmse'], label='Training loss')
+plt.plot(history['validation_1']['rmse'], label='Validation loss')
+plt.title('Loss plots')
+plt.ylabel('RMSE / b')
+plt.yscale('log')
+plt.xlabel('N. Trees')
+plt.grid()
+plt.legend()
+plt.show()
 
 
-# def error_plotter(libraryXS, predictedXS, energyGrid):
-# 	percentageError = []
-# 	for p, xs in zip(predictedXS, libraryXS):
-# 		percentageError.append((p/xs * 100) - 100)
-#
-# 	plt.figure()
-# 	plt.plot(energyGrid, percentageError, label = 'Error')
-# 	plt.xlabel('Energy / eV')
-# 	plt.ylabel('% Error')
-# 	plt.xscale('log')
-# 	plt.grid()
-# 	plt.show()
 
-# error_plotter(y_test, predictions, test_energies)
 bounds(minerg, maxerg)
-
-print(mean_squared_error(predictions, y_test) ** 0.5)
