@@ -166,7 +166,6 @@ model.fit(X_train, y_train, verbose = True,
 		  eval_set = [(X_train, y_train),
 					  # (X_val, y_val),
 					  (X_test, y_test)],
-		  early_stopping_rounds=2
 		  )
 
 
