@@ -1,10 +1,10 @@
 # Bayesian HP optimisation script
-# import os
-# os.environ["OMP_NUM_THREADS"] = "25"
-# os.environ["MKL_NUM_THREADS"] = "25"
-# os.environ["OPENBLAS_NUM_THREADS"] = "25"
-# os.environ["TF_NUM_INTEROP_THREADS"] = "25"
-# os.environ["TF_NUM_INTRAOP_THREADS"] = "25"
+import os
+os.environ["OMP_NUM_THREADS"] = "20"
+os.environ["MKL_NUM_THREADS"] = "20"
+os.environ["OPENBLAS_NUM_THREADS"] = "20"
+os.environ["TF_NUM_INTEROP_THREADS"] = "20"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "20"
 
 
 import random
@@ -76,9 +76,10 @@ def optimiser(space):
 	model = xg.XGBRegressor(**space, seed=42)
 
 	model.fit(X_train, y_train, verbose=True,
-			  eval_set=[(X_train, y_train),
+			  eval_set=[#(X_train, y_train),
 						# (X_val, y_val),
-						(X_test, y_test)], )
+						(X_test, y_test)],
+			  early_stopping_rounds= 20)
 
 	predictions = model.predict(X_test)
 
