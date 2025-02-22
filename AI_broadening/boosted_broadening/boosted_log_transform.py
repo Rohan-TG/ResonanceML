@@ -154,7 +154,7 @@ def log_loss_obj(y_pred, dtrain):
 
 
 
-model = xg.XGBRegressor(n_estimators = 9450,
+model = xg.XGBRegressor(n_estimators = 10450,
 						max_depth = 16,
 						learning_rate = 0.0025919607000481934,
 						reg_lambda = 2.415057075497998,
