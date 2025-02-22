@@ -1,3 +1,10 @@
+import os
+os.environ["OMP_NUM_THREADS"] = "20"
+os.environ["MKL_NUM_THREADS"] = "20"
+os.environ["OPENBLAS_NUM_THREADS"] = "20"
+os.environ["TF_NUM_INTEROP_THREADS"] = "20"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "20"
+
 import tensorflow as tf
 import keras
 import scipy
