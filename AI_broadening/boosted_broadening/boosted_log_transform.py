@@ -1,3 +1,12 @@
+import os
+
+os.environ["OMP_NUM_THREADS"] = "16"
+os.environ["MKL_NUM_THREADS"] = "16"
+os.environ["OPENBLAS_NUM_THREADS"] = "16"
+os.environ["TF_NUM_INTEROP_THREADS"] = "16"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "16"
+
+
 import random
 import xgboost as xg
 import pandas as pd
@@ -150,7 +159,6 @@ model = xg.XGBRegressor(n_estimators = 9450,
 						learning_rate = 0.0025919607000481934,
 						reg_lambda = 2.415057075497998,
 						subsample = 0.13021504261911765,
-						njobs = 16
 						)
 
 
