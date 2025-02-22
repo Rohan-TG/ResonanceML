@@ -111,5 +111,5 @@ best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['mod
 
 print(best_model)
 
-with open("best_xgboost_model.pkl", "wb") as f:
+with open("best_xgboost_model_500to26k.pkl", "wb") as f:
 	pickle.dump(best_model, f)
