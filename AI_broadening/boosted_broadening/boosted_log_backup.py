@@ -1,3 +1,12 @@
+import os
+
+os.environ["OMP_NUM_THREADS"] = "25"
+os.environ["MKL_NUM_THREADS"] = "25"
+os.environ["OPENBLAS_NUM_THREADS"] = "25"
+os.environ["TF_NUM_INTEROP_THREADS"] = "25"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "25"
+
+
 import random
 import xgboost as xg
 import pandas as pd
@@ -101,8 +110,8 @@ print('Data loaded')
 # minerg = 700 # in eV
 # maxerg = 1200 # in eV
 
-minerg = 800 # in eV
-maxerg = 1600 # in eV
+minerg = 500 # in eV
+maxerg = 26000 # in eV
 
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
@@ -145,11 +154,12 @@ def log_loss_obj(y_pred, dtrain):
 
 
 
-model = xg.XGBRegressor(n_estimators = 9450,
-						max_depth = 16,
-						learning_rate = 0.0025919607000481934,
-						reg_lambda = 2.415057075497998,
-						subsample = 0.13021504261911765
+model = xg.XGBRegressor(n_estimators = 1600,
+						max_depth = 17,
+						learning_rate = 0.05128322382363613,
+						reg_lambda = 84.07497350691929,
+						subsample = 0.6304597885300248,
+						gamma = 1.0431408834651936,
 						)
 
 
