@@ -80,6 +80,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
+	plt.savefig('percentageerror.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -87,6 +88,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.ylabel('Frequency')
 	plt.xlabel('% Error')
 	plt.grid()
+	plt.savefig('errorhistogram.png')
 	plt.show()
 
 	countoverthreshold = 0
@@ -197,6 +199,7 @@ plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
 plt.xscale('log')
+plt.savefig('testplot.png', dpi=300)
 plt.show()
 
 
