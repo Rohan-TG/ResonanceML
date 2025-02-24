@@ -91,9 +91,9 @@ model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initia
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(200, activation='relu'))
-# model.add(keras.layers.Dense(200, activation='relu'))
-# model.add(keras.layers.Dense(200, activation='relu'))
-# model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(200, activation='relu'))
 model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
 # model.add(keras.layers.Dense(300, activation='relu'))
@@ -114,7 +114,7 @@ model.compile(loss='mean_absolute_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=50,
+					epochs=100,
 					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_train, y_train),
