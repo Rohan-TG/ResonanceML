@@ -1,3 +1,12 @@
+import os
+
+# Set environment variables to limit TensorFlow to 30 CPU cores
+os.environ["OMP_NUM_THREADS"] = "30"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "30"
+os.environ["TF_NUM_INTEROP_THREADS"] = "2"  # Adjust inter-op parallelism if needed
+
+
+
 import scipy.stats
 import tensorflow as tf
 import keras
