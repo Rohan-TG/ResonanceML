@@ -7,11 +7,14 @@ from neural_broadening_functions import log_single_nuclide_data_maker
 import pandas as pd
 import random
 import periodictable
+import datetime
 
 minerg = 800
 maxerg = 1500
 
 
+def get_datetime_string():
+    return datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
 
 
@@ -237,7 +240,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 
-
+timestring = get_datetime_string()
 
 
 plt.figure()
@@ -250,7 +253,7 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
-plt.savefig('mlpplot.png', dpi = 300)
+plt.savefig(f'mlpplot-{timestring}.png', dpi = 300)
 plt.show()
 
 plt.figure()
