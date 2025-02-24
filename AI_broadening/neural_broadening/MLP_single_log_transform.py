@@ -250,6 +250,7 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
+plt.savefig('mlpplot.png', dpi = 300)
 plt.show()
 
 plt.figure()
