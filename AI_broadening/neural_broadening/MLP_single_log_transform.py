@@ -4,11 +4,23 @@ import os
 os.environ["OMP_NUM_THREADS"] = "30"
 os.environ["TF_NUM_INTRAOP_THREADS"] = "30"
 os.environ["TF_NUM_INTEROP_THREADS"] = "2"  # Adjust inter-op parallelism if needed
+os.environ["OPENBLAS_NUM_THREADS"] = "30"
+os.environ["MKL_NUM_THREADS"] = "30"
 
-
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "1"
+import tensorflow as tf
 
 import scipy.stats
-import tensorflow as tf
+
+
+
+tf.config.set_visible_devices([], "GPU")
+tf.config.threading.set_intra_op_parallelism_threads(30)
+tf.config.threading.set_inter_op_parallelism_threads(2)
+# Explicitly configure CPU parallelism
+
+
+
 import keras
 import matplotlib.pyplot as plt
 import numpy as np
