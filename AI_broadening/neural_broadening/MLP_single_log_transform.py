@@ -20,13 +20,6 @@ import random
 import periodictable
 import datetime
 
-jobs = 20 # number of cores
-config = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=jobs,
-                     inter_op_parallelism_threads=jobs,
-                     allow_soft_placement=True,
-                     device_count={'CPU': jobs})
-session = tf.compat.v1.Session(config=config)
-keras.backend.set_session(session)
 
 
 
