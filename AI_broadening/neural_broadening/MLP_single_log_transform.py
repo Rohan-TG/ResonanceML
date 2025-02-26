@@ -25,7 +25,7 @@ config = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=jobs,
                      inter_op_parallelism_threads=jobs,
                      allow_soft_placement=True,
                      device_count={'CPU': jobs})
-session = tf.Session(config=config)
+session = tf.compat.v1.Session(config=config)
 keras.backend.set_session(session)
 
 
