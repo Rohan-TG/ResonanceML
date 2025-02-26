@@ -1,27 +1,16 @@
-import os
-
-# Set environment variables to limit TensorFlow to 30 CPU cores
-os.environ["OMP_NUM_THREADS"] = "30"
-os.environ["TF_NUM_INTRAOP_THREADS"] = "30"
-os.environ["TF_NUM_INTEROP_THREADS"] = "2"  # Adjust inter-op parallelism if needed
-os.environ["OPENBLAS_NUM_THREADS"] = "30"
-os.environ["MKL_NUM_THREADS"] = "30"
-
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "1"
+# import os
+#
+# # Set environment variables to limit TensorFlow to 30 CPU cores
+# os.environ["OMP_NUM_THREADS"] = "30"
+# os.environ["TF_NUM_INTRAOP_THREADS"] = "30"
+# os.environ["TF_NUM_INTEROP_THREADS"] = "2"  # Adjust inter-op parallelism if needed
+# os.environ["OPENBLAS_NUM_THREADS"] = "30"
+# os.environ["MKL_NUM_THREADS"] = "30"
+#
+# os.environ["TF_ENABLE_ONEDNN_OPTS"] = "1"
 import tensorflow as tf
-
 import scipy.stats
 from sklearn.metrics import mean_absolute_error
-
-
-
-tf.config.set_visible_devices([], "GPU")
-tf.config.threading.set_intra_op_parallelism_threads(30)
-tf.config.threading.set_inter_op_parallelism_threads(2)
-# Explicitly configure CPU parallelism
-
-
-
 import keras
 import matplotlib.pyplot as plt
 import numpy as np
@@ -30,6 +19,17 @@ import pandas as pd
 import random
 import periodictable
 import datetime
+
+jobs = 20 # number of cores
+config = tf.ConfigProto(intra_op_parallelism_threads=jobs,
+                     inter_op_parallelism_threads=jobs,
+                     allow_soft_placement=True,
+                     device_count={'CPU': jobs})
+session = tf.Session(config=config)
+keras.backend.set_session(session)
+
+
+
 
 minerg = 800
 maxerg = 1500
