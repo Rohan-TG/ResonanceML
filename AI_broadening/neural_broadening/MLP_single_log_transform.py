@@ -25,11 +25,11 @@ import datetime
 
 
 minerg = 800
-maxerg = 1500
+maxerg = 2500
 
 
 def get_datetime_string():
-    return datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
 
 
@@ -43,7 +43,7 @@ df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
 # df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
 
-test_temperatures = [1400]
+test_temperatures = [1700]
 nuclide = [26,56]
 
 
