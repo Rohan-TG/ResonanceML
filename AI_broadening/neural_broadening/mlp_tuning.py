@@ -23,7 +23,7 @@ import scipy
 
 
 space = {'batch_size': hp.choice('batch_size', [16, 32, 64, 128]),
-    'num_layers': hp.quniform('num_layers', 1, 5, 1),  # Integer from 1 to 5
+    'num_layers': hp.quniform('num_layers', 1, 15, 1),  # Integer from 1 to 15
     'neurons_per_layer': hp.quniform('neurons_per_layer', 16, 512, 16),  # Steps of 16
 }
 
@@ -77,7 +77,7 @@ def build_model(params):
 	logged_T_test = np.log(test_dataframe['T'].values)
 	ERG_test = test_dataframe['ERG'].values
 	logged_ERG_test = np.log(ERG_test)
-	X_test = np.array([scipy.stats.zscore(logged_ERG_test), scipy.stats.zscore(logged_ERG_test)])
+	X_test = np.array([scipy.stats.zscore(logged_ERG_test), logged_T_test])
 	X_test = np.transpose(X_test)
 	logged_y_test = np.log(np.array(test_dataframe['XS'].values))
 	y_test = scipy.stats.zscore(logged_y_test)
