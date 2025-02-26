@@ -136,7 +136,7 @@ best = fmin(fn=build_model,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=300,
+			max_evals=30,
 			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
 
 trials = Trials()
