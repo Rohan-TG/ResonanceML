@@ -1,9 +1,9 @@
-import os
-os.environ["OMP_NUM_THREADS"] = "20"
-os.environ["MKL_NUM_THREADS"] = "20"
-os.environ["OPENBLAS_NUM_THREADS"] = "20"
-os.environ["TF_NUM_INTEROP_THREADS"] = "20"
-os.environ["TF_NUM_INTRAOP_THREADS"] = "20"
+# import os
+# os.environ["OMP_NUM_THREADS"] = "20"
+# os.environ["MKL_NUM_THREADS"] = "20"
+# os.environ["OPENBLAS_NUM_THREADS"] = "20"
+# os.environ["TF_NUM_INTEROP_THREADS"] = "20"
+# os.environ["TF_NUM_INTRAOP_THREADS"] = "20"
 
 import hyperopt.early_stop
 from hyperopt import hp, fmin, tpe, STATUS_OK, Trials
@@ -41,7 +41,11 @@ df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
 test_temperatures = [1400]
-validation_temperatures = []
+# while len(test_temperatures) < int(len(all_temperatures) * 0.1):
+# 	testchoice = random.choice(all_temperatures)
+# 	if testchoice not in test_temperatures:
+# 		test_temperatures.append(testchoice)
+
 nuclide = [26,56]
 
 
@@ -62,8 +66,8 @@ def build_model(params):
 			training_temperatures.append(T)
 
 	df0 = pd.read_csv('../AI_data/Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
-	unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['ERG'].values
-	unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
+	# unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['ERG'].values
+	# unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
 
 	test_dataframe = df[df['T'].isin(test_temperatures)]
 	training_dataframe = df[df['T'].isin(training_temperatures)]
@@ -102,8 +106,8 @@ def build_model(params):
 
 	history = model.fit(X_train,
 						y_train,
-						epochs=100,
-						batch_size=32,
+						epochs=200,
+						batch_size=batch_size,
 						callbacks=callback,
 						validation_data=(X_train, y_train),
 						verbose=1)
@@ -116,7 +120,7 @@ def build_model(params):
 		scaled_energies.append(pair[0])
 
 	rescaled_energies = np.array(scaled_energies) * np.std(logged_ERG_test) + np.mean(logged_ERG_test)
-	rescaled_energies = np.e ** rescaled_energies
+	# rescaled_energies = np.e ** rescaled_energies
 
 	rescaled_predictions = np.array(predictions) * np.std(logged_y_test) + np.mean(logged_y_test)
 	rescaled_predictions = np.e ** rescaled_predictions
@@ -135,34 +139,14 @@ best = fmin(fn=build_model,
 			max_evals=300,
 			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 trials = Trials()
-best_params = fmin(
-    fn=build_model,  # Function to minimize
-    space=space,  # Hyperparameter search space
-    algo=tpe.suggest,  # Tree of Parzen Estimators algorithm
-    max_evals=20,  # Number of evaluations
-    trials=trials
-)
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
 
 print(best_model)
 
 def get_datetime_string():
-	return datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
 timestring = get_datetime_string()
 
