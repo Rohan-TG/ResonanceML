@@ -13,6 +13,7 @@ import keras
 import numpy as np
 import pandas as pd
 import random
+import datetime
 import scipy
 
 
@@ -97,3 +98,73 @@ def build_model(params):
 		model.add(keras.layers.Dense(neurons, activation='relu'))
 
 	model.add(keras.layers.Dense(1, activation= 'linear'))
+	model.compile(loss='mean_absolute_error', optimizer='adam')
+
+	history = model.fit(X_train,
+						y_train,
+						epochs=100,
+						batch_size=32,
+						callbacks=callback,
+						validation_data=(X_train, y_train),
+						verbose=1)
+
+	predictions = model.predict(X_test)
+	predictions = predictions.ravel()
+
+	scaled_energies = []
+	for pair in X_test:
+		scaled_energies.append(pair[0])
+
+	rescaled_energies = np.array(scaled_energies) * np.std(logged_ERG_test) + np.mean(logged_ERG_test)
+	rescaled_energies = np.e ** rescaled_energies
+
+	rescaled_predictions = np.array(predictions) * np.std(logged_y_test) + np.mean(logged_y_test)
+	rescaled_predictions = np.e ** rescaled_predictions
+
+	rescaled_test_xs = np.array(y_test)
+
+	MAE = mean_absolute_error(rescaled_predictions, rescaled_test_xs)
+	return {'loss': MAE, 'status': STATUS_OK, 'model': model}
+
+
+trials = Trials()
+best = fmin(fn=build_model,
+			space=space,
+			algo=tpe.suggest,
+			trials=trials,
+			max_evals=300,
+			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+trials = Trials()
+best_params = fmin(
+    fn=build_model,  # Function to minimize
+    space=space,  # Hyperparameter search space
+    algo=tpe.suggest,  # Tree of Parzen Estimators algorithm
+    max_evals=20,  # Number of evaluations
+    trials=trials
+)
+
+best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
+
+print(best_model)
+
+def get_datetime_string():
+	return datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+
+timestring = get_datetime_string()
+
+with open("best_mlp_model_.pkl", "wb") as f:
+	pickle.dump(best_model, f)
