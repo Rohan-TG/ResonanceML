@@ -11,6 +11,7 @@ os.environ["TF_ENABLE_ONEDNN_OPTS"] = "1"
 import tensorflow as tf
 
 import scipy.stats
+from sklearn.metrics import mean_absolute_error
 
 
 
@@ -70,11 +71,16 @@ for T in all_temperatures:
 	if T not in test_temperatures and T not in validation_temperatures:
 		training_temperatures.append(T)
 
+
+mean_alltemps = np.mean(all_temperatures)
+std_alltemps = np.std(all_temperatures)
+
 test_dataframe = df[df['T'].isin(test_temperatures)]
 training_dataframe = df[df['T'].isin(training_temperatures)]
 logged_T_train = np.log(training_dataframe['T'].values)
+scaled_T_train = [(x - mean_alltemps) / std_alltemps for x in logged_T_train]
 logged_ERG_train = np.log(training_dataframe['ERG'].values)
-X_train = np.array([scipy.stats.zscore(logged_ERG_train), scipy.stats.zscore(logged_T_train)])
+X_train = np.array([scipy.stats.zscore(logged_ERG_train), scaled_T_train])
 X_train = np.transpose(X_train)
 y_train_logged = np.array(np.log(training_dataframe['XS'].values))
 y_train = scipy.stats.zscore(y_train_logged)
@@ -83,9 +89,11 @@ y_train = scipy.stats.zscore(y_train_logged)
 
 
 logged_T_test = np.log(test_dataframe['T'].values)
+scaled_T_test = [(x - mean_alltemps) / std_alltemps for x in logged_T_test]
+
 ERG_test = test_dataframe['ERG'].values
 logged_ERG_test = np.log(ERG_test)
-X_test = np.array([scipy.stats.zscore(logged_ERG_test), scipy.stats.zscore(logged_T_test)])
+X_test = np.array([scipy.stats.zscore(logged_ERG_test), scaled_T_test])
 X_test = np.transpose(X_test)
 logged_y_test = np.log(np.array(test_dataframe['XS'].values))
 y_test = scipy.stats.zscore(logged_y_test)
@@ -259,14 +267,14 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 
-
+test_xs = test_dataframe['XS'].values
 
 timestring = get_datetime_string()
 
 
 plt.figure()
 plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
-plt.plot(ERG_test, test_dataframe['XS'].values, '--', label = 'JEFF-3.3 1,800 K')
+plt.plot(ERG_test, test_xs, '--', label = 'JEFF-3.3 1,800 K')
 plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
 plt.legend()
 plt.grid()
@@ -286,3 +294,5 @@ plt.ylabel('Loss')
 plt.legend()
 plt.grid()
 plt.show()
+
+MAE = mean_absolute_error(rescaled_predictions, test_xs)
