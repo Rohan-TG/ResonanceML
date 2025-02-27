@@ -150,5 +150,5 @@ def get_datetime_string():
 
 timestring = get_datetime_string()
 
-with open(f"best_mlp_model_{timestring}.pkl", "wb") as f:
+with open(f"best_mlp_model_{timestring}_2resonances.pkl", "wb") as f:
 	pickle.dump(best_model, f)
