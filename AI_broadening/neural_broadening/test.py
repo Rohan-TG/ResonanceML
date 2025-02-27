@@ -5,7 +5,7 @@ import dask.dataframe
 
 # df = pd.read_hdf('../AI_data/capture_xs_data_39.h5')
 
-df = dask.dataframe.read_hdf('../h5data/dT_0.1K_200K_3500K', key='xs_data')
+df = dask.dataframe.read_hdf('../h5data/dT_0.1K_200K_3500K/capture_xs_data_23.h5', key='xs_data')
 
 print(df)
 
