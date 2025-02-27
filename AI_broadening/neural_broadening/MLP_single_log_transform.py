@@ -275,7 +275,7 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
-plt.savefig(f'mlpplot-{timestring}_fix.png', dpi = 300)
+plt.savefig(f'mlpplot-{timestring}_fix_largeenergy.png', dpi = 300)
 plt.show()
 
 plt.figure()
