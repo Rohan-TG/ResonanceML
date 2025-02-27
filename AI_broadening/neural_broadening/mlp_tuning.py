@@ -32,7 +32,7 @@ space = {'batch_size': hp.choice('batch_size', [16, 32, 64, 128]),
 
 
 minerg = 800
-maxerg = 1500
+maxerg = 2500
 
 print('Modules loaded, training started')
 
