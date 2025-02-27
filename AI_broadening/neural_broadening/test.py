@@ -5,12 +5,12 @@ import dask.dataframe
 
 # df = pd.read_hdf('../AI_data/capture_xs_data_39.h5')
 
-df = dask.dataframe.read_hdf('../AI_data/capture_xs_data_39.h5', key='xs_data')
+df = dask.dataframe.read_hdf('../h5data/dT_0.1K_200K_3500K', key='xs_data')
 
 print(df)
 
-with h5py.File("../AI_data/capture_xs_data_39.h5", "r") as f:
-	# dataset = f["my_data"]
-	# print("Keys in the file:", list(f.keys()))
-	# dataset = f["xs_data"][:]  # Read the entire dataset into memory
-	print(f)
+# with h5py.File("../AI_data/capture_xs_data_39.h5", "r") as f:
+# 	# dataset = f["my_data"]
+# 	# print("Keys in the file:", list(f.keys()))
+# 	# dataset = f["xs_data"][:]  # Read the entire dataset into memory
+# 	print(f)
