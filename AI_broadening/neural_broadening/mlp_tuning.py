@@ -24,7 +24,7 @@ import scipy
 
 space = {'batch_size': hp.choice('batch_size', [16, 32, 64, 128]),
     'num_layers': hp.quniform('num_layers', 1, 15, 1),  # Integer from 1 to 15
-    'neurons_per_layer': hp.quniform('neurons_per_layer', 16, 512, 16),  # Steps of 16
+    'neurons_per_layer': hp.quniform('neurons_per_layer', 16, 1024, 16),  # Steps of 16
 }
 
 
@@ -90,7 +90,7 @@ def build_model(params):
 											 # min_delta=0.005,
 											 patience=10,
 											 mode='min',
-											 start_from_epoch=5,
+											 start_from_epoch=4,
 											 restore_best_weights=True)
 
 	num_layers = int(params['num_layers'])
@@ -136,7 +136,7 @@ best = fmin(fn=build_model,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=30,
+			max_evals=300,
 			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
 
 trials = Trials()
