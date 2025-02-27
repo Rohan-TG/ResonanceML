@@ -25,7 +25,7 @@ import datetime
 
 
 minerg = 800
-maxerg = 2500
+maxerg = 20000
 
 
 def get_datetime_string():
