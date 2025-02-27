@@ -289,3 +289,4 @@ plt.grid()
 plt.show()
 
 MAE = mean_absolute_error(rescaled_predictions, test_xs)
+bounds(minerg, maxerg)
