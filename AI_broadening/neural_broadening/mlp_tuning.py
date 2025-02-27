@@ -32,7 +32,7 @@ space = {'batch_size': hp.choice('batch_size', [16, 32, 64, 128]),
 
 
 minerg = 800
-maxerg = 2500
+maxerg = 1500
 
 print('Modules loaded, training started')
 
@@ -69,7 +69,7 @@ def build_model(params):
 	# unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['ERG'].values
 	# unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
 
-	test_dataframe = df[df['T'].isin(test_temperatures)]
+	validation_dataframe = df[df['T'].isin(validation_temperatures)]
 	training_dataframe = df[df['T'].isin(training_temperatures)]
 	logged_T_train = np.log(training_dataframe['T'].values)
 	logged_ERG_train = np.log(training_dataframe['ERG'].values)
@@ -78,12 +78,12 @@ def build_model(params):
 	y_train_logged = np.array(np.log(training_dataframe['XS'].values))
 	y_train = scipy.stats.zscore(y_train_logged)
 
-	logged_T_test = np.log(test_dataframe['T'].values)
-	ERG_test = test_dataframe['ERG'].values
+	logged_T_test = np.log(validation_dataframe['T'].values)
+	ERG_test = validation_dataframe['ERG'].values
 	logged_ERG_test = np.log(ERG_test)
 	X_test = np.array([scipy.stats.zscore(logged_ERG_test), logged_T_test])
 	X_test = np.transpose(X_test)
-	logged_y_test = np.log(np.array(test_dataframe['XS'].values))
+	logged_y_test = np.log(np.array(validation_dataframe['XS'].values))
 	y_test = scipy.stats.zscore(logged_y_test)
 
 	callback = keras.callbacks.EarlyStopping(monitor='val_loss',
@@ -109,7 +109,7 @@ def build_model(params):
 						epochs=200,
 						batch_size=batch_size,
 						callbacks=callback,
-						validation_data=(X_train, y_train),
+						validation_data=(X_test, y_test),
 						verbose=1)
 
 	predictions = model.predict(X_test)
