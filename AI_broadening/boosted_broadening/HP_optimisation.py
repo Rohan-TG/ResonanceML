@@ -22,7 +22,7 @@ df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 
 
 
-ntreeguess = np.arange(100, 15000, 100)
+ntreeguess = np.arange(3000, 15000, 100)
 depthguess = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
