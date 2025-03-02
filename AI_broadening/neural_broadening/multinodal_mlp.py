@@ -18,7 +18,6 @@ all_temperatures = all_temperatures[all_temperatures != 1250]
 mean_alltemps = np.mean(all_temperatures)
 std_alltemps = np.std(all_temperatures)
 data_dir = '/Users/rntg/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv'
-# df = pd.read_csv('Fe56_200_to_1800_D1K_MT102.csv')
 
 
 test_temperatures = [1400]
