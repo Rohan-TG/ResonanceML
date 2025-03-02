@@ -15,8 +15,9 @@ maxerg = 1500
 
 all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
 all_temperatures = all_temperatures[all_temperatures != 1250]
-mean_alltemps = np.mean(all_temperatures)
-std_alltemps = np.std(all_temperatures)
+log_alltemps = np.log(all_temperatures)
+mean_alltemps = np.mean(log_alltemps)
+std_alltemps = np.std(log_alltemps)
 data_dir = '/Users/rntg/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv'
 
 
@@ -42,44 +43,7 @@ unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg
 
 
 
-# def dataMaker(temperatures):
-#
-# 	input_matrix = [] # contains the energy grid and temperatures
-# 	labels_matrix = [] # contains the cross sections
-# 	for T in tqdm.tqdm(temperatures, total = len(temperatures)):
-# 		filestring = f'Fe56_T{int(T)}K.csv'
-# 		df = pd.read_csv(f'{data_dir}/{filestring}')
-# 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
-#
-# 		unscaled_T_values = df['T'].values
-# 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
-#
-# 		unscaled_ERG = df['ERG'].values
-# 		mean_ERG = np.mean(unscaled_ERG)
-# 		std_ERG = np.std(unscaled_ERG)
-# 		scaled_ERG = [(E - mean_ERG) / std_ERG for E in unscaled_ERG]
-#
-# 		input_submatrix = np.array([scaled_ERG, scaled_T_values]) # can add or remove ERG here to make energy an input parameter
-# 		labelsubmatrix = np.array(df['XS'].values)
-#
-# 		input_matrix.append(input_submatrix)
-# 		labels_matrix.append(labelsubmatrix)
-#
-# 	X = np.array(input_matrix)
-# 	y = np.array(labels_matrix)
-#
-# 	flattened_y = y.flatten()
-# 	meanXS = np.mean(flattened_y)
-# 	stdXS = np.std(flattened_y)
-#
-# 	scaled_labels_matrix = []
-# 	for set in labels_matrix:
-# 		scaled_set = [(xs - meanXS) / stdXS for xs in set]
-# 		scaled_labels_matrix.append(scaled_set)
-#
-# 	y = np.array(scaled_labels_matrix)
-#
-# 	return(X, y)
+
 
 
 def dataMaker(temperatures):
@@ -91,16 +55,16 @@ def dataMaker(temperatures):
 		df = pd.read_csv(f'{data_dir}/{filestring}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
-		unscaled_T_values = df['T'].values
+		unscaled_T_values = np.log(df['T'].values)
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
 
-		unscaled_ERG = df['ERG'].values
+		# unscaled_ERG = df['ERG'].values
 		# mean_ERG = np.mean(unscaled_ERG)
 		# std_ERG = np.std(unscaled_ERG)
 		# scaled_ERG = [(E - mean_ERG) / std_ERG for E in unscaled_ERG]
 
 		input_submatrix = np.array(scaled_T_values) # can add or remove ERG here to make energy an input parameter
-		labelsubmatrix = np.array(df['XS'].values)
+		labelsubmatrix = np.array(np.log(df['XS'].values))
 
 		input_matrix.append(input_submatrix)
 		labels_matrix.append(labelsubmatrix)
@@ -164,13 +128,13 @@ dftest = pd.read_csv(f'{data_dir}/{teststring}')
 dftest = dftest[(dftest['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
 testxs = dftest['XS'].values
-meantestxs = np.mean(testxs)
-stdtestxs = np.std(testxs)
+meantestxs = np.mean(np.log(testxs))
+stdtestxs = np.std(np.log(testxs))
 
 rescaled_predictions = [p * stdtestxs + meantestxs for p in predictions]
 energies = dftest['ERG'].values
 
-
+rescaled_predictions = [np.e ** P for P in rescaled_predictions]
 
 
 def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
