@@ -145,14 +145,13 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 model = keras.Sequential()
 model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
 model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(100, activation='relu'))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=30,
-					batch_size=64,
+					epochs=100,
+					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_train, y_train),
 					verbose=1)
@@ -250,12 +249,12 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	print(f'Mean error: {np.mean(abs(np.array(percentageError)))}')
 	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
 
-#
-# plt.figure()
-# plt.plot(unheated_energies, unheated_XS, color = 'lightgreen', label = '0 K')
-# plt.plot(energies, testxs, '--', label = 'JEFF-3.3')
-# plt.plot(energies, rescaled_predictions, color = 'red', label = 'Predictions')
-# plt.legend()
-# plt.yscale('log')
-# plt.xscale('log')
-# plt.show()
+
+bounds(minerg, maxerg)
+
+plt.figure()
+plt.plot(history.history['loss'])
+plt.grid()
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.show()
