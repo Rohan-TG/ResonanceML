@@ -22,7 +22,7 @@ df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 
 
 
-ntreeguess = np.arange(3000, 15000, 100)
+ntreeguess = np.arange(3000, 25000, 200)
 depthguess = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
@@ -31,7 +31,7 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 		 'max_depth': hp.choice('max_depth', depthguess),
 		 'reg_lambda': hp.uniform('reg_lambda', 0, 100),
 		 'gamma': hp.loguniform('gamma', 0, 40),
-		 'learning_rate': hp.loguniform('learning_rate', np.log(1e-4), np.log(1))}
+		 'learning_rate': hp.loguniform('learning_rate', np.log(1e-5), np.log(1))}
 
 
 nuclide = [26, 56]
