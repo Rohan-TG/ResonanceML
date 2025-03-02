@@ -27,5 +27,11 @@ for temp in tqdm.tqdm(alltemperatures, total=len(alltemperatures)):
 
 matrix = np.array(matrix)
 
-for sample in matrix:
+for sample in tqdm.tqdm(matrix, total=matrix.shape[0]):
 	sampleTemperature = sample[2][0]
+	csv = pd.DataFrame({'ERG': sample[0], 'XS': sample[1], 'T': sample[2]})
+	csvfilename = f'Fe56_T{int(sampleTemperature)}K.csv'
+	hdf5filename = f'Fe56_T{int(sampleTemperature)}K.h5'
+	csv.to_csv(f'/Users/rntg/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv/{csvfilename}')
+	csv.to_hdf(f'/Users/rntg/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_hdf5/{hdf5filename}', key='data')
+
