@@ -1,4 +1,5 @@
 import pandas as pd
+import scipy.interpolate
 import tensorflow as tf
 import keras
 import matplotlib.pyplot as plt
@@ -18,19 +19,12 @@ test_temperatures = [1400]
 validation_temperatures = []
 nuclide = [26,56]
 
-df0 = pd.read_csv('Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
+df0 = pd.read_csv('../AI_data/Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
 unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['ERG'].values
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
 
-X_train, y_train, ERG_train, XS_train, X_val, y_val,\
-	ERG_val, XS_val, X_test, y_test, ERG_test,\
-	feature_means, feature_stds = log_single_nuclide_data_maker(df, val_temperatures=validation_temperatures,
-																	 test_temperatures=test_temperatures,
-																	 use_tqdm=True,
-																	 minERG=minerg,
-																	 maxERG=maxerg,)
 
-
+# interpolationFunction = scipy.interpolate.interp1d(unheated_energies, unheated_XS)
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
