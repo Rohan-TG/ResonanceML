@@ -1,10 +1,10 @@
-# import os
-#
-# os.environ["OMP_NUM_THREADS"] = "25"
-# os.environ["MKL_NUM_THREADS"] = "25"
-# os.environ["OPENBLAS_NUM_THREADS"] = "25"
-# os.environ["TF_NUM_INTEROP_THREADS"] = "25"
-# os.environ["TF_NUM_INTRAOP_THREADS"] = "25"
+import os
+
+os.environ["OMP_NUM_THREADS"] = "25"
+os.environ["MKL_NUM_THREADS"] = "25"
+os.environ["OPENBLAS_NUM_THREADS"] = "25"
+os.environ["TF_NUM_INTEROP_THREADS"] = "25"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "25"
 
 
 import random
@@ -80,7 +80,6 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
-	plt.savefig('percentageerror.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -88,7 +87,6 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.ylabel('Frequency')
 	plt.xlabel('% Error')
 	plt.grid()
-	plt.savefig('errorhistogram.png')
 	plt.show()
 
 	countoverthreshold = 0
@@ -156,12 +154,12 @@ def log_loss_obj(y_pred, dtrain):
 
 
 
-model = xg.XGBRegressor(n_estimators = 1600,
+model = xg.XGBRegressor(n_estimators = 14900,
 						max_depth = 17,
-						learning_rate = 0.05128322382363613,
-						reg_lambda = 84.07497350691929,
-						subsample = 0.6304597885300248,
-						gamma = 1.0431408834651936,
+						learning_rate = 0.019285510280325116,
+						reg_lambda = 65.93572569404694,
+						subsample = 0.37208217263358057,
+						gamma = 1.0362618958494487
 						)
 
 
@@ -199,7 +197,7 @@ plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
 plt.xscale('log')
-plt.savefig('testplot.png', dpi=300)
+plt.savefig('testplot_highrange.png', dpi=300)
 plt.show()
 
 
