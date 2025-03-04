@@ -10,12 +10,12 @@ import periodictable
 
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
-minerg = 800
-maxerg = 1500
+minerg = 1000
+maxerg = 1200
 
 all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
 all_temperatures = all_temperatures[all_temperatures != 1250]
-log_alltemps = np.log(all_temperatures)
+log_alltemps = np.log10(all_temperatures)
 mean_alltemps = np.mean(log_alltemps)
 std_alltemps = np.std(log_alltemps)
 data_dir = '/Users/rntg/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv'
@@ -55,7 +55,7 @@ def dataMaker(temperatures):
 		df = pd.read_csv(f'{data_dir}/{filestring}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
-		unscaled_T_values = np.log(df['T'].values)
+		unscaled_T_values = np.log10(df['T'].values)
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
 
 		# unscaled_ERG = df['ERG'].values
@@ -64,7 +64,7 @@ def dataMaker(temperatures):
 		# scaled_ERG = [(E - mean_ERG) / std_ERG for E in unscaled_ERG]
 
 		input_submatrix = np.array(scaled_T_values) # can add or remove ERG here to make energy an input parameter
-		labelsubmatrix = np.array(np.log(df['XS'].values))
+		labelsubmatrix = np.array(np.log10(df['XS'].values))
 
 		input_matrix.append(input_submatrix)
 		labels_matrix.append(labelsubmatrix)
@@ -100,14 +100,15 @@ X_test, y_test = dataMaker(temperatures=test_temperatures)
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=10,
+										 patience=20,
 										 mode='min',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(200))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
 
@@ -128,13 +129,13 @@ dftest = pd.read_csv(f'{data_dir}/{teststring}')
 dftest = dftest[(dftest['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
 testxs = dftest['XS'].values
-meantestxs = np.mean(np.log(testxs))
-stdtestxs = np.std(np.log(testxs))
+meantestxs = np.mean(np.log10(testxs))
+stdtestxs = np.std(np.log10(testxs))
 
 rescaled_predictions = [p * stdtestxs + meantestxs for p in predictions]
 energies = dftest['ERG'].values
 
-rescaled_predictions = [np.e ** P for P in rescaled_predictions]
+rescaled_predictions = [10 ** P for P in rescaled_predictions]
 
 
 def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
