@@ -111,7 +111,7 @@ print('Data loaded')
 # maxerg = 1200 # in eV
 
 minerg = 12000 # in eV
-maxerg = 14000 # in eV
+maxerg = 13000 # in eV
 
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
