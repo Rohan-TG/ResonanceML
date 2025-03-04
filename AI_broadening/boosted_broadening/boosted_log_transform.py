@@ -1,10 +1,10 @@
 import os
 
-# os.environ["OMP_NUM_THREADS"] = "25"
-# os.environ["MKL_NUM_THREADS"] = "25"
-# os.environ["OPENBLAS_NUM_THREADS"] = "25"
-# os.environ["TF_NUM_INTEROP_THREADS"] = "25"
-# os.environ["TF_NUM_INTRAOP_THREADS"] = "25"
+os.environ["OMP_NUM_THREADS"] = "40"
+os.environ["MKL_NUM_THREADS"] = "40"
+os.environ["OPENBLAS_NUM_THREADS"] = "40"
+os.environ["TF_NUM_INTEROP_THREADS"] = "40"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "40"
 
 
 import random
