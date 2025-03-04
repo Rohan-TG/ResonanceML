@@ -35,8 +35,8 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 
 
 nuclide = [26, 56]
-minerg = 500 # in eV
-maxerg = 26000 # in eV
+minerg = 10000 # in eV
+maxerg = 16000 # in eV
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
@@ -112,5 +112,5 @@ best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['mod
 
 print(best_model)
 
-with open("best_xgboost_model_500to26k.pkl", "wb") as f:
+with open("best_xgboost_model_10000to16000.pkl", "wb") as f:
 	pickle.dump(best_model, f)
