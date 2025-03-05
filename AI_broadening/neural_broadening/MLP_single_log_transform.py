@@ -103,20 +103,20 @@ y_test = scipy.stats.zscore(logged_y_test)
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=10,
+										 patience=20,
 										 mode='min',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
 
 model = keras.Sequential()
-model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.Dense(5000, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
 # model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(50))
+model.add(keras.layers.Dense(5000))
 model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(200, activation='relu'))
@@ -129,7 +129,9 @@ model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
-model.add(keras.layers.Dense(50))
+model.add(keras.layers.Dense(5000))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(1000))
 model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(20, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu'))
