@@ -25,7 +25,7 @@ import datetime
 
 
 minerg = 800
-maxerg = 20000
+maxerg = 2000
 
 
 def get_datetime_string():
@@ -129,7 +129,7 @@ model.add(keras.layers.Dense(50, activation='relu'))
 # model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
 model.add(keras.layers.Dense(50, activation='relu'))
-model.add(keras.layers.Dense(20, activation='relu'))
+# model.add(keras.layers.Dense(20, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
 # model.add(keras.layers.Dense(300, activation='relu'))
@@ -247,7 +247,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 	countoverthreshold = 0
 	for XX in percentageError:
-		if XX >= 0.1:
+		if abs(XX) >= 0.1:
 			countoverthreshold += 1
 
 	percentageOverThreshold = (countoverthreshold / (len(percentageError))) * 100
