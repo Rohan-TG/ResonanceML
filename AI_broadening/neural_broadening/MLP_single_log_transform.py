@@ -1,11 +1,11 @@
-# import os
-#
-# # Set environment variables to limit TensorFlow to 30 CPU cores
-# os.environ["OMP_NUM_THREADS"] = "30"
-# os.environ["TF_NUM_INTRAOP_THREADS"] = "30"
-# os.environ["TF_NUM_INTEROP_THREADS"] = "2"  # Adjust inter-op parallelism if needed
-# os.environ["OPENBLAS_NUM_THREADS"] = "30"
-# os.environ["MKL_NUM_THREADS"] = "30"
+import os
+
+# Set environment variables to limit TensorFlow to 30 CPU cores
+os.environ["OMP_NUM_THREADS"] = "30"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "30"
+os.environ["TF_NUM_INTEROP_THREADS"] = "2"  # Adjust inter-op parallelism if needed
+os.environ["OPENBLAS_NUM_THREADS"] = "30"
+os.environ["MKL_NUM_THREADS"] = "30"
 #
 # os.environ["TF_ENABLE_ONEDNN_OPTS"] = "1"
 import tensorflow as tf
@@ -116,7 +116,8 @@ model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initia
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(50, activation='relu'))
+model.add(keras.layers.Dense(50))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(100, activation='relu'))
@@ -128,7 +129,8 @@ model.add(keras.layers.Dense(50, activation='relu'))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
-model.add(keras.layers.Dense(50, activation='relu'))
+model.add(keras.layers.Dense(50))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(20, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
