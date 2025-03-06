@@ -145,7 +145,7 @@ model.compile(loss='mae', optimizer='adam')
 history = model.fit(X_train,
 					y_train,
 					epochs=100,
-					batch_size=32,
+					batch_size=16,
 					callbacks=callback,
 					validation_data=(X_train, y_train),
 					verbose=1)
