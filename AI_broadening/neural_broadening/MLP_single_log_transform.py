@@ -54,7 +54,7 @@ unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < 
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
 
 validation_temperatures = []
-while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
+while len(validation_temperatures) < int(len(all_temperatures) * 0.1):
 	choice = random.choice(all_temperatures)
 	if choice not in validation_temperatures and choice not in test_temperatures:
 		validation_temperatures.append(choice)
@@ -145,7 +145,7 @@ model.compile(loss='mae', optimizer='adam')
 history = model.fit(X_train,
 					y_train,
 					epochs=100,
-					batch_size=8,
+					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_train, y_train),
 					verbose=1)
