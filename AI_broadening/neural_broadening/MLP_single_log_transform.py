@@ -25,7 +25,7 @@ import datetime
 
 
 minerg = 800
-maxerg = 2000
+maxerg = 1500
 
 
 def get_datetime_string():
@@ -115,9 +115,9 @@ model.add(keras.layers.Dense(500, input_shape=(X_train.shape[1],), kernel_initia
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
-# model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(200))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(200, activation='relu'))
+# model.add(keras.layers.Dense(200))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(100, activation='relu'))
@@ -129,18 +129,18 @@ model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
-model.add(keras.layers.Dense(500))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.add(keras.layers.Dense(100))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
+# model.add(keras.layers.Dense(500))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(100, activation='relu'))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(20, activation='relu'))
 # model.add(keras.layers.Dense(1000, activation='relu'))
 # model.add(keras.layers.Dropout(0.05))
 # model.add(keras.layers.Dense(300, activation='relu'))
 # model.add(keras.layers.Dense(300,activation='relu'))
-model.add(keras.layers.Dense(1))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.compile(loss='mean_absolute_error', optimizer='adam')
+model.add(keras.layers.Dense(1, activation='linear'))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.compile(loss='mae', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
@@ -226,15 +226,15 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 
-	# plt.figure()
-	# plt.plot(test_energies_limited, relativeError, label = 'Error')
-	# plt.xlabel('Energy / eV')
-	# plt.ylabel('Relative error')
-	# plt.xscale('log')
-	# plt.legend()
-	# plt.yscale('log')
-	# plt.grid()
-	# plt.show()
+	plt.figure()
+	plt.plot(test_energies_limited, relativeError, label = 'Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('Relative error')
+	plt.xscale('log')
+	plt.legend()
+	plt.yscale('log')
+	plt.grid()
+	plt.show()
 
 	plt.figure()
 	plt.plot(test_energies_limited, percentageError, label='Error')
