@@ -10,8 +10,8 @@ import periodictable
 
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
-minerg = 1000
-maxerg = 1200
+minerg = 800
+maxerg = 4000
 
 all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
 all_temperatures = all_temperatures[all_temperatures != 1250]
@@ -107,8 +107,9 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.Dense(200))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(200, activation='relu'))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
 
@@ -204,7 +205,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 	countoverthreshold = 0
 	for XX in percentageError:
-		if XX >= 0.1:
+		if abs(XX) >= 0.1:
 			countoverthreshold += 1
 
 	percentageOverThreshold = (countoverthreshold / (len(percentageError))) * 100
