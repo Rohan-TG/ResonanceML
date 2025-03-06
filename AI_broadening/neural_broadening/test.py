@@ -2,6 +2,7 @@
 import h5py
 import os
 import dask.dataframe
+import pandas as pd
 import tqdm
 
 
@@ -14,7 +15,9 @@ h5files = os.listdir('/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/h5da
 xs_list = []
 erg_list = []
 t_list = []
-for f in tqdm.tqdm(h5files, total = len(h5files)):
+
+filerange = range(0, len(h5files))
+for f, num in zip(tqdm.tqdm(h5files, total = len(h5files)), filerange):
 	df = dask.dataframe.read_hdf(f'../h5data/dT_0.1K_200K_3500K/{f}', key='xs_data')
 
 	erg_series = df['ERG']
@@ -29,9 +32,10 @@ for f in tqdm.tqdm(h5files, total = len(h5files)):
 	t_floats = t_series.astype(float)
 	t_pandas = t_floats.compute()
 
-	xs_list.append(xs_pandas)
-	erg_list.append(erg_pandas)
-	t_list.append(t_pandas)
+	dataframe = pd.DataFrame({'ERG': erg_pandas, 'XS': xs_pandas, 'T': t_pandas})
+	dataframe.to_csv(f'dT_01K_200K_3500K_file_{num}.csv')
+
+
 
 
 
