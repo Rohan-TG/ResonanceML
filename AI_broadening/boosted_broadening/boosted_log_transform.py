@@ -136,13 +136,13 @@ nuclide = [26,56]
 
 test_dataframe = df[df['T'].isin(test_temperatures)]
 training_dataframe = df[df['T'].isin(training_temperatures)]
-X_train = np.array([np.log(training_dataframe['ERG'].values), training_dataframe['T'].values])
+X_train = np.array([np.log10(training_dataframe['ERG'].values), training_dataframe['T'].values])
 X_train = np.transpose(X_train)
-y_train = np.array(np.log(training_dataframe['XS'].values))
+y_train = np.array(np.log10(training_dataframe['XS'].values))
 
-X_test = np.array([np.log(test_dataframe['ERG'].values), test_dataframe['T'].values])
+X_test = np.array([np.log10(test_dataframe['ERG'].values), test_dataframe['T'].values])
 X_test = np.transpose(X_test)
-y_test = np.array(np.log(test_dataframe['XS'].values))
+y_test = np.array(np.log10(test_dataframe['XS'].values))
 
 def log_loss_obj(y_pred, dtrain):
 	y_true = dtrain.get_label()
@@ -180,10 +180,10 @@ unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg)) & (df0['ERG'] 
 unheated_energies = [e for e in unheated_energies]
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg)) & (df0['ERG'] < (maxerg))]['XS'].values
 
-rescaled_test_energies = [np.e ** E for E in test_energies]
-rescaled_test_XS = [np.e ** XS for XS in y_test]
+rescaled_test_energies = [10 ** E for E in test_energies]
+rescaled_test_XS = [10 ** XS for XS in y_test]
 
-rescaled_predictions = [np.e ** p for p in predictions]
+rescaled_predictions = [10 ** p for p in predictions]
 
 plt.figure()
 plt.plot(np.array(unheated_energies), np.array(unheated_XS), label = '0 K JEFF-3.3')
