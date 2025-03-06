@@ -33,7 +33,7 @@ for f, num in zip(tqdm.tqdm(h5files, total = len(h5files)), filerange):
 	t_pandas = t_floats.compute()
 
 	dataframe = pd.DataFrame({'ERG': erg_pandas, 'XS': xs_pandas, 'T': t_pandas})
-	dataframe.to_csv(f'dT_01K_200K_3500K_file_{num}.csv')
+	dataframe.to_csv(f'/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT0.1K_csv_samples/dT_01K_200K_3500K_file_{num}.csv', index=False)
 
 
 
