@@ -45,6 +45,8 @@ test_temperatures = [1500]
 
 def optimiser(space):
 
+	print(space)
+
 	validation_temperatures = []
 	while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 		choice = random.choice(all_temperatures)
