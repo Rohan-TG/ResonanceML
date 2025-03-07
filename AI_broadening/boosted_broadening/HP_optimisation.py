@@ -22,7 +22,7 @@ df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 
 
 
-ntreeguess = np.arange(3000, 25000, 200)
+ntreeguess = np.arange(1000, 25000, 200)
 depthguess = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
@@ -35,8 +35,8 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 
 
 nuclide = [26, 56]
-minerg = 10000 # in eV
-maxerg = 16000 # in eV
+minerg = 800 # in eV
+maxerg = 1600 # in eV
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
@@ -65,13 +65,13 @@ def optimiser(space):
 
 	test_dataframe = df[df['T'].isin(validation_temperatures)]
 	training_dataframe = df[df['T'].isin(training_temperatures)]
-	X_train = np.array([np.log(training_dataframe['ERG'].values), training_dataframe['T'].values])
+	X_train = np.array([np.log10(training_dataframe['ERG'].values), training_dataframe['T'].values])
 	X_train = np.transpose(X_train)
-	y_train = np.array(np.log(training_dataframe['XS'].values))
+	y_train = np.array(np.log10(training_dataframe['XS'].values))
 
-	X_test = np.array([np.log(test_dataframe['ERG'].values), test_dataframe['T'].values])
+	X_test = np.array([np.log10(test_dataframe['ERG'].values), test_dataframe['T'].values])
 	X_test = np.transpose(X_test)
-	y_test = np.array(np.log(test_dataframe['XS'].values))
+	y_test = np.array(np.log10(test_dataframe['XS'].values))
 
 	model = xg.XGBRegressor(**space, seed=42)
 
@@ -91,9 +91,9 @@ def optimiser(space):
 	# unheated_XS = df[(df['T'] == 0) & (df['ERG'] > (minerg)) & (df['ERG'] < (maxerg))]['XS'].values
 
 	# rescaled_test_energies = [np.e ** E for E in test_energies]
-	rescaled_test_XS = [np.e ** XS for XS in y_test]
+	rescaled_test_XS = [10 ** XS for XS in y_test]
 
-	rescaled_predictions = [np.e ** p for p in predictions]
+	rescaled_predictions = [10 ** p for p in predictions]
 
 	# mse_loss = mean_squared_error(predictions, y_test)
 	mae_loss = mean_absolute_error(rescaled_predictions, rescaled_test_XS)
@@ -105,12 +105,12 @@ best = fmin(fn=optimiser,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=200,
+			max_evals=300,
 			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
 
 print(best_model)
 
-with open("best_xgboost_model_10000to16000.pkl", "wb") as f:
+with open("best_xgboost_model_first_resonance_log10.pkl", "wb") as f:
 	pickle.dump(best_model, f)
