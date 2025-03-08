@@ -3,9 +3,12 @@ import keras
 import datetime
 import numpy as np
 import random
+import periodictable
 import os
 import scipy
+import matplotlib.pyplot as plt
 import tqdm
+from sklearn.metrics import mean_absolute_error
 
 minerg = 800
 maxerg = 1500
@@ -86,7 +89,8 @@ logged_ERG_test = np.log(ERG_test)
 X_test = np.array([scipy.stats.zscore(logged_ERG_test), scaled_T_test])
 X_test = np.transpose(X_test)
 logged_y_test = np.log(XS_test)
-y_test = scipy.stats.zscore(logged_y_test)
+y_test = XS_test
+# y_test = scipy.stats.zscore(logged_y_test)
 
 
 
@@ -140,7 +144,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 	predictions_limited = []
 	test_XS_limited = []
-	rescaled_test_XS = y
+	rescaled_test_XS = y_test
 	for o, p, qx in zip(rescaled_energies, rescaled_predictions, rescaled_test_XS):
 		if o <= upper_bound and o >= lower_bound:
 			test_energies_limited.append(o)
@@ -215,3 +219,30 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 timestring = get_datetime_string()
+
+
+plt.figure()
+plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
+plt.plot(ERG_test, y_test, '--', label = 'JEFF-3.3 1,800 K')
+plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
+plt.legend()
+plt.grid()
+plt.xlabel('Energy / eV')
+plt.ylabel('$\sigma_{n,\gamma} / b$')
+plt.xscale('log')
+plt.yscale('log')
+plt.savefig(f'mlpplot-{timestring}_fix_largeenergy.png', dpi = 300)
+plt.show()
+
+plt.figure()
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.plot(history.history['loss'], label='Training Loss')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid()
+plt.show()
+
+MAE = mean_absolute_error(rescaled_predictions, y_test)
+bounds(minerg, maxerg)
