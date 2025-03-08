@@ -57,7 +57,7 @@ T_test = []
 
 
 for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_temperatures)):
-	filename = f'Fe_56_{train_temperature}.csv'
+	filename = f'Fe_56_{train_temperature}K.csv'
 	df = pd.read_csv(f'{data_dir}/{filename}')
 
 	ERG_train += df['ERG'].values
@@ -74,7 +74,7 @@ y_train = scipy.stats.zscore(y_train_logged)
 
 
 for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures)):
-	filename = f'Fe_56_{test_temperature}.csv'
+	filename = f'Fe_56_{test_temperature}K.csv'
 	dftest = pd.read_csv(f'{data_dir}/{filename}')
 
 	ERG_test += dftest['ERG'].values
