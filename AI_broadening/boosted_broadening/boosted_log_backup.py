@@ -110,8 +110,8 @@ print('Data loaded')
 # minerg = 700 # in eV
 # maxerg = 1200 # in eV
 
-minerg = 500 # in eV
-maxerg = 2000 # in eV
+minerg = 800 # in eV
+maxerg = 1600 # in eV
 
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
@@ -183,12 +183,11 @@ def log_loss_obj(y_pred, dtrain):
 
 
 
-model = xg.XGBRegressor(n_estimators = 10450,
+model = xg.XGBRegressor(n_estimators = 21800,
 						max_depth = 16,
-						learning_rate = 0.25919607000481934,
-						reg_lambda = 2.415057075497998,
-						subsample = 0.13021504261911765,
-						gamma = 1.036
+						learning_rate = 0.00039749142484026765,
+						reg_lambda = 25.06,
+						subsample = 0.9943057693219584,
 						)
 
 
