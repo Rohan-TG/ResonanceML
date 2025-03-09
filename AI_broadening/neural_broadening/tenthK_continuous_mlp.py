@@ -12,14 +12,15 @@ from sklearn.metrics import mean_absolute_error
 
 minerg = 800
 maxerg = 1500
-test_temperatures = [1700.0]
+test_temperatures = [1400.0]
 nuclide = [26,56]
 
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
-maxtemp = 1800
-numbers = np.linspace(200, maxtemp, int((maxtemp - 200) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
+maxtemp = 1600
+mintemp = 400
+numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 # all_temperatures = all_temperatures[all_temperatures != 254.7]
 
@@ -102,15 +103,15 @@ y_test = XS_test
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=20,
+										 patience=5,
 										 mode='min',
-										 start_from_epoch=5,
+										 start_from_epoch=2,
 										 restore_best_weights=True)
 
 model = keras.Sequential()
-model.add(keras.layers.Dense(500, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
 model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(100, activation='relu'))
+# model.add(keras.layers.Dense(100, activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 model.compile(loss='mae', optimizer='adam')
 
@@ -237,7 +238,7 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
-plt.savefig(f'mlpplot-{timestring}_fix_largeenergy.png', dpi = 300)
+plt.savefig(f'mlpplot-{timestring}_highsampling.png', dpi = 300)
 plt.show()
 
 plt.figure()
