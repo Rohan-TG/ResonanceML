@@ -60,9 +60,9 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 	filename = f'Fe_56_{train_temperature}K.csv'
 	df = pd.read_csv(f'{data_dir}/{filename}')
 
-	ERG_train += df['ERG'].values
-	XS_train += df['XS'].values
-	T_train += df['T'].values
+	ERG_train += list(df['ERG'].values)
+	XS_train += list(df['XS'].values)
+	T_train += list(df['T'].values)
 
 logged_T_train = np.log(T_train)
 scaled_T_train = [(x - mean_alltemps) / std_alltemps for x in logged_T_train]
@@ -77,9 +77,9 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 	filename = f'Fe_56_{test_temperature}K.csv'
 	dftest = pd.read_csv(f'{data_dir}/{filename}')
 
-	ERG_test += dftest['ERG'].values
-	XS_test += dftest['XS'].values
-	T_test += dftest['T'].values
+	ERG_test += list(dftest['ERG'].values)
+	XS_test += list(dftest['XS'].values)
+	T_test += list(dftest['T'].values)
 
 logged_T_test = np.log(T_test)
 scaled_T_test = [(x - mean_alltemps) / std_alltemps for x in logged_T_test]
