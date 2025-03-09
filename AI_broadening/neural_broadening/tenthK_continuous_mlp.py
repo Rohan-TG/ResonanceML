@@ -5,6 +5,7 @@ import numpy as np
 import random
 import periodictable
 import os
+import itertools
 import scipy
 import matplotlib.pyplot as plt
 import tqdm
@@ -19,7 +20,7 @@ def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
 maxtemp = 1600
-mintemp = 400
+mintemp = 200
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 # all_temperatures = all_temperatures[all_temperatures != 254.7]
@@ -66,9 +67,13 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 		filename = f'Fe_56_{roundedtt}K.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
-		ERG_train += list(df['ERG'].values)
-		XS_train += list(df['XS'].values)
-		T_train += list(df['T'].values)
+		ERG_train.append(df['ERG'].values)
+		XS_train.append(df['XS'].values)
+		T_train.append(df['T'].values)
+
+ERG_train = list(itertools.chain(*ERG_train))
+T_train = list(itertools.chain(*T_train))
+XS_train = list(itertools.chain(*XS_train))
 
 logged_T_train = np.log(T_train)
 scaled_T_train = [(x - mean_alltemps) / std_alltemps for x in logged_T_train]
@@ -86,9 +91,13 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 	dftest = pd.read_csv(f'{data_dir}/{filename}')
 	dftest = dftest[(df['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
-	ERG_test += list(dftest['ERG'].values)
-	XS_test += list(dftest['XS'].values)
-	T_test += list(dftest['T'].values)
+	ERG_test.append(dftest['ERG'].values)
+	XS_test.append(dftest['XS'].values)
+	T_test.append(dftest['T'].values)
+
+ERG_test = list(itertools.chain(*ERG_test))
+T_test = list(itertools.chain(*T_test))
+XS_test = list(itertools.chain(*XS_test))
 
 logged_T_test = np.log(T_test)
 scaled_T_test = [(x - mean_alltemps) / std_alltemps for x in logged_T_test]
