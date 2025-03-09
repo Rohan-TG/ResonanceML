@@ -20,7 +20,7 @@ def get_datetime_string():
 
 numbers = np.linspace(200, 3500, int((3500 - 200) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
-all_temperatures = all_temperatures[all_temperatures != 254.7]
+# all_temperatures = all_temperatures[all_temperatures != 254.7]
 
 data_dir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT0.1k_single_temp'
 
@@ -29,7 +29,7 @@ unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < 
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
 
 validation_temperatures = []
-while len(validation_temperatures) < int(len(all_temperatures) * 0.1):
+while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 	choice = random.choice(all_temperatures)
 	if choice not in validation_temperatures and choice not in test_temperatures:
 		validation_temperatures.append(choice)
