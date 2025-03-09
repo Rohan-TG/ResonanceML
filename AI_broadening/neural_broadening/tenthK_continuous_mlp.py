@@ -18,7 +18,8 @@ nuclide = [26,56]
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
-numbers = np.linspace(200, 3500, int((3500 - 200) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
+maxtemp = 1900
+numbers = np.linspace(200, maxtemp, int((maxtemp - 200) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 # all_temperatures = all_temperatures[all_temperatures != 254.7]
 
