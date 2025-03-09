@@ -20,7 +20,7 @@ def get_datetime_string():
 
 numbers = np.linspace(200, 3500, int((3500 - 200) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
-all_temperatures.remove(254.7)
+all_temperatures = all_temperatures[all_temperatures != 254.7]
 
 data_dir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT0.1k_single_temp'
 
