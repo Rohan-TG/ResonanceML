@@ -140,10 +140,10 @@ unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg)) & (df0['ERG'] 
 unheated_energies = [e for e in unheated_energies]
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg)) & (df0['ERG'] < (maxerg))]['XS'].values
 
-rescaled_test_energies = [10 ** E for E in test_energies]
-rescaled_test_XS = [10 ** XS for XS in y_test]
+rescaled_test_energies = [np.e ** E for E in test_energies]
+rescaled_test_XS = [np.e ** XS for XS in y_test]
 
-rescaled_predictions = [10 ** p for p in predictions]
+rescaled_predictions = [np.e ** p for p in predictions]
 
 plt.figure()
 plt.plot(np.array(unheated_energies), np.array(unheated_XS), label = '0 K JEFF-3.3')
