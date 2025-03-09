@@ -59,13 +59,14 @@ T_test = []
 
 
 for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_temperatures)):
-	roundedtt = str(round(train_temperature, 1))
-	filename = f'Fe_56_{roundedtt}K.csv'
-	df = pd.read_csv(f'{data_dir}/{filename}')
+	if round(float(train_temperature), 1) != 254.7:
+		roundedtt = str(round(train_temperature, 1))
+		filename = f'Fe_56_{roundedtt}K.csv'
+		df = pd.read_csv(f'{data_dir}/{filename}')
 
-	ERG_train += list(df['ERG'].values)
-	XS_train += list(df['XS'].values)
-	T_train += list(df['T'].values)
+		ERG_train += list(df['ERG'].values)
+		XS_train += list(df['XS'].values)
+		T_train += list(df['T'].values)
 
 logged_T_train = np.log(T_train)
 scaled_T_train = [(x - mean_alltemps) / std_alltemps for x in logged_T_train]
