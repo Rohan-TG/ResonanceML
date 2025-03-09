@@ -16,7 +16,7 @@ def read_h5_dataset(file: str, dataset_key: str) -> da.Array:
 
 def load_and_prepocess_data(root_dir: str) -> da.Array:
 
-	files = glob.glob("*.h5py", root_dir=root_dir)
+	files = glob.glob("*.h5", root_dir=root_dir)
 	print(f"{len(files)} files to load")
 
 
@@ -44,7 +44,7 @@ def dask_to_tf_dataset(dask_array: da.Array, batch_size: int) -> tf.data.Dataset
 
 def main():
 
-	root_dir = "../AI_data/" # Replace with your data folder
+	root_dir = "../h5data/dT_0.1K_200K_3500K/" # Replace with your data folder
 	data_normalised = load_and_prepocess_data(root_dir)
 	dataset = dask_to_tf_dataset(data_normalised, batch_size=32)
 
