@@ -1,9 +1,14 @@
+import os
+os.environ["OMP_NUM_THREADS"] = "40"
+os.environ["MKL_NUM_THREADS"] = "40"
+os.environ["OPENBLAS_NUM_THREADS"] = "40"
+os.environ["TF_NUM_INTEROP_THREADS"] = "40"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "40"
 import pandas as pd
 import numpy as np
 import periodictable
 import datetime
 import itertools
-import os
 import random
 import matplotlib.pyplot as plt
 import tqdm
@@ -109,9 +114,9 @@ y_test = XS_test
 
 
 
-model = xg.XGBRegressor(n_estimators = 10450,
+model = xg.XGBRegressor(n_estimators = 1450,
 						max_depth = 16,
-						learning_rate = 0.0025919607000481934,
+						learning_rate = 0.25919607000481934,
 						reg_lambda = 2.415057075497998,
 						subsample = 0.13021504261911765,
 						)
