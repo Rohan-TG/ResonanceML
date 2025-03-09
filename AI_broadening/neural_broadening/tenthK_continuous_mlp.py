@@ -59,11 +59,10 @@ T_test = []
 
 
 for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_temperatures)):
-	if round(float(train_temperature), 1) != 254.7 or round(float(train_temperature), 1) != 254.9:
+	if round(float(train_temperature), 1) not in [254.7, 254.8, 254.9, 255.0]:
 		roundedtt = str(round(train_temperature, 1))
 		filename = f'Fe_56_{roundedtt}K.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
-
 		ERG_train += list(df['ERG'].values)
 		XS_train += list(df['XS'].values)
 		T_train += list(df['T'].values)
