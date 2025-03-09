@@ -25,8 +25,8 @@ nuclide = [26,56]
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
-maxtemp = 2400
-mintemp = 200
+maxtemp = 1800
+mintemp = 1600
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 # all_temperatures = all_temperatures[all_temperatures != 254.7]
@@ -114,7 +114,7 @@ y_test = XS_test
 
 
 
-model = xg.XGBRegressor(n_estimators = 1450,
+model = xg.XGBRegressor(n_estimators = 10,
 						max_depth = 11,
 						learning_rate = 0.25919607000481934,
 						reg_lambda = 2.415057075497998,
@@ -196,6 +196,9 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 			predictions_limited.append(p)
 			test_XS_limited.append(qx)
 
+	print(predictions_limited)
+	print(test_XS_limited)
+
 	plt.figure()
 	plt.plot(unheated_energies_limited, unheated_XS_limited, label = '0 K JEFF-3.3')
 	plt.grid()
@@ -261,5 +264,9 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	print(f'Max error: {np.max(abs(np.array(percentageError)))}')
 	print(f'Mean error: {np.mean(abs(np.array(percentageError)))}')
 	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
+	print(5)
+
+print(5)
+
 
 bounds(minerg, maxerg)
