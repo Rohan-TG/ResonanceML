@@ -256,7 +256,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 	countoverthreshold = 0
 	for XX in percentageError:
-		if XX >= 0.1:
+		if abs(XX) >= 0.1:
 			countoverthreshold += 1
 
 	percentageOverThreshold = (countoverthreshold / (len(percentageError))) * 100
