@@ -18,7 +18,8 @@ nuclide = [26,56]
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
-all_temperatures = np.linspace(200, 3500, int((3500 - 200) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
+numbers = np.linspace(200, 3500, int((3500 - 200) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
+all_temperatures = [round(NUM, 1) for NUM in numbers]
 
 data_dir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT0.1k_single_temp'
 
