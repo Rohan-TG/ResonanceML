@@ -60,30 +60,35 @@ T_train = []
 ERG_test = []
 XS_test = []
 T_test = []
-
+exclusions = [254.7, 254.8, 254.9, 255.0]
 
 def dataMaker(temperatures):
 
 	input_matrix = [] # contains the energy grid and temperatures
 	labels_matrix = [] # contains the cross sections
 	for T in tqdm.tqdm(temperatures, total = len(temperatures)):
-		filestring = f'Fe56_{int(T)}K.csv'
-		df = pd.read_csv(f'{data_dir}/{filestring}')
-		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
-		unscaled_T_values = np.log10(df['T'].values)
-		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
+		if round(float(T), 1) not in exclusions:
+			roundedT = str(round(T, 1))
+			filestring = f'Fe_56_{roundedT}K.csv'
 
-		# unscaled_ERG = df['ERG'].values
-		# mean_ERG = np.mean(unscaled_ERG)
-		# std_ERG = np.std(unscaled_ERG)
-		# scaled_ERG = [(E - mean_ERG) / std_ERG for E in unscaled_ERG]
 
-		input_submatrix = np.array(scaled_T_values) # can add or remove ERG here to make energy an input parameter
-		labelsubmatrix = np.array(np.log10(df['XS'].values))
+			df = pd.read_csv(f'{data_dir}/{filestring}')
+			df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
-		input_matrix.append(input_submatrix)
-		labels_matrix.append(labelsubmatrix)
+			unscaled_T_values = np.log10(df['T'].values)
+			scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
+
+			# unscaled_ERG = df['ERG'].values
+			# mean_ERG = np.mean(unscaled_ERG)
+			# std_ERG = np.std(unscaled_ERG)
+			# scaled_ERG = [(E - mean_ERG) / std_ERG for E in unscaled_ERG]
+
+			input_submatrix = np.array(scaled_T_values) # can add or remove ERG here to make energy an input parameter
+			labelsubmatrix = np.array(np.log10(df['XS'].values))
+
+			input_matrix.append(input_submatrix)
+			labels_matrix.append(labelsubmatrix)
 
 	X = np.array(input_matrix)
 	y = np.array(labels_matrix)
