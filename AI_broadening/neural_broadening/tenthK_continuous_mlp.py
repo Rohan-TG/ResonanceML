@@ -61,8 +61,10 @@ XS_test = []
 T_test = []
 
 
+exclusions = [254.7, 254.8, 254.9, 255.0]
+
 for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_temperatures)):
-	if round(float(train_temperature), 1) not in [254.7, 254.8, 254.9, 255.0]:
+	if round(float(train_temperature), 1) not in exclusions:
 		roundedtt = str(round(train_temperature, 1))
 		filename = f'Fe_56_{roundedtt}K.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
