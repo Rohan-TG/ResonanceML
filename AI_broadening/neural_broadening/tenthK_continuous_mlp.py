@@ -65,6 +65,7 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 		roundedtt = str(round(train_temperature, 1))
 		filename = f'Fe_56_{roundedtt}K.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
+		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 		ERG_train += list(df['ERG'].values)
 		XS_train += list(df['XS'].values)
 		T_train += list(df['T'].values)
@@ -83,6 +84,7 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 	roundedtestt = str(round(test_temperature,1))
 	filename = f'Fe_56_{roundedtestt}K.csv'
 	dftest = pd.read_csv(f'{data_dir}/{filename}')
+	dftest = dftest[(df['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
 	ERG_test += list(dftest['ERG'].values)
 	XS_test += list(dftest['XS'].values)
