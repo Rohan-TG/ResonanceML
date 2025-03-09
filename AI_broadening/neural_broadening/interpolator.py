@@ -20,4 +20,7 @@ for rawfile in tqdm.tqdm(raw_files, total=len(raw_files)):
 	erg = df['ERG'].values
 
 	new_xs = np.interp(main_grid, erg, xs)
-	break
+	tlist = [df['T'].values[0] for X in new_xs]
+
+	newdf = pd.DataFrame({'ERG': main_grid, 'XS': new_xs, 'T':tlist})
+	newdf.to_csv(f'{dir_interpolated}/Fe_56_{tlist[0]}.csv')
