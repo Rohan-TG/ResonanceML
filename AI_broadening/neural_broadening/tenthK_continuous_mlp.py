@@ -20,6 +20,7 @@ def get_datetime_string():
 
 numbers = np.linspace(200, 3500, int((3500 - 200) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
+all_temperatures.remove(254.7)
 
 data_dir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT0.1k_single_temp'
 
@@ -56,23 +57,24 @@ ERG_test = []
 XS_test = []
 T_test = []
 
+try:
+	for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_temperatures)):
+		roundedtt = str(round(train_temperature, 1))
+		filename = f'Fe_56_{roundedtt}K.csv'
+		df = pd.read_csv(f'{data_dir}/{filename}')
 
-for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_temperatures)):
-	roundedtt = str(round(train_temperature, 1))
-	filename = f'Fe_56_{roundedtt}K.csv'
-	df = pd.read_csv(f'{data_dir}/{filename}')
+		ERG_train += list(df['ERG'].values)
+		XS_train += list(df['XS'].values)
+		T_train += list(df['T'].values)
 
-	ERG_train += list(df['ERG'].values)
-	XS_train += list(df['XS'].values)
-	T_train += list(df['T'].values)
-
-logged_T_train = np.log(T_train)
-scaled_T_train = [(x - mean_alltemps) / std_alltemps for x in logged_T_train]
-logged_ERG_train = np.log(ERG_train)
-X_train = np.array([scipy.stats.zscore(logged_ERG_train), scaled_T_train])
-X_train = np.transpose(X_train)
-y_train_logged = np.array(np.log(XS_train))
-y_train = scipy.stats.zscore(y_train_logged)
+	logged_T_train = np.log(T_train)
+	scaled_T_train = [(x - mean_alltemps) / std_alltemps for x in logged_T_train]
+	logged_ERG_train = np.log(ERG_train)
+	X_train = np.array([scipy.stats.zscore(logged_ERG_train), scaled_T_train])
+	X_train = np.transpose(X_train)
+	y_train_logged = np.array(np.log(XS_train))
+	y_train = scipy.stats.zscore(y_train_logged)
+except:
 
 
 for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures)):
