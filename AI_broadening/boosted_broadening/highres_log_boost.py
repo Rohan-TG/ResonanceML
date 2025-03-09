@@ -114,9 +114,9 @@ y_test = XS_test
 
 
 
-model = xg.XGBRegressor(n_estimators = 10,
+model = xg.XGBRegressor(n_estimators = 500,
 						max_depth = 11,
-						learning_rate = 0.25919607000481934,
+						learning_rate = 0.15919607000481934,
 						reg_lambda = 2.415057075497998,
 						subsample = 0.13021504261911765,
 						)
