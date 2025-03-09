@@ -11,16 +11,16 @@ import matplotlib.pyplot as plt
 import tqdm
 from sklearn.metrics import mean_absolute_error
 
-minerg = 800
-maxerg = 1500
-test_temperatures = [1400.0]
+minerg = 800 / 1e6
+maxerg = 1500 / 1e6
+test_temperatures = [1300.0]
 nuclide = [26,56]
 
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
 maxtemp = 1600
-mintemp = 200
+mintemp = 600
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 # all_temperatures = all_temperatures[all_temperatures != 254.7]
