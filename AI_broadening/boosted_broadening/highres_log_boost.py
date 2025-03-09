@@ -156,6 +156,7 @@ plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
 plt.xscale('log')
+plt.savefig(f'/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/boosted_broadening/highresplots/{get_datetime_string()}-highresplot.png')
 plt.show()
 
 
@@ -264,9 +265,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	print(f'Max error: {np.max(abs(np.array(percentageError)))}')
 	print(f'Mean error: {np.mean(abs(np.array(percentageError)))}')
 	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
-	print(5)
 
-print(5)
 
 
 bounds(minerg, maxerg)
