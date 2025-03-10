@@ -73,7 +73,7 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 		filename = f'Fe_56_{roundedtt}K.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
-		ERG_train.append(df['ERG'].values)
+		ERG_train.append(df['ERG'].values * 1e6)
 		XS_train.append(df['XS'].values)
 		T_train.append(df['T'].values)
 
@@ -95,7 +95,7 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 	dftest = pd.read_csv(f'{data_dir}/{filename}')
 	dftest = dftest[(df['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
-	ERG_test.append(dftest['ERG'].values)
+	ERG_test.append(dftest['ERG'].values * 1e6)
 	XS_test.append(dftest['XS'].values)
 	T_test.append(dftest['T'].values)
 
@@ -109,7 +109,7 @@ logged_T_test = np.log(T_test)
 logged_ERG_test = np.log(ERG_test)
 X_test = np.array([logged_ERG_test, logged_T_test])
 X_test = np.transpose(X_test)
-logged_y_test = np.log(XS_test)
+# logged_y_test = np.log(XS_test)
 y_test = XS_test
 
 
@@ -140,18 +140,18 @@ unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg * 1e6)) & (df0['
 unheated_energies = [e for e in unheated_energies]
 unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg * 1e6)) & (df0['ERG'] < (maxerg * 1e6))]['XS'].values
 
-rescaled_test_energies = [np.e ** E for E in test_energies]
-rescaled_test_XS = [np.e ** XS for XS in y_test]
+rescaled_test_energies = [(np.e ** E) for E in test_energies]
+# rescaled_test_XS = [np.e ** XS for XS in y_test]
 
 rescaled_predictions = [np.e ** p for p in predictions]
 
 plt.figure()
 plt.plot(np.array(unheated_energies), np.array(unheated_XS), label = '0 K JEFF-3.3')
 plt.grid()
-plt.plot(np.array(rescaled_test_energies), np.array(rescaled_predictions), label = 'Predictions', color = 'red')
+plt.plot(np.array(rescaled_test_energies), np.array(rescaled_predictions), label = 'Predictions', alpha=0.7, color = 'red')
 plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
-plt.plot(np.array(rescaled_test_energies), np.array(rescaled_test_XS), '--', label = f'{test_temperatures[0]} K JEFF-3.3', color = 'lightgreen')
+plt.plot(np.array(rescaled_test_energies), np.array(y_test), '--', label = f'{test_temperatures[0]} K JEFF-3.3', color = 'lightgreen')
 plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
@@ -191,7 +191,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	test_energies_limited = []
 	predictions_limited = []
 	test_XS_limited = []
-	for o, p, qx in zip(rescaled_test_energies, rescaled_predictions, rescaled_test_XS):
+	for o, p, qx in zip(rescaled_test_energies, rescaled_predictions, y_test):
 		if o <= upper_bound and o >= lower_bound:
 			test_energies_limited.append(o)
 			predictions_limited.append(p)
