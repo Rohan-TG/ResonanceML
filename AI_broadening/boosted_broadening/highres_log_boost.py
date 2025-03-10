@@ -136,9 +136,9 @@ history = model.evals_result()
 test_energies = X_test.transpose()[0]
 # test_energies = [e * 1e6 for e in test_energies]
 
-unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg)) & (df0['ERG'] < (maxerg))]['ERG'].values
+unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg * 1e6)) & (df0['ERG'] < (maxerg * 1e6))]['ERG'].values
 unheated_energies = [e for e in unheated_energies]
-unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg)) & (df0['ERG'] < (maxerg))]['XS'].values
+unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg * 1e6)) & (df0['ERG'] < (maxerg * 1e6))]['XS'].values
 
 rescaled_test_energies = [np.e ** E for E in test_energies]
 rescaled_test_XS = [np.e ** XS for XS in y_test]
