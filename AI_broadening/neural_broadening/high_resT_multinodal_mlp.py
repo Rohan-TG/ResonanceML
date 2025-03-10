@@ -70,7 +70,7 @@ def dataMaker(temperatures):
 
 		if round(float(T), 1) not in exclusions:
 			roundedT = str(round(T, 1))
-			filestring = f'Fe_56_{roundedT}K.csv'
+			filestring = f'Fe_56_{roundedT}.csv'
 
 
 			df = pd.read_csv(f'{data_dir}/{filestring}')
@@ -143,7 +143,7 @@ history = model.fit(X_train,
 predictions = model.predict(X_test)
 predictions = predictions.ravel()
 
-teststring = f'Fe56_T{int(test_temperatures[0])}K.csv'
+teststring = f'Fe56_T{int(test_temperatures[0])}.csv'
 dftest = pd.read_csv(f'{data_dir}/{teststring}')
 dftest = dftest[(dftest['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
