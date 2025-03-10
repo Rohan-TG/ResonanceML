@@ -291,3 +291,5 @@ plt.yscale('log')
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.savefig(f'{plotdir}/{timestring}-highres_multinodal_plot.png')
 plt.show()
+
+bounds(minerg, maxerg)
