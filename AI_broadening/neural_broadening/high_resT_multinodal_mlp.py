@@ -143,7 +143,7 @@ history = model.fit(X_train,
 predictions = model.predict(X_test)
 predictions = predictions.ravel()
 
-teststring = f'Fe56_{int(test_temperatures[0])}.0.csv'
+teststring = f'Fe_56_{int(test_temperatures[0])}.0.csv'
 dftest = pd.read_csv(f'{data_dir}/{teststring}')
 dftest = dftest[(dftest['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
