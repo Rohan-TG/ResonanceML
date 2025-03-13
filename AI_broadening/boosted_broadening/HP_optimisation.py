@@ -22,7 +22,7 @@ df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 
 
 
-ntreeguess = np.arange(1000, 18000, 200)
+ntreeguess = np.arange(1000, 38000, 200)
 depthguess = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
@@ -36,7 +36,7 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 
 nuclide = [26, 56]
 minerg = 800 # in eV
-maxerg = 1600 # in eV
+maxerg = 25000 # in eV
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
@@ -105,7 +105,7 @@ best = fmin(fn=optimiser,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=300,
+			max_evals=500,
 			early_stop_fn=hyperopt.early_stop.no_progress_loss(100))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
