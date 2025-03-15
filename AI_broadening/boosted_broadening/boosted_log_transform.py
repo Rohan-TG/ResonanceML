@@ -80,6 +80,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
+	plt.savefig('preserror.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -195,7 +196,8 @@ plt.plot(np.array(rescaled_test_energies), np.array(rescaled_test_XS), '--', lab
 plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
-plt.xscale('log')
+# plt.xscale('log')
+plt.savefig('presplot.png', dpi=300)
 plt.show()
 
 
