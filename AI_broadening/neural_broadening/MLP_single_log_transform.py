@@ -1,4 +1,7 @@
 import os
+import time
+
+import tqdm
 
 # Set environment variables to limit TensorFlow to 30 CPU cores
 os.environ["OMP_NUM_THREADS"] = "30"
@@ -295,3 +298,13 @@ plt.show()
 
 MAE = mean_absolute_error(rescaled_predictions, test_xs)
 bounds(minerg, maxerg)
+
+time1 = time.time()
+for i in tqdm.tqdm(range(10000)):
+	tempp = model.predict(X_test)
+
+time2 = time.time()
+
+elapsed = time2 - time1
+elapsedformatted = str(datetime.timedelta(seconds=elapsed))
+print(elapsedformatted)
