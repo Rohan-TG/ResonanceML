@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import periodictable
 import numpy as np
 import tqdm
+import datetime
 
 
 
@@ -223,3 +224,18 @@ plt.show()
 
 
 bounds(minerg, maxerg)
+
+import time
+time1 = time.time()
+itlength = 1000000
+testd = X_test[100]
+testd = testd.reshape(1,2)
+for i in tqdm.tqdm(range(0,itlength)):
+	tp = model.predict(testd)
+
+time2 = time.time()
+elapsed = time2 - time1
+elapsedformatted = str(datetime.timedelta(seconds=elapsed))
+singleit = elapsed / itlength
+single_iter = str(datetime.timedelta(seconds=singleit))
+print(f'Elapsed: {elapsedformatted} - Time per inference: {single_iter}')
