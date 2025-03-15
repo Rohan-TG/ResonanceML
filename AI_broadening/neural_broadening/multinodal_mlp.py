@@ -7,11 +7,14 @@ import numpy as np
 import random
 import tqdm
 import periodictable
+import datetime
 
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
 minerg = 800
 maxerg = 4000
+
+plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
 all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
 all_temperatures = all_temperatures[all_temperatures != 1250]
@@ -35,7 +38,9 @@ unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg
 
 
 
-
+def get_datetime_string():
+	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
+timestring = get_datetime_string()
 
 
 
@@ -168,6 +173,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xscale('log')
 	plt.yscale('log')
 	plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
+	plt.savefig(f'{plotdir}/{timestring}-standard_multinodal_plot.png')
 	plt.show()
 
 
@@ -194,6 +200,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
+	plt.savefig(f'{plotdir}/{timestring}-standard_multinodal_errors.png')
 	plt.show()
 
 	plt.figure()
