@@ -12,7 +12,7 @@ import datetime
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
 minerg = 800
-maxerg = 4000
+maxerg = 100000
 
 plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
@@ -21,7 +21,7 @@ all_temperatures = all_temperatures[all_temperatures != 1250]
 log_alltemps = np.log10(all_temperatures)
 mean_alltemps = np.mean(log_alltemps)
 std_alltemps = np.std(log_alltemps)
-data_dir = '/Users/rntg/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv'
+data_dir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv'
 
 
 test_temperatures = [1400]
@@ -111,9 +111,17 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 restore_best_weights=True)
 
 model = keras.Sequential()
-model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(X_train.shape[1], input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.Dense(X_train.shape[1]))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(X_train.shape[1]))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(X_train.shape[1]))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
+# model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
+# model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
+model.add(keras.layers.Dense(X_train.shape[1]))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.LeakyReLU(alpha=0.05))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
