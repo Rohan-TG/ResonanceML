@@ -13,7 +13,7 @@ def get_datetime_string():
 timestring = get_datetime_string()
 
 minerg = 800 / 1e6
-maxerg = 1300 / 1e6
+maxerg = 1400 / 1e6
 test_temperatures = [1300.0]
 nuclide = [26,56]
 
