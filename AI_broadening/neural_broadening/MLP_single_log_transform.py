@@ -140,7 +140,7 @@ model.add(keras.layers.Dense(100, activation='relu'))
 # model.add(keras.layers.Dense(300,activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 # model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.compile(loss='mse', optimizer='adam')
+model.compile(loss='mae', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
