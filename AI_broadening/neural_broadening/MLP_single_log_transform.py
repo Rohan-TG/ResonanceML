@@ -244,6 +244,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
+	plt.savefig(f'mlpeerrors_pres.png', dpi = 300)
 	plt.show()
 
 	plt.figure()
@@ -283,7 +284,7 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
-plt.savefig(f'mlpplot-{timestring}_fix_largeenergy.png', dpi = 300)
+plt.savefig(f'mlpplot-{timestring}_pres.png', dpi = 300)
 plt.show()
 
 plt.figure()
