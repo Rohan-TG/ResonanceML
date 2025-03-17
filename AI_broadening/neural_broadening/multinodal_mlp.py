@@ -12,7 +12,7 @@ import datetime
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
 minerg = 800
-maxerg = 50000
+maxerg = 1400
 
 plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
@@ -238,3 +238,19 @@ plt.grid()
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.show()
+
+
+
+
+import time
+time1 = time.time()
+itlength = 1000000
+for i in tqdm.tqdm(range(0,itlength)):
+	tp = model.predict(X_test)
+
+time2 = time.time()
+elapsed = time2 - time1
+elapsedformatted = str(datetime.timedelta(seconds=elapsed))
+singleit = elapsed / itlength
+single_iter = str(datetime.timedelta(seconds=singleit))
+print(f'Elapsed: {elapsedformatted} - Time per inference: {single_iter}')
