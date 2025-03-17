@@ -301,7 +301,7 @@ MAE = mean_absolute_error(rescaled_predictions, test_xs)
 bounds(minerg, maxerg)
 
 time1 = time.time()
-for i in tqdm.tqdm(range(10000)):
+for i in tqdm.tqdm(range(1000000)):
 	tempp = model.predict(X_test)
 
 time2 = time.time()
