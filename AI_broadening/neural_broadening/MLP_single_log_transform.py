@@ -117,7 +117,7 @@ model.add(keras.layers.Dense(500, input_shape=(X_train.shape[1],), kernel_initia
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
-# model.add(keras.layers.Dense(400, activation='relu'))
+model.add(keras.layers.Dense(400, activation='relu'))
 model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(200))
 # model.add(keras.layers.LeakyReLU(alpha=0.05))
