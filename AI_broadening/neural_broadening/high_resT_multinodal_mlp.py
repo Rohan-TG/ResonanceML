@@ -162,7 +162,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	unheated_energies_limited = []
 	unheated_XS_limited = []
 	for x, h in zip(unheated_energies, unheated_XS):
-		if x <= upper_bound and x >= lower_bound:
+		if x <= upper_bound * 1e6 and x >= lower_bound * 1e6:
 			unheated_energies_limited.append(x)
 			unheated_XS_limited.append(h)
 
