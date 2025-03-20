@@ -118,23 +118,26 @@ X_test, y_test = dataMaker(temperatures=test_temperatures)
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=20,
+										 patience=30,
 										 mode='min',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(y_test.shape[1], input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.Dense(y_test.shape[1], activation='relu'))
-model.add(keras.layers.Dense(y_test.shape[1], activation='relu'))
-model.add(keras.layers.Dense(y_test.shape[1], activation='relu'))
-# model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(y_test.shape[1]))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(y_test.shape[1]))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(y_test.shape[1]))
+model.add(keras.layers.LeakyReLU(alpha=0.05))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=100,
+					epochs=200,
 					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_val, y_val),
