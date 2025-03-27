@@ -156,7 +156,7 @@ model.compile(loss='mean_absolute_error', optimizer='adam')
 history = model.fit(X_train,
 					y_train,
 					epochs=200,
-					batch_size=32,
+					batch_size=16,
 					callbacks=callback,
 					validation_data=(X_val, y_val),
 					verbose=1)
