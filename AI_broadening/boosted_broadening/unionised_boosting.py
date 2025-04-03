@@ -131,38 +131,61 @@ timestring = get_datetime_string()
 
 def dataMaker(temperatures):
 
-	input_matrix = [] # contains the energy grid and temperatures
-	labels_matrix = [] # contains the cross sections
+
+	T_matrix = []
+	ERG_matrix = []
+	XS_matrix = []
 	for T in tqdm.tqdm(temperatures, total = len(temperatures)):
 		filestring = f'Fe56_T{int(T)}K.csv'
 		df = pd.read_csv(f'{data_dir}/{filestring}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
 		unscaled_T_values = np.log10(df['T'].values)
-		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
+		unscaled_ERG_values = np.log10(df['ERG'].values)
+
+		unscaled_XS = np.log10(df['XS'].values)
+		# scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
 
 		# unscaled_ERG = df['ERG'].values
 		# mean_ERG = np.mean(unscaled_ERG)
 		# std_ERG = np.std(unscaled_ERG)
 		# scaled_ERG = [(E - mean_ERG) / std_ERG for E in unscaled_ERG]
 
-		input_submatrix = np.array(scaled_T_values) # can add or remove ERG here to make energy an input parameter
-		labelsubmatrix = np.array(np.log10(df['XS'].values))
+		# input_submatrix = np.array(scaled_T_values) # can add or remove ERG here to make energy an input parameter
 
-		input_matrix.append(input_submatrix)
-		labels_matrix.append(labelsubmatrix)
+		Tsubmatrix = unscaled_T_values
+		ERGsubmatrix = unscaled_ERG_values
+		XSsubmatrix = unscaled_XS
+
+		T_matrix.append(Tsubmatrix)
+		T_matrix = np.array(T_matrix)
+
+		ERG_matrix.append(ERGsubmatrix)
+		ERG_matrix = np.array(ERG_matrix)
+
+		XS_matrix.append(XSsubmatrix)
+		XS_matrix = np.array(XS_matrix)
+
+		# input_matrix.append(input_submatrix)
+		# labels_matrix.append(labelsubmatrix)
+
+	T_flattened = T_matrix.flatten()
+	ERG_flattened = ERG_matrix.flatten()
+	input_matrix = np.array([ERG_flattened, T_flattened])
 
 	X = np.array(input_matrix)
 	X = X.flatten()
-	y = np.array(labels_matrix)
-
-	flattened_y = y.flatten()
-	meanXS = np.mean(flattened_y)
-	stdXS = np.std(flattened_y)
 
 
+	y = np.array(XS_matrix.flatten())
 
-	y = np.array(flattened_y)
+	# flattened_y = y.flatten()
+	# meanXS = np.mean(flattened_y)
+	# stdXS = np.std(flattened_y)
+
+
+
+	# y = np.array(flattened_y)
 
 	return(X, y)
 
