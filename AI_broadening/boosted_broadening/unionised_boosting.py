@@ -153,18 +153,16 @@ def dataMaker(temperatures):
 		labels_matrix.append(labelsubmatrix)
 
 	X = np.array(input_matrix)
+	X = X.flatten()
 	y = np.array(labels_matrix)
 
 	flattened_y = y.flatten()
 	meanXS = np.mean(flattened_y)
 	stdXS = np.std(flattened_y)
 
-	scaled_labels_matrix = []
-	for set in labels_matrix:
-		scaled_set = [(xs - meanXS) / stdXS for xs in set]
-		scaled_labels_matrix.append(scaled_set)
 
-	y = np.array(scaled_labels_matrix)
+
+	y = np.array(flattened_y)
 
 	return(X, y)
 
