@@ -158,25 +158,27 @@ def dataMaker(temperatures):
 		XSsubmatrix = unscaled_XS
 
 		T_matrix.append(Tsubmatrix)
-		T_matrix = np.array(T_matrix)
+
 
 		ERG_matrix.append(ERGsubmatrix)
-		ERG_matrix = np.array(ERG_matrix)
+
 
 		XS_matrix.append(XSsubmatrix)
-		XS_matrix = np.array(XS_matrix)
 
 		# input_matrix.append(input_submatrix)
 		# labels_matrix.append(labelsubmatrix)
 
+	T_matrix = np.array(T_matrix)
 	T_flattened = T_matrix.flatten()
+
+	ERG_matrix = np.array(ERG_matrix)
 	ERG_flattened = ERG_matrix.flatten()
 	input_matrix = np.array([ERG_flattened, T_flattened])
 
 	X = np.array(input_matrix)
 	X = X.flatten()
 
-
+	XS_matrix = np.array(XS_matrix)
 	y = np.array(XS_matrix.flatten())
 
 	# flattened_y = y.flatten()
