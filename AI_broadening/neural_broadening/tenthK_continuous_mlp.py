@@ -19,8 +19,8 @@ nuclide = [26,56]
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
-maxtemp = 2400
-mintemp = 200
+maxtemp = 1200
+mintemp = 900
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 # all_temperatures = all_temperatures[all_temperatures != 254.7]
@@ -122,13 +122,13 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 restore_best_weights=True)
 
 model = keras.Sequential()
-model.add(keras.layers.Dense(500, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.Dense(400, activation='relu'))
-model.add(keras.layers.Dense(400, activation='relu'))
-model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(300, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.Dense(100, activation='relu'))
+# model.add(keras.layers.Dense(400, activation='relu'))
+# model.add(keras.layers.Dense(200, activation='relu'))
+# model.add(keras.layers.Dense(200, activation='relu'))
+# model.add(keras.layers.Dense(200, activation='relu'))
+model.add(keras.layers.Dense(20, activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 model.compile(loss='mae', optimizer='adam')
 
