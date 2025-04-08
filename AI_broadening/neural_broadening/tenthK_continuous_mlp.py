@@ -16,6 +16,8 @@ maxerg = 1500 / 1e6
 test_temperatures = [1300.0]
 nuclide = [26,56]
 
+plot_directory = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/highresplots'
+
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
@@ -116,7 +118,7 @@ y_test = XS_test
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=5,
+										 patience=50,
 										 mode='min',
 										 start_from_epoch=2,
 										 restore_best_weights=True)
@@ -135,8 +137,8 @@ model.compile(loss='mae', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=100,
-					batch_size=32,
+					epochs=500,
+					batch_size=16,
 					callbacks=callback,
 					validation_data=(X_train, y_train),
 					verbose=1)
@@ -228,6 +230,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.ylabel('Frequency')
 	plt.xlabel('% Error')
 	plt.grid()
+	plt.savefig(f'{plot_directory}/mlpplot-{timestring}_errors.png', dpi=300)
 	plt.show()
 
 	countoverthreshold = 0
@@ -255,7 +258,7 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
-plt.savefig(f'mlpplot-{timestring}_highsampling.png', dpi = 300)
+plt.savefig(f'{plot_directory}/mlpplot-{timestring}_highsampling.png', dpi = 300)
 plt.show()
 
 plt.figure()
@@ -266,6 +269,7 @@ plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
 plt.grid()
+plt.savefig(f'{plot_directory}/lossplot-{timestring}.png', dpi = 300)
 plt.show()
 
 MAE = mean_absolute_error(rescaled_predictions, y_test)
