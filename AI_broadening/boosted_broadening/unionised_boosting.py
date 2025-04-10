@@ -99,7 +99,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
 
 minerg = 800 # in eV
-maxerg = 1400 # in eV
+maxerg = 2500 # in eV
 
 plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/boosted_broadening/unionisedplots'
 
