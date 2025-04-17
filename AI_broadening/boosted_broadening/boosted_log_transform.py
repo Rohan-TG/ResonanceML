@@ -121,7 +121,7 @@ df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 all_temperatures = np.arange(200, 1801, 1)
 
 
-test_temperatures = [1500]
+test_temperatures = [1200]
 validation_temperatures = []
 while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 	choice = random.choice(all_temperatures)
@@ -156,7 +156,7 @@ def log_loss_obj(y_pred, dtrain):
 
 
 
-model = xg.XGBRegressor(n_estimators = 10450,
+model = xg.XGBRegressor(n_estimators = 20450,
 						max_depth = 16,
 						learning_rate = 0.0025919607000481934,
 						reg_lambda = 2.415057075497998,
@@ -198,7 +198,7 @@ plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
 # plt.xscale('log')
-plt.savefig('presplot.png', dpi=300)
+plt.savefig('hightreeplot.png', dpi=300)
 plt.show()
 
 
@@ -225,17 +225,17 @@ plt.show()
 
 bounds(minerg, maxerg)
 
-import time
-time1 = time.time()
-itlength = 1000000
-testd = X_test[100]
-testd = testd.reshape(1,2)
-for i in tqdm.tqdm(range(0,itlength)):
-	tp = model.predict(testd)
-
-time2 = time.time()
-elapsed = time2 - time1
-elapsedformatted = str(datetime.timedelta(seconds=elapsed))
-singleit = elapsed / itlength
-single_iter = str(datetime.timedelta(seconds=singleit))
-print(f'Elapsed: {elapsedformatted} - Time per inference: {single_iter}')
+# import time
+# time1 = time.time()
+# itlength = 1000000
+# testd = X_test[100]
+# testd = testd.reshape(1,2)
+# for i in tqdm.tqdm(range(0,itlength)):
+# 	tp = model.predict(testd)
+#
+# time2 = time.time()
+# elapsed = time2 - time1
+# elapsedformatted = str(datetime.timedelta(seconds=elapsed))
+# singleit = elapsed / itlength
+# single_iter = str(datetime.timedelta(seconds=singleit))
+# print(f'Elapsed: {elapsedformatted} - Time per inference: {single_iter}')
