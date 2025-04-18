@@ -118,7 +118,7 @@ maxerg = 1400 # in eV
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
-all_temperatures = np.arange(200, 1801, 1)
+all_temperatures = np.arange(600, 1501, 1)
 
 
 test_temperatures = [1200]
