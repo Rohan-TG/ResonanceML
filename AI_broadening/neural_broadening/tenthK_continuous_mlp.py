@@ -21,8 +21,8 @@ plot_directory = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_b
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
-maxtemp = 1200
-mintemp = 900
+maxtemp = 1800
+mintemp = 300
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 # all_temperatures = all_temperatures[all_temperatures != 254.7]
@@ -125,12 +125,12 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(800, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.Dense(700, activation='relu'))
+# model.add(keras.layers.Dense(700, activation='relu'))
 model.add(keras.layers.Dense(600, activation='relu'))
 model.add(keras.layers.Dense(500, activation='relu'))
-model.add(keras.layers.Dense(400, activation='relu'))
+# model.add(keras.layers.Dense(400, activation='relu'))
 model.add(keras.layers.Dense(200, activation='relu'))
-model.add(keras.layers.Dense(100, activation='relu'))
+# model.add(keras.layers.Dense(100, activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 model.compile(loss='mae', optimizer='adam')
 
