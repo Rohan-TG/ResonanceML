@@ -125,12 +125,12 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(800, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-# model.add(keras.layers.Dense(700, activation='relu'))
+model.add(keras.layers.Dense(700, activation='relu'))
 model.add(keras.layers.Dense(600, activation='relu'))
 model.add(keras.layers.Dense(500, activation='relu'))
-# model.add(keras.layers.Dense(400, activation='relu'))
+model.add(keras.layers.Dense(400, activation='relu'))
 model.add(keras.layers.Dense(200, activation='relu'))
-# model.add(keras.layers.Dense(100, activation='relu'))
+model.add(keras.layers.Dense(100, activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 model.compile(loss='mae', optimizer='adam')
 
