@@ -21,7 +21,7 @@ plot_directory = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_b
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
-maxtemp = 1800
+maxtemp = 3000
 mintemp = 300
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
