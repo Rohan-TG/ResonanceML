@@ -105,7 +105,7 @@ X_test, y_test = dataMaker(temperatures=test_temperatures)
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=20,
+										 patience=50,
 										 mode='min',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
@@ -128,7 +128,7 @@ model.compile(loss='mean_absolute_error', optimizer='adam')
 
 history = model.fit(X_train,
 					y_train,
-					epochs=100,
+					epochs=500,
 					batch_size=32,
 					callbacks=callback,
 					validation_data=(X_train, y_train),
