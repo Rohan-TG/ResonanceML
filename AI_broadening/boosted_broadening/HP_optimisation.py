@@ -22,8 +22,8 @@ df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
 
 
 
-ntreeguess = np.arange(1000, 38000, 200)
-depthguess = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+ntreeguess = np.arange(1000, 70000, 500)
+depthguess = [2,3,4,5,6,7,8]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 		 'subsample': hp.uniform('subsample', 0.01, 1.0),
@@ -36,15 +36,15 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 
 nuclide = [26, 56]
 minerg = 800 # in eV
-maxerg = 25000 # in eV
+maxerg = 1200 # in eV
 
 df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
 all_temperatures = np.arange(200, 1801, 1)
 all_temperatures = all_temperatures[all_temperatures != 1250]
-test_temperatures = [1500]
-def optimiser(space):
 
+def optimiser(space):
+	test_temperatures = [random.choice(all_temperatures)]
 	validation_temperatures = []
 	while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 		choice = random.choice(all_temperatures)
@@ -79,7 +79,7 @@ def optimiser(space):
 			  eval_set=[#(X_train, y_train),
 						# (X_val, y_val),
 						(X_test, y_test)],
-			  early_stopping_rounds= 20)
+			  early_stopping_rounds= 40)
 
 	predictions = model.predict(X_test)
 
