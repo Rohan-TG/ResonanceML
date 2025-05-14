@@ -18,7 +18,7 @@ import tqdm
 from sklearn.metrics import mean_absolute_error
 
 minerg = 1000 / 1e6
-maxerg = 1005 / 1e6
+maxerg = 1020 / 1e6
 test_temperatures = [1300.0]
 nuclide = [26,56]
 
