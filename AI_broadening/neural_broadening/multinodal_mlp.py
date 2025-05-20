@@ -105,7 +105,7 @@ y_train = np.tile(y_trainoriginal, (50,1))
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=5,
+										 patience=10,
 										 mode='min',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
