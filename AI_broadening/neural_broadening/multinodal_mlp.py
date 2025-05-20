@@ -12,7 +12,7 @@ import datetime
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
 minerg = 800
-maxerg = 1400
+maxerg = 20000
 
 plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
