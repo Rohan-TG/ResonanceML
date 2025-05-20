@@ -97,8 +97,8 @@ X_trainoriginal, y_trainoriginal = dataMaker(temperatures=training_temperatures)
 X_test, y_test = dataMaker(temperatures=test_temperatures)
 
 
-X_train = np.tile(X_trainoriginal, (5,1))
-y_train = np.tile(y_trainoriginal, (5,1))
+X_train = np.tile(X_trainoriginal, (50,1))
+y_train = np.tile(y_trainoriginal, (50,1))
 
 
 
