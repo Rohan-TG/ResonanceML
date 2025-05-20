@@ -11,8 +11,8 @@ import datetime
 
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
-minerg = 1000
-maxerg = 1020
+minerg = 900
+maxerg = 1300
 
 plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
@@ -93,12 +93,12 @@ def dataMaker(temperatures):
 
 
 X_val, y_val = dataMaker(temperatures=validation_temperatures)
-X_train, y_train = dataMaker(temperatures=training_temperatures)
+X_trainoriginal, y_trainoriginal = dataMaker(temperatures=training_temperatures)
 X_test, y_test = dataMaker(temperatures=test_temperatures)
 
 
-
-
+X_train = np.tile(X_trainoriginal, (1,1))
+y_train = np.tile(y_trainoriginal, (1,1))
 
 
 
