@@ -11,8 +11,8 @@ import datetime
 
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
-minerg = 800
-maxerg = 20000
+minerg = 1000
+maxerg = 1050
 
 plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
@@ -60,7 +60,7 @@ def dataMaker(temperatures):
 		df = pd.read_csv(f'{data_dir}/{filestring}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
-		unscaled_T_values = np.log10(df['T'].values)
+		unscaled_T_values = df['T'].values
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
 
 		# unscaled_ERG = df['ERG'].values
