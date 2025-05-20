@@ -105,7 +105,7 @@ X_test, y_test = dataMaker(temperatures=test_temperatures)
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=50,
+										 patience=5,
 										 mode='min',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
@@ -242,15 +242,15 @@ plt.show()
 
 
 
-import time
-time1 = time.time()
-itlength = 1000000
-for i in tqdm.tqdm(range(0,itlength)):
-	tp = model.predict(X_test)
-
-time2 = time.time()
-elapsed = time2 - time1
-elapsedformatted = str(datetime.timedelta(seconds=elapsed))
-singleit = elapsed / itlength
-single_iter = str(datetime.timedelta(seconds=singleit))
-print(f'Elapsed: {elapsedformatted} - Time per inference: {single_iter}')
+# import time
+# time1 = time.time()
+# itlength = 1000000
+# for i in tqdm.tqdm(range(0,itlength)):
+# 	tp = model.predict(X_test)
+#
+# time2 = time.time()
+# elapsed = time2 - time1
+# elapsedformatted = str(datetime.timedelta(seconds=elapsed))
+# singleit = elapsed / itlength
+# single_iter = str(datetime.timedelta(seconds=singleit))
+# print(f'Elapsed: {elapsedformatted} - Time per inference: {single_iter}')
