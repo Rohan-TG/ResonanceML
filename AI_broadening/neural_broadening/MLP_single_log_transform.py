@@ -82,7 +82,8 @@ y_train_logged = np.array(np.log(training_dataframe['XS'].values))
 y_train = scipy.stats.zscore(y_train_logged)
 
 
-
+X_train = np.tile(X_train, (2,1))
+y_train = np.concatenate([y_train,y_train], axis=0)
 
 # logged_T_test = np.log(test_dataframe['T'].values)
 scaled_T_test = [(x - mean_alltemps) / std_alltemps for x in test_dataframe['T'].values]
