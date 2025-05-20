@@ -27,8 +27,8 @@ import datetime
 
 
 
-minerg = 800
-maxerg = 1500
+minerg = 12425
+maxerg = 12450
 
 
 def get_datetime_string():
@@ -37,7 +37,7 @@ def get_datetime_string():
 
 
 
-all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
+all_temperatures = np.arange(950, 1051, 1) # all temperatures in the data file
 
 
 df = pd.read_csv('../AI_data/Fe56_200_to_1800_D1K_MT102.csv')
@@ -46,7 +46,7 @@ df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
 # df = pd.read_csv('Fe56_200_to_1800_D1K.MT102.csv')
 
-test_temperatures = [1700]
+test_temperatures = [1000]
 nuclide = [26,56]
 
 
@@ -73,8 +73,8 @@ std_alltemps = np.std(all_temperatures)
 
 test_dataframe = df[df['T'].isin(test_temperatures)]
 training_dataframe = df[df['T'].isin(training_temperatures)]
-logged_T_train = np.log(training_dataframe['T'].values)
-scaled_T_train = [(x - mean_alltemps) / std_alltemps for x in logged_T_train]
+# logged_T_train = np.log(training_dataframe['T'].values)
+scaled_T_train = [(x - mean_alltemps) / std_alltemps for x in training_dataframe['T'].values]
 logged_ERG_train = np.log(training_dataframe['ERG'].values)
 X_train = np.array([scipy.stats.zscore(logged_ERG_train), scaled_T_train])
 X_train = np.transpose(X_train)
@@ -84,8 +84,8 @@ y_train = scipy.stats.zscore(y_train_logged)
 
 
 
-logged_T_test = np.log(test_dataframe['T'].values)
-scaled_T_test = [(x - mean_alltemps) / std_alltemps for x in logged_T_test]
+# logged_T_test = np.log(test_dataframe['T'].values)
+scaled_T_test = [(x - mean_alltemps) / std_alltemps for x in test_dataframe['T'].values]
 
 ERG_test = test_dataframe['ERG'].values
 logged_ERG_test = np.log(ERG_test)
@@ -106,19 +106,19 @@ y_test = scipy.stats.zscore(logged_y_test)
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
-										 patience=20,
+										 patience=5,
 										 mode='min',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
 
 model = keras.Sequential()
-model.add(keras.layers.Dense(500, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
 # model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(400, activation='relu'))
 # model.add(keras.layers.Dense(400, activation='relu'))
-model.add(keras.layers.Dense(400, activation='relu'))
-model.add(keras.layers.Dense(300, activation='relu'))
-model.add(keras.layers.Dense(200, activation='relu'))
+# model.add(keras.layers.Dense(400, activation='relu'))
+# model.add(keras.layers.Dense(300, activation='relu'))
+# model.add(keras.layers.Dense(200, activation='relu'))
 # model.add(keras.layers.Dense(200))
 # model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.Dense(200, activation='relu'))
@@ -199,7 +199,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 			test_XS_limited.append(qx)
 
 	plt.figure()
-	plt.plot(unheated_energies_limited, unheated_XS_limited, label = '0 K JEFF-3.3')
+	# plt.plot(unheated_energies_limited, unheated_XS_limited, label = '0 K JEFF-3.3')
 	plt.grid()
 	plt.plot(test_energies_limited, predictions_limited, label='Predictions', color='red')
 	plt.xlabel('Energy / eV')
@@ -244,7 +244,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
-	plt.savefig(f'/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/miscplots/mlpeerrors_{timestring}.png', dpi = 300)
+	# plt.savefig(f'/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/miscplots/mlpeerrors_{timestring}.png', dpi = 300)
 	plt.show()
 
 	plt.figure()
@@ -275,7 +275,7 @@ timestring = get_datetime_string()
 
 
 plt.figure()
-plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
+# plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
 plt.plot(ERG_test, test_xs, '--', label = 'JEFF-3.3 1,800 K')
 plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
 plt.legend()
@@ -284,7 +284,7 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
-plt.savefig(f'/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/miscplots/mlpplot-{timestring}_pres.png', dpi = 300)
+# plt.savefig(f'/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/miscplots/mlpplot-{timestring}_pres.png', dpi = 300)
 plt.show()
 
 plt.figure()
