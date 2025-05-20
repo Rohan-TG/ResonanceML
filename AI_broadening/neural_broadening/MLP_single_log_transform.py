@@ -27,7 +27,7 @@ import datetime
 
 
 
-minerg = 12425
+minerg = 12400
 maxerg = 12450
 
 
