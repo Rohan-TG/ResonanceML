@@ -57,17 +57,9 @@ std_alltemps = np.std(all_temperatures)
 filenames = os.listdir(data_dir)
 exclusions = [254.7, 254.8, 254.9, 255.0]
 
-ERG_val = []
-XS_val = []
-T_val = []
 
-ERG_train = []
-XS_train = []
-T_train = []
-
-ERG_test = []
-XS_test = []
-T_test = []
+train_input_matrix = [] # contains the energy grid and temperatures
+train_labels_matrix = [] # contains the cross sections
 
 for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_temperatures)):
 	if round(float(train_temperature), 1) not in exclusions:
@@ -75,6 +67,95 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 		filename = f'Fe_56_{roundedtt}.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
-		ERG_train.append(df['ERG'].values)
-		XS_train.append(df['XS'].values)
-		T_train.append(df['T'].values)
+
+		logged_T_values = np.log10(df['T'].values)
+		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
+
+		input_submatrix = np.array(scaled_T_values)  # can add or remove ERG here to make energy an input parameter
+		labelsubmatrix = np.array(np.log10(df['XS'].values))
+
+		train_input_matrix.append(input_submatrix)
+		train_labels_matrix.append(labelsubmatrix)
+
+X_train = np.array(train_input_matrix)
+y_train = np.array(train_labels_matrix)
+
+flattened_y_train = y_train.flatten()
+meanXS_train = np.mean(flattened_y_train)
+stdXS_train = np.std(flattened_y_train)
+
+scaled_train_labels_matrix = []
+for set in train_labels_matrix:
+	scaled_set = [(xs - meanXS_train) / stdXS_train for xs in set]
+	scaled_train_labels_matrix.append(scaled_set)
+
+y = np.array(scaled_train_labels_matrix)
+
+
+val_input_matrix = [] # contains the energy grid and temperatures
+val_labels_matrix = [] # contains the cross sections
+
+for val_temperature in tqdm.tqdm(validation_temperatures, total=len(validation_temperatures)):
+	if round(float(val_temperature), 1) not in exclusions:
+		roundedtt = str(round(val_temperature, 1))
+		filename = f'Fe_56_{roundedtt}.csv'
+		df = pd.read_csv(f'{data_dir}/{filename}')
+		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
+
+		logged_val_T_values = np.log10(df['T'].values)
+		scaled_val_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_val_T_values]
+
+		input_submatrix_val = np.array(scaled_val_T_values)  # can add or remove ERG here to make energy an input parameter
+		labelsubmatrix_val = np.array(np.log10(df['XS'].values))
+
+		val_input_matrix.append(input_submatrix_val)
+		val_labels_matrix.append(labelsubmatrix_val)
+
+X_val = np.array(val_input_matrix)
+y_val = np.array(val_labels_matrix)
+
+flattened_y_val = y_val.flatten()
+meanXS_val = np.mean(flattened_y_val)
+stdXS_val = np.std(flattened_y_val)
+
+scaled_val_labels_matrix = []
+for set in val_labels_matrix:
+	scaled_set = [(xs - meanXS_val) / stdXS_val for xs in set]
+	scaled_val_labels_matrix.append(scaled_set)
+
+y = np.array(scaled_val_labels_matrix)
+
+
+
+test_input_matrix = []
+test_labels_matrix = []
+
+for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures)):
+	if round(float(test_temperature), 1) not in exclusions:
+		roundedtt = str(round(test_temperature, 1))
+		filename = f'Fe_56_{roundedtt}.csv'
+		df = pd.read_csv(f'{data_dir}/{filename}')
+		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
+
+		logged_test_T_values = np.log10(df['T'].values)
+		scaled_test_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_test_T_values]
+
+		input_submatrix_test = np.array(scaled_test_T_values)  # can add or remove ERG here to make energy an input parameter
+		labelsubmatrix_test = np.array(np.log10(df['XS'].values))
+
+		test_input_matrix.append(input_submatrix_test)
+		test_labels_matrix.append(labelsubmatrix_test)
+
+X_test = np.array(test_input_matrix)
+y_test = np.array(test_labels_matrix)
+
+flattened_y_test = y_test.flatten()
+meanXS_test = np.mean(flattened_y_test)
+stdXS_test = np.std(flattened_y_test)
+
+scaled_test_labels_matrix = []
+for set in test_labels_matrix:
+	scaled_set = [(xs - meanXS_test) / stdXS_test for xs in set]
+	scaled_test_labels_matrix.append(scaled_set)
+
+y = np.array(scaled_test_labels_matrix)
