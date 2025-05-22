@@ -23,8 +23,8 @@ def get_datetime_string():
 
 nuclide = [26, 56]
 
-maxtemp = 1400
-mintemp = 700
+maxtemp = 3500
+mintemp = 200
 
 minerg = 1000 / 1e6
 maxerg = 1200 / 1e6
