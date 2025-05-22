@@ -11,22 +11,22 @@ import datetime
 
 # from neural_broadening_functions import log_single_nuclide_data_maker
 nuclide = [26,56]
-minerg = 900
-maxerg = 1300
+minerg = 1000
+maxerg = 1200
 
-plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
+# plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
 all_temperatures = np.arange(200, 1801, 1) # all temperatures in the data file
 all_temperatures = all_temperatures[all_temperatures != 1250]
 log_alltemps = np.log10(all_temperatures)
 mean_alltemps = np.mean(log_alltemps)
 std_alltemps = np.std(log_alltemps)
-data_dir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv'
-
+# data_dir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv'
+data_dir = '/Users/rntg/PycharmProjects/ResonanceML/AI_broadening/AI_data/dT1K_samples/samples_csv'
 
 test_temperatures = [1400]
 validation_temperatures = []
-while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
+while len(validation_temperatures) < int(len(all_temperatures) * 0.1):
 	choice = random.choice(all_temperatures)
 	if choice not in validation_temperatures and choice not in test_temperatures:
 		validation_temperatures.append(choice)
@@ -61,7 +61,8 @@ def dataMaker(temperatures):
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
 		unscaled_T_values = df['T'].values
-		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in unscaled_T_values]
+		logged_T_values = np.log10(unscaled_T_values)
+		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
 
 		# unscaled_ERG = df['ERG'].values
 		# mean_ERG = np.mean(unscaled_ERG)
@@ -112,16 +113,16 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(X_train.shape[1], input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.Dense(X_train.shape[1]))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.add(keras.layers.Dense(X_train.shape[1]))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-model.add(keras.layers.Dense(X_train.shape[1]))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
-# model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
-# model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
-model.add(keras.layers.Dense(X_train.shape[1]))
-model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
+model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
+model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
+model.add(keras.layers.Dense(X_train.shape[1], activation='relu'))
+# model.add(keras.layers.LeakyReLU(alpha=0.05))
 # model.add(keras.layers.LeakyReLU(alpha=0.05))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
@@ -181,7 +182,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xscale('log')
 	plt.yscale('log')
 	plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-	plt.savefig(f'{plotdir}/{timestring}-standard_multinodal_plot.png')
+	# plt.savefig(f'{plotdir}/{timestring}-standard_multinodal_plot.png')
 	plt.show()
 
 
@@ -208,7 +209,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
-	plt.savefig(f'{plotdir}/{timestring}-standard_multinodal_errors.png')
+	# plt.savefig(f'{plotdir}/{timestring}-standard_multinodal_errors.png')
 	plt.show()
 
 	plt.figure()
