@@ -89,7 +89,7 @@ for set in train_labels_matrix:
 	scaled_set = [(xs - meanXS_train) / stdXS_train for xs in set]
 	scaled_train_labels_matrix.append(scaled_set)
 
-y = np.array(scaled_train_labels_matrix)
+y_train = np.array(scaled_train_labels_matrix)
 
 
 val_input_matrix = [] # contains the energy grid and temperatures
@@ -123,7 +123,7 @@ for set in val_labels_matrix:
 	scaled_set = [(xs - meanXS_val) / stdXS_val for xs in set]
 	scaled_val_labels_matrix.append(scaled_set)
 
-y = np.array(scaled_val_labels_matrix)
+y_val = np.array(scaled_val_labels_matrix)
 
 
 
@@ -158,4 +158,4 @@ for set in test_labels_matrix:
 	scaled_set = [(xs - meanXS_test) / stdXS_test for xs in set]
 	scaled_test_labels_matrix.append(scaled_set)
 
-y = np.array(scaled_test_labels_matrix)
+y_test = np.array(scaled_test_labels_matrix)
