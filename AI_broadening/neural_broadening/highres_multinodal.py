@@ -23,8 +23,8 @@ def get_datetime_string():
 
 nuclide = [26, 56]
 
-maxtemp = 3500
-mintemp = 300
+maxtemp = 1050
+mintemp = 950
 
 minerg = 1000 / 1e6
 maxerg = 1200 / 1e6
@@ -202,7 +202,7 @@ model.compile(loss='mean_absolute_error', optimizer='adam')
 history = model.fit(X_train,
 					y_train,
 					epochs=200,
-					batch_size=32,
+					batch_size=16,
 					callbacks=callback,
 					validation_data=(X_val, y_val),
 					verbose=1)
