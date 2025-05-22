@@ -23,8 +23,8 @@ def get_datetime_string():
 
 nuclide = [26, 56]
 
-maxtemp = 1200
-mintemp = 1000
+maxtemp = 1400
+mintemp = 700
 
 minerg = 1000 / 1e6
 maxerg = 1200 / 1e6
@@ -175,6 +175,10 @@ model.add(keras.layers.Dense(y_test.shape[1], input_shape=(X_train.shape[1],), k
 model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(y_test.shape[1]))
 model.add(keras.layers.LeakyReLU(alpha=0.2))
+# model.add(keras.layers.Dense(y_test.shape[1]))
+# model.add(keras.layers.LeakyReLU(alpha=0.2))
+# model.add(keras.layers.Dense(y_test.shape[1]))
+# model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
 
