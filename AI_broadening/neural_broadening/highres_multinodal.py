@@ -24,7 +24,7 @@ def get_datetime_string():
 maxtemp = 1200
 mintemp = 1000
 
-minerg = 1000/ 1e6
+minerg = 1000 / 1e6
 maxerg = 1200 / 1e6
 
 
@@ -50,13 +50,14 @@ for T in all_temperatures:
 	if T not in test_temperatures and T not in validation_temperatures:
 		training_temperatures.append(T)
 
-mean_alltemps = np.mean(all_temperatures)
-std_alltemps = np.std(all_temperatures)
+logged_temperatures = np.log10(np.array(all_temperatures).astype(np.float128))
+mean_alltemps = np.mean(logged_temperatures.astype(np.float128), dtype=np.float128)
+std_alltemps = np.std(logged_temperatures.astype(np.float128), dtype= np.float128)
 
 
 filenames = os.listdir(data_dir)
-exclusions = [254.7, 254.8, 254.9, 255.0]
-
+# exclusions = [254.7, 254.8, 254.9, 255.0]
+exclusions = []
 
 train_input_matrix = [] # contains the energy grid and temperatures
 train_labels_matrix = [] # contains the cross sections
