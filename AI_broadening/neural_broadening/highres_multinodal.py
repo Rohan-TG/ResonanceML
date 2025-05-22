@@ -31,7 +31,7 @@ maxerg = 1200 / 1e6
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 
-test_temperatures = [1300.0]
+test_temperatures = [1100.0]
 
 data_dir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/AI_data/interpolated_high_res_0.1K'
 
