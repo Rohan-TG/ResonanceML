@@ -72,7 +72,7 @@ T_test = []
 for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_temperatures)):
 	if round(float(train_temperature), 1) not in exclusions:
 		roundedtt = str(round(train_temperature, 1))
-		filename = f'Fe_56_{roundedtt}K.csv'
+		filename = f'Fe_56_{roundedtt}.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 		ERG_train.append(df['ERG'].values)
