@@ -159,3 +159,18 @@ for set in test_labels_matrix:
 	scaled_test_labels_matrix.append(scaled_set)
 
 y_test = np.array(scaled_test_labels_matrix)
+
+callback = keras.callbacks.EarlyStopping(monitor='val_loss',
+										 # min_delta=0.005,
+										 patience=5,
+										 mode='min',
+										 start_from_epoch=5,
+										 restore_best_weights=True)
+
+model = keras.Sequential()
+model.add(keras.layers.Dense(y_test.shape[1], input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.Dense(y_test.shape[1]))
+model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
+model.compile(loss='mean_absolute_error', optimizer='adam')
