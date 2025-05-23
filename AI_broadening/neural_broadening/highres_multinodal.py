@@ -1,10 +1,10 @@
 import os
 
-os.environ["OMP_NUM_THREADS"] = "90"
-os.environ["MKL_NUM_THREADS"] = "90"
-os.environ["OPENBLAS_NUM_THREADS"] = "90"
-os.environ["TF_NUM_INTEROP_THREADS"] = "90"
-os.environ["TF_NUM_INTRAOP_THREADS"] = "90"
+os.environ["OMP_NUM_THREADS"] = "60"
+os.environ["MKL_NUM_THREADS"] = "60"
+os.environ["OPENBLAS_NUM_THREADS"] = "60"
+os.environ["TF_NUM_INTEROP_THREADS"] = "60"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "60"
 
 import pandas as pd
 import keras
@@ -12,11 +12,9 @@ import datetime
 import numpy as np
 import random
 import periodictable
-import itertools
 import scipy
 import matplotlib.pyplot as plt
 import tqdm
-from sklearn.metrics import mean_absolute_error
 
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
@@ -194,8 +192,6 @@ model.add(keras.layers.Dense(1000))
 model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(700))
 model.add(keras.layers.LeakyReLU(alpha=0.2))
-# # model.add(keras.layers.Dense(y_test.shape[1]))
-# # model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
 #
@@ -219,11 +215,8 @@ dftest = pd.read_csv(f'{data_dir}/{teststring}')
 dftest = dftest[(dftest['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
 testxs = dftest['XS'].values
-# meantestxs = np.mean(np.log10(testxs))
-# stdtestxs = np.std(np.log10(testxs))
 
 
-# rescaled_predictions = [p * stdtestxs + meantestxs for p in predictions]
 energies = dftest['ERG'].values
 
 rescaled_predictions = []
@@ -274,29 +267,32 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 
-	# plt.figure()
-	# plt.plot(test_energies_limited, relativeError, label = 'Error')
-	# plt.xlabel('Energy / eV')
-	# plt.ylabel('Relative error')
-	# plt.xscale('log')
-	# plt.legend()
-	# plt.yscale('log')
-	# plt.grid()
-	# plt.show()
+	plt.figure()
+	plt.plot(test_energies_limited, relativeError, label = 'Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('Relative error')
+	plt.xscale('log')
+	plt.legend()
+	plt.yscale('log')
+	plt.grid()
+	plt.savefig(f'{plotdir}/{timestring}-multinodal_rel_error.png', dpi=300)
+	plt.show()
 
-	# plt.figure()
-	# plt.plot(test_energies_limited, percentageError, label='Error')
-	# plt.xlabel('Energy / eV')
-	# plt.ylabel('% Error')
-	# plt.grid()
-	# plt.show()
-	#
-	# plt.figure()
-	# plt.hist(percentageError, bins=50)
-	# plt.ylabel('Frequency')
-	# plt.xlabel('% Error')
-	# plt.grid()
-	# plt.show()
+	plt.figure()
+	plt.plot(test_energies_limited, percentageError, label='Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('% Error')
+	plt.grid()
+	plt.savefig(f'{plotdir}/{timestring}-pct_error.png', dpi=300)
+	plt.show()
+
+	plt.figure()
+	plt.hist(percentageError, bins=50)
+	plt.ylabel('Frequency')
+	plt.xlabel('% Error')
+	plt.grid()
+	plt.savefig(f'{plotdir}/{timestring}-error_histogram.png', dpi=300)
+	plt.show()
 
 	countoverthreshold = 0
 	for XX in percentageError:
@@ -310,7 +306,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
 
 
-bounds(minerg, maxerg)
+# bounds(minerg, maxerg)
 
 # plt.figure()
 # plt.plot(history.history['loss'])
@@ -343,7 +339,7 @@ for o, p, qx in zip(energies, rescaled_predictions, testxs):
 # 	percentageError.append((p/xs * 100) - 100)
 #
 # print('Percentage error:', percentageError)
-# plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
+plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
 # plt.figure()
 # plt.plot(test_energies_limited, percentageError, label='Error')
@@ -352,7 +348,7 @@ for o, p, qx in zip(energies, rescaled_predictions, testxs):
 # # plt.savefig(f'{plotdir}/{timestring}-highres_multinodal_errors.png')
 # plt.grid()
 # plt.show()
-
+timestring = get_datetime_string()
 plt.figure()
 # plt.plot(unheated_energies_limited, unheated_XS_limited, label='0 K JEFF-3.3')
 plt.grid()
@@ -365,7 +361,7 @@ plt.legend()
 plt.xscale('log')
 plt.yscale('log')
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-# plt.savefig(f'multitest.png')
+plt.savefig(f'{plotdir}/{timestring}-multinodal_plot.png', dpi=300)
 plt.show()
 
 bounds(minerg, maxerg)
