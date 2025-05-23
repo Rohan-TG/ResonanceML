@@ -29,7 +29,7 @@ mintemp = 850
 test_temperatures = [1000.0]
 
 minerg = 1000 / 1e6
-maxerg = 1200 / 1e6
+maxerg = 5000 / 1e6
 
 
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
@@ -367,14 +367,14 @@ bounds(minerg, maxerg)
 # 		unheated_energies_limited.append(x)
 # 		unheated_XS_limited.append(h)
 
-# test_energies_limited = []
-# predictions_limited = []
-# test_XS_limited = []
-# for o, p, qx in zip(energies, rescaled_predictions, testxs):
-# 	if o <= maxerg and o >= minerg:
-# 		test_energies_limited.append(o)
-# 		predictions_limited.append(p)
-# 		test_XS_limited.append(qx)
+test_energies_limited = []
+predictions_limited = []
+test_XS_limited = []
+for o, p, qx in zip(energies, rescaled_predictions, testxs):
+	if o <= maxerg and o >= minerg:
+		test_energies_limited.append(o)
+		predictions_limited.append(p)
+		test_XS_limited.append(qx)
 
 
 # relativeError = []
@@ -394,19 +394,19 @@ bounds(minerg, maxerg)
 # plt.grid()
 # plt.show()
 
-# plt.figure()
+plt.figure()
 # plt.plot(unheated_energies_limited, unheated_XS_limited, label='0 K JEFF-3.3')
-# plt.grid()
-# plt.plot(test_energies_limited, predictions_limited, label='Predictions', color='red')
-# plt.xlabel('Energy / eV')
-# plt.ylabel('$\sigma_{n,\gamma} / b$')
-# plt.plot(test_energies_limited, test_XS_limited, '--', label=f'{test_temperatures[0]} K JEFF-3.3', color='lightgreen',
-# 		 alpha=0.7)
-# plt.legend()
-# plt.xscale('log')
-# plt.yscale('log')
-# plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-# # plt.savefig(f'{plotdir}/{timestring}-highres_multinodal_plot.png')
-# plt.show()
+plt.grid()
+plt.plot(test_energies_limited, predictions_limited, label='Predictions', color='red')
+plt.xlabel('Energy / eV')
+plt.ylabel('$\sigma_{n,\gamma} / b$')
+plt.plot(test_energies_limited, test_XS_limited, '--', label=f'{test_temperatures[0]} K JEFF-3.3', color='lightgreen',
+		 alpha=0.7)
+plt.legend()
+plt.xscale('log')
+plt.yscale('log')
+plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
+# plt.savefig(f'multitest.png')
+plt.show()
 
 bounds(minerg, maxerg)
