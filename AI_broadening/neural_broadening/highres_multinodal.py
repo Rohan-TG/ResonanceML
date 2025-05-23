@@ -28,8 +28,8 @@ mintemp = 850
 
 test_temperatures = [1000.0]
 
-minerg = 800 / 1e6
-maxerg = 2500 / 1e6
+minerg = 1000 / 1e6
+maxerg = 1200 / 1e6
 
 
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
@@ -85,16 +85,23 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 X_train = np.array(train_input_matrix)
 y_train = np.array(train_labels_matrix)
 
-flattened_y_train = y_train.flatten()
-meanXS_train = np.mean(flattened_y_train)
-stdXS_train = np.std(flattened_y_train)
+flipped_y_train = y_train.transpose()
 
-scaled_train_labels_matrix = []
-for set in train_labels_matrix:
-	scaled_set = [(xs - meanXS_train) / stdXS_train for xs in set]
-	scaled_train_labels_matrix.append(scaled_set)
+scaled_y_train = []
 
-y_train = np.array(scaled_train_labels_matrix)
+means_test = []
+stds_test = []
+
+for energyPointvalues in flipped_y_train:
+	scaled_values = scipy.stats.zscore(energyPointvalues)
+	scaled_y_train.append(scaled_values)
+
+	means_test.append(np.mean(energyPointvalues))
+	stds_test.append(np.std(energyPointvalues))
+
+
+y_train = np.array(scaled_y_train)
+y_train = y_train.transpose()
 
 
 val_input_matrix = [] # contains the energy grid and temperatures
@@ -119,16 +126,15 @@ for val_temperature in tqdm.tqdm(validation_temperatures, total=len(validation_t
 X_val = np.array(val_input_matrix)
 y_val = np.array(val_labels_matrix)
 
-flattened_y_val = y_val.flatten()
-meanXS_val = np.mean(flattened_y_val)
-stdXS_val = np.std(flattened_y_val)
+flipped_y_val = y_val.transpose()
 
-scaled_val_labels_matrix = []
-for set in val_labels_matrix:
-	scaled_set = [(xs - meanXS_val) / stdXS_val for xs in set]
-	scaled_val_labels_matrix.append(scaled_set)
+scaled_y_val = []
+for energyPointvalues in flipped_y_val:
+	scaled_values = scipy.stats.zscore(energyPointvalues)
+	scaled_y_val.append(scaled_values)
 
-y_val = np.array(scaled_val_labels_matrix)
+y_val = np.array(scaled_y_val)
+y_val = y_val.transpose()
 
 
 
@@ -151,19 +157,18 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 		test_input_matrix.append(input_submatrix_test)
 		test_labels_matrix.append(labelsubmatrix_test)
 
+
 X_test = np.array(test_input_matrix)
 y_test = np.array(test_labels_matrix)
 
-flattened_y_test = y_test.flatten()
-meanXS_test = np.mean(flattened_y_test)
-stdXS_test = np.std(flattened_y_test)
 
-scaled_test_labels_matrix = []
-for set in test_labels_matrix:
-	scaled_set = [(xs - meanXS_test) / stdXS_test for xs in set]
-	scaled_test_labels_matrix.append(scaled_set)
+scaled_y_test = []
+for energyPointvalue, mean, std in zip(y_test, means_test, stds_test):
+	scaled_value = (energyPointvalue - mean) / std
+	scaled_y_test.append(scaled_value)
 
-y_test = np.array(scaled_test_labels_matrix)
+y_test = np.array(scaled_y_test)
+
 
 callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 # min_delta=0.005,
@@ -172,17 +177,7 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 start_from_epoch=5,
 										 restore_best_weights=True)
 
-# model = keras.Sequential()
-# model.add(keras.layers.Dense(y_test.shape[1], input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-# model.add(keras.layers.LeakyReLU(alpha=0.2))
-# model.add(keras.layers.Dense(y_test.shape[1]))
-# model.add(keras.layers.LeakyReLU(alpha=0.2))
-# model.add(keras.layers.Dense(y_test.shape[1]))
-# model.add(keras.layers.LeakyReLU(alpha=0.2))
-# # model.add(keras.layers.Dense(y_test.shape[1]))
-# # model.add(keras.layers.LeakyReLU(alpha=0.2))
-# model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
-# model.compile(loss='mean_absolute_error', optimizer='adam')
+
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(2500, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
@@ -192,21 +187,21 @@ model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(1900))
 model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(1700))
-# model.add(keras.layers.LeakyReLU(alpha=0.2))
-# model.add(keras.layers.Dense(1300))
+model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.Dense(1300))
 model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(1000))
 model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(700))
 model.add(keras.layers.LeakyReLU(alpha=0.2))
-# model.add(keras.layers.Dense(y_test.shape[1]))
-# model.add(keras.layers.LeakyReLU(alpha=0.2))
+# # model.add(keras.layers.Dense(y_test.shape[1]))
+# # model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
 model.compile(loss='mean_absolute_error', optimizer='adam')
-
-
-# new additions
-
+#
+#
+# # new additions
+#
 history = model.fit(X_train,
 					y_train,
 					epochs=200,
@@ -224,13 +219,19 @@ dftest = pd.read_csv(f'{data_dir}/{teststring}')
 dftest = dftest[(dftest['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
 testxs = dftest['XS'].values
-meantestxs = np.mean(np.log10(testxs))
-stdtestxs = np.std(np.log10(testxs))
+# meantestxs = np.mean(np.log10(testxs))
+# stdtestxs = np.std(np.log10(testxs))
 
-rescaled_predictions = [p * stdtestxs + meantestxs for p in predictions]
+
+# rescaled_predictions = [p * stdtestxs + meantestxs for p in predictions]
 energies = dftest['ERG'].values
 
-rescaled_predictions = [10 ** P for P in rescaled_predictions]
+rescaled_predictions = []
+for P, mean, std in zip(predictions, means_test, stds_test):
+	descaled_p = P * std + mean
+	rescaled_predictions.append(descaled_p)
+
+rescaled_predictions = [10 ** p for p in rescaled_predictions]
 
 
 def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
@@ -309,7 +310,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
 
 
-# bounds(minerg, maxerg)
+bounds(minerg, maxerg)
 
 # plt.figure()
 # plt.plot(history.history['loss'])
@@ -318,12 +319,12 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 # plt.ylabel('Loss')
 # plt.show()
 
-unheated_energies_limited = []
-unheated_XS_limited = []
-for x, h in zip(unheated_energies, unheated_XS):
-	if x <= maxerg and x >= minerg:
-		unheated_energies_limited.append(x)
-		unheated_XS_limited.append(h)
+# unheated_energies_limited = []
+# unheated_XS_limited = []
+# for x, h in zip(unheated_energies, unheated_XS):
+# 	if x <= maxerg and x >= minerg:
+# 		unheated_energies_limited.append(x)
+# 		unheated_XS_limited.append(h)
 
 test_energies_limited = []
 predictions_limited = []
@@ -335,15 +336,15 @@ for o, p, qx in zip(energies, rescaled_predictions, testxs):
 		test_XS_limited.append(qx)
 
 
-relativeError = []
-percentageError = []
-for p, xs in zip(predictions_limited, test_XS_limited):
-	relativeError.append(abs((p-xs)/xs))
-	percentageError.append((p/xs * 100) - 100)
-
+# relativeError = []
+# percentageError = []
+# for p, xs in zip(predictions_limited, test_XS_limited):
+# 	relativeError.append(abs((p-xs)/xs))
+# 	percentageError.append((p/xs * 100) - 100)
+#
 # print('Percentage error:', percentageError)
 # plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
-#
+
 # plt.figure()
 # plt.plot(test_energies_limited, percentageError, label='Error')
 # plt.xlabel('Energy / eV')
@@ -351,20 +352,20 @@ for p, xs in zip(predictions_limited, test_XS_limited):
 # # plt.savefig(f'{plotdir}/{timestring}-highres_multinodal_errors.png')
 # plt.grid()
 # plt.show()
-#
-# plt.figure()
+
+plt.figure()
 # plt.plot(unheated_energies_limited, unheated_XS_limited, label='0 K JEFF-3.3')
-# plt.grid()
-# plt.plot(test_energies_limited, predictions_limited, label='Predictions', color='red')
-# plt.xlabel('Energy / eV')
-# plt.ylabel('$\sigma_{n,\gamma} / b$')
-# plt.plot(test_energies_limited, test_XS_limited, '--', label=f'{test_temperatures[0]} K JEFF-3.3', color='lightgreen',
-# 		 alpha=0.7)
-# plt.legend()
-# plt.xscale('log')
-# plt.yscale('log')
-# plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-# # plt.savefig(f'{plotdir}/{timestring}-highres_multinodal_plot.png')
-# plt.show()
+plt.grid()
+plt.plot(test_energies_limited, predictions_limited, label='Predictions', color='red')
+plt.xlabel('Energy / eV')
+plt.ylabel('$\sigma_{n,\gamma} / b$')
+plt.plot(test_energies_limited, test_XS_limited, '--', label=f'{test_temperatures[0]} K JEFF-3.3', color='lightgreen',
+		 alpha=0.7)
+plt.legend()
+plt.xscale('log')
+plt.yscale('log')
+plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
+# plt.savefig(f'multitest.png')
+plt.show()
 
 bounds(minerg, maxerg)
