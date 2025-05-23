@@ -28,8 +28,8 @@ mintemp = 850
 
 test_temperatures = [1000.0]
 
-minerg = 1000 / 1e6
-maxerg = 5000 / 1e6
+minerg = 800 / 1e6
+maxerg = 25000 / 1e6
 
 
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
