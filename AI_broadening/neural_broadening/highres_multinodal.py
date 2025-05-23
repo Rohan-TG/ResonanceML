@@ -23,8 +23,8 @@ def get_datetime_string():
 
 nuclide = [26, 56]
 
-maxtemp = 600
-mintemp = 1400
+maxtemp = 850
+mintemp = 1150
 
 test_temperatures = [1000.0]
 
@@ -186,19 +186,19 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 
 model = keras.Sequential()
 model.add(keras.layers.Dense(2500, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.LeakyReLU(alpha=0.5))
 model.add(keras.layers.Dense(2200))
-model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.LeakyReLU(alpha=0.5))
 model.add(keras.layers.Dense(1900))
-model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.LeakyReLU(alpha=0.5))
 model.add(keras.layers.Dense(1700))
-model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.LeakyReLU(alpha=0.5))
 model.add(keras.layers.Dense(1300))
-model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.LeakyReLU(alpha=0.5))
 model.add(keras.layers.Dense(1000))
-model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.LeakyReLU(alpha=0.5))
 model.add(keras.layers.Dense(700))
-model.add(keras.layers.LeakyReLU(alpha=0.2))
+model.add(keras.layers.LeakyReLU(alpha=0.5))
 # model.add(keras.layers.Dense(y_test.shape[1]))
 # model.add(keras.layers.LeakyReLU(alpha=0.2))
 model.add(keras.layers.Dense(y_test.shape[1], activation='linear'))
