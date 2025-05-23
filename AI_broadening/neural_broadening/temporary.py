@@ -260,13 +260,18 @@ dftest = pd.read_csv(f'{data_dir}/{teststring}')
 dftest = dftest[(dftest['ERG'] < maxerg) & (dftest['ERG'] > minerg)]
 
 testxs = dftest['XS'].values
-meantestxs = np.mean(np.log10(testxs))
-stdtestxs = np.std(np.log10(testxs))
+# meantestxs = np.mean(np.log10(testxs))
+# stdtestxs = np.std(np.log10(testxs))
 
-rescaled_predictions = [p * stdtestxs + meantestxs for p in predictions]
-energies = dftest['ERG'].values
 
-rescaled_predictions = [10 ** P for P in rescaled_predictions]
+# rescaled_predictions = [p * stdtestxs + meantestxs for p in predictions]
+# energies = dftest['ERG'].values
+
+rescaled_predictions = []
+for P, mean, std in zip(predictions, means_test, stds_test):
+	descaled_p = P * std + mean
+
+rescaled_predictions = [10 ** p for p in rescaled_predictions]
 
 
 def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
