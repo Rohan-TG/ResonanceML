@@ -19,8 +19,8 @@ import tqdm
 from sklearn.metrics import mean_absolute_error
 
 minerg = 1000 / 1e6
-maxerg = 1100 / 1e6
-test_temperatures = [1300.0]
+maxerg = 1200 / 1e6
+test_temperatures = [1000.0]
 nuclide = [26,56]
 
 plot_directory = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/highresplots'
@@ -28,8 +28,8 @@ plot_directory = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_b
 def get_datetime_string():
 	return datetime.datetime.now().strftime("%d-%m-%Y_%H:%M:%S")
 
-maxtemp = 2200
-mintemp = 300
+maxtemp = 1050
+mintemp = 950
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
 all_temperatures = [round(NUM, 1) for NUM in numbers]
 # all_temperatures = all_temperatures[all_temperatures != 254.7]
@@ -131,7 +131,7 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 										 restore_best_weights=True)
 
 model = keras.Sequential()
-model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.Dense(2, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
 # model.add(keras.layers.Dense(700, activation='relu'))
 # model.add(keras.layers.Dense(600, activation='relu'))
 # model.add(keras.layers.Dense(500, activation='relu'))
@@ -223,6 +223,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.legend()
 	plt.yscale('log')
 	plt.grid()
+	plt.savefig(f'{plot_directory}/{timestring}mlp_rel_err.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -230,6 +231,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
+	plt.savefig(f'{plot_directory}/{timestring}mlp_pct_err.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -237,7 +239,6 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.ylabel('Frequency')
 	plt.xlabel('% Error')
 	plt.grid()
-	plt.savefig(f'{plot_directory}/mlpplot-{timestring}_errors.png', dpi=300)
 	plt.show()
 
 	countoverthreshold = 0
@@ -265,7 +266,7 @@ plt.xlabel('Energy / eV')
 plt.ylabel('$\sigma_{n,\gamma} / b$')
 plt.xscale('log')
 plt.yscale('log')
-plt.savefig(f'{plot_directory}/mlpplot-{timestring}_highsampling.png', dpi = 300)
+plt.savefig(f'{plot_directory}/mlp-{timestring}_highsampling.png', dpi = 300)
 plt.show()
 
 plt.figure()
@@ -276,7 +277,7 @@ plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
 plt.grid()
-plt.savefig(f'{plot_directory}/lossplot-{timestring}.png', dpi = 300)
+# plt.savefig(f'{plot_directory}/loss-{timestring}.png', dpi = 300)
 plt.show()
 
 MAE = mean_absolute_error(rescaled_predictions, y_test)
