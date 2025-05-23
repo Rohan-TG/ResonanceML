@@ -265,11 +265,12 @@ testxs = dftest['XS'].values
 
 
 # rescaled_predictions = [p * stdtestxs + meantestxs for p in predictions]
-# energies = dftest['ERG'].values
+energies = dftest['ERG'].values
 
 rescaled_predictions = []
 for P, mean, std in zip(predictions, means_test, stds_test):
 	descaled_p = P * std + mean
+	rescaled_predictions.append(descaled_p)
 
 rescaled_predictions = [10 ** p for p in rescaled_predictions]
 
