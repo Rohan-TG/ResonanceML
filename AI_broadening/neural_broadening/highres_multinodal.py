@@ -275,7 +275,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.legend()
 	plt.yscale('log')
 	plt.grid()
-	plt.savefig(f'{plotdir}/{timestring}-multinodal_rel_error.png', dpi=300)
+	# plt.savefig(f'{plotdir}/{timestring}-multinodal_rel_error.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -283,7 +283,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
-	plt.savefig(f'{plotdir}/{timestring}-pct_error.png', dpi=300)
+	# plt.savefig(f'{plotdir}/{timestring}-pct_error.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -291,7 +291,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.ylabel('Frequency')
 	plt.xlabel('% Error')
 	plt.grid()
-	plt.savefig(f'{plotdir}/{timestring}-error_histogram.png', dpi=300)
+	# plt.savefig(f'{plotdir}/{timestring}-error_histogram.png', dpi=300)
 	plt.show()
 
 	countoverthreshold = 0
@@ -361,7 +361,7 @@ plt.legend()
 plt.xscale('log')
 plt.yscale('log')
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-plt.savefig(f'{plotdir}/{timestring}-multinodal_plot.png', dpi=300)
+# plt.savefig(f'{plotdir}/{timestring}-multinodal_plot.png', dpi=300)
 plt.show()
 
 bounds(minerg, maxerg)
