@@ -24,7 +24,7 @@ nuclide = [26, 56]
 maxtemp = 400
 mintemp = 300
 
-test_temperatures = [305, 320, 330, 345, 360, 375, 390, 398]
+test_temperatures = [305.0, 320.0, 330.0, 345.0, 360.0, 375.0, 390.0, 398.0]
 
 minerg = 10000 / 1e6
 maxerg = 1000000 / 1e6
