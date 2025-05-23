@@ -26,8 +26,8 @@ mintemp = 950
 
 test_temperatures = [1000.0]
 
-minerg = 800 / 1e6
-maxerg = 1200 / 1e6
+minerg = 10000 / 1e6
+maxerg = 1000000 / 1e6
 
 
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
@@ -178,7 +178,7 @@ callback = keras.callbacks.EarlyStopping(monitor='val_loss',
 
 
 model = keras.Sequential()
-model.add(keras.layers.Dense(16, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.Dense(1, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
 model.add(keras.layers.LeakyReLU(alpha=0.2))
 # model.add(keras.layers.Dense(2200))
 # model.add(keras.layers.LeakyReLU(alpha=0.2))
