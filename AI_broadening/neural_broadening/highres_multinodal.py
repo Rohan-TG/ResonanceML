@@ -21,8 +21,8 @@ def get_datetime_string():
 
 nuclide = [26, 56]
 
-maxtemp = 1250
-mintemp = 750
+maxtemp = 1150
+mintemp = 850
 
 test_temperatures = [1000.0]
 
@@ -291,7 +291,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.ylabel('Frequency')
 	plt.xlabel('% Error')
 	plt.grid()
-	# plt.savefig(f'{plotdir}/{timestring}-error_histogram.png', dpi=300)
+	plt.savefig(f'{plotdir}/{timestring}-error_histogram.png', dpi=300)
 	plt.show()
 
 	countoverthreshold = 0
