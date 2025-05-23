@@ -23,8 +23,8 @@ def get_datetime_string():
 
 nuclide = [26, 56]
 
-maxtemp = 850
-mintemp = 1150
+maxtemp = 1150
+mintemp = 850
 
 test_temperatures = [1000.0]
 
