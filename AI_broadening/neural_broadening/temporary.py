@@ -28,7 +28,7 @@ mintemp = 850
 
 test_temperatures = [1000.0]
 
-minerg = 800 / 1e6
+minerg = 100 / 1e6
 maxerg = 25000 / 1e6
 
 
@@ -315,22 +315,24 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 
-	# plt.figure()
-	# plt.plot(test_energies_limited, relativeError, label = 'Error')
-	# plt.xlabel('Energy / eV')
-	# plt.ylabel('Relative error')
-	# plt.xscale('log')
-	# plt.legend()
-	# plt.yscale('log')
-	# plt.grid()
-	# plt.show()
+	plt.figure()
+	plt.plot(test_energies_limited, relativeError, label = 'Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('Relative error')
+	plt.xscale('log')
+	plt.legend()
+	plt.yscale('log')
+	plt.grid()
+	plt.savefig(f'{plotdir}/{timestring}-multinodal_relative_error.png', dpi=300)
+	plt.show()
 
-	# plt.figure()
-	# plt.plot(test_energies_limited, percentageError, label='Error')
-	# plt.xlabel('Energy / eV')
-	# plt.ylabel('% Error')
-	# plt.grid()
-	# plt.show()
+	plt.figure()
+	plt.plot(test_energies_limited, percentageError, label='Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('% Error')
+	plt.grid()
+	plt.savefig(f'{plotdir}/{timestring}-multinodal_pct_error.png', dpi=300)
+	plt.show()
 	#
 	# plt.figure()
 	# plt.hist(percentageError, bins=50)
@@ -384,7 +386,7 @@ for o, p, qx in zip(energies, rescaled_predictions, testxs):
 # 	percentageError.append((p/xs * 100) - 100)
 #
 # print('Percentage error:', percentageError)
-# plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
+plotdir = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/multinodalplots'
 
 # plt.figure()
 # plt.plot(test_energies_limited, percentageError, label='Error')
@@ -393,6 +395,8 @@ for o, p, qx in zip(energies, rescaled_predictions, testxs):
 # # plt.savefig(f'{plotdir}/{timestring}-highres_multinodal_errors.png')
 # plt.grid()
 # plt.show()
+
+timestring = get_datetime_string()
 
 plt.figure()
 # plt.plot(unheated_energies_limited, unheated_XS_limited, label='0 K JEFF-3.3')
@@ -406,7 +410,7 @@ plt.legend()
 plt.xscale('log')
 plt.yscale('log')
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-# plt.savefig(f'multitest.png')
+plt.savefig(f'{plotdir}/{timestring}-multinodal_plot.png', dpi=300)
 plt.show()
 
 bounds(minerg, maxerg)
