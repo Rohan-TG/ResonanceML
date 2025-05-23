@@ -77,7 +77,7 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
 
 		input_submatrix = np.array(scaled_T_values)  # can add or remove ERG here to make energy an input parameter
-		labelsubmatrix = np.array(np.log10(df['XS'].values))
+		labelsubmatrix = np.array(df['XS'].values)
 
 		train_input_matrix.append(input_submatrix)
 		train_labels_matrix.append(labelsubmatrix)
