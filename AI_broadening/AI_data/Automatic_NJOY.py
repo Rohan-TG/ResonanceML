@@ -46,7 +46,15 @@ for T in tqdm.tqdm(Temperatures, total=len(Temperatures)):
 	with open(f"deck_{T}_K.njoy", "w") as f:
 		f.write(deck)
 
-	t_output = subprocess.Popen(f"ln -sf tape20 fort.20 && /home/rnt26/NJOY/NJOY21/bin/njoy21 < {deckName} && ln -s tape23 fort.23 && /home/rnt26/NJOY/NJOY21/bin/njoy21 < convert_to_ascii.njoy")
+	commands = f"""
+	ln -sf tape20 fort.20
+	/home/rnt26/NJOY/NJOY21/bin/njoy21 < {deckName}
+	ln -sf tape23 fort.23
+	/home/rnt26/NJOY/NJOY21/bin/njoy21 < convert_to_ascii.njoy
+	"""
+
+	# t_output = subprocess.Popen(f"ln -sf tape20 fort.20 && /home/rnt26/NJOY/NJOY21/bin/njoy21 < {deckName} && ln -s tape23 fort.23 && /home/rnt26/NJOY/NJOY21/bin/njoy21 < convert_to_ascii.njoy")
+	subprocess.run(commands, shell=True, executable="/bin/bash")
 	filename = 'tape33'
 
 	file = open(filename)
