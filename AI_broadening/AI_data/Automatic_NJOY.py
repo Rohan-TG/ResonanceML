@@ -1,6 +1,9 @@
-import os
-import numpy as np
+# import os
+# import numpy as np
 import subprocess
+import tqdm
+import ENDF6
+import pandas as pd
 
 # temps = np.arange(300.0,1800.1,0.1)
 # Temperatures = []
@@ -37,11 +40,22 @@ moder
 stop"""
 
 
-for T in Temperatures:
+for T in tqdm.tqdm(Temperatures, total=len(Temperatures)):
 	deck = deckTemplate.format(broadTemp = T)
 	deckName = f"deck_{T}_K.njoy"
 	with open(f"deck_{T}_K.njoy", "w") as f:
 		f.write(deck)
 
 	t_output = subprocess.Popen(f"ln -sf tape20 fort.20 && /home/rnt26/NJOY/NJOY21/bin/njoy21 < {deckName} && ln -s tape23 fort.23 && /home/rnt26/NJOY/NJOY21/bin/njoy21 < convert_to_ascii.njoy")
+	filename = 'tape33'
 
+	file = open(filename)
+
+	lines = file.readlines()
+
+	section = ENDF6.find_section(lines, MF=3, MT=102)
+
+	x, y = ENDF6.read_table(section)
+
+	df = pd.DataFrame({"ERG": x, "XS": y})
+	df.to_csv(f'Fe56_{T}.csv')
