@@ -1,17 +1,17 @@
 # import os
-# import numpy as np
+import numpy as np
 import subprocess
 import tqdm
 import ENDF6
 import pandas as pd
 
-# temps = np.arange(300.0,1800.1,0.1)
-# Temperatures = []
-# for i in temps:
-# 	Temperatures.append(round(i, 1))
+temps = np.arange(300.0,1800.1,0.1)
+Temperatures = []
+for i in temps:
+	Temperatures.append(round(i, 1))
 
 
-Temperatures = [300.0, 2000.0]
+# Temperatures = [300.0, 2000.0]
 
 deckTemplate = """moder
 20 -21
@@ -64,6 +64,10 @@ for T in tqdm.tqdm(Temperatures, total=len(Temperatures)):
 	section = ENDF6.find_section(lines, MF=3, MT=102)
 
 	x, y = ENDF6.read_table(section)
+	templist = [T for i in x]
 
-	df = pd.DataFrame({"ERG": x, "XS": y})
-	df.to_csv(f'Fe56_{T}.csv')
+	dfcsv = pd.DataFrame({"ERG": x, "XS": y, "T": templist})
+	dfcsv.to_csv(f'/home/rnt26/NJOY/data/Fe56_JEFF/CSVs/Fe56_{T}.csv')
+
+	# dfh5 = pd.DataFrame({"ERG": x, "XS": y})
+	# dfh5.to_hdf(f"/home/rnt26/NJOY/data/Fe56_JEFF/hdf5_files/Fe56_{T}.h5", key='df')
