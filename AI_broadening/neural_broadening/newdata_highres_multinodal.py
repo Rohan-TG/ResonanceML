@@ -21,8 +21,8 @@ def get_datetime_string():
 
 nuclide = [26, 56]
 
-maxtemp = 800
-mintemp = 1200
+maxtemp = 1200
+mintemp = 800
 
 test_temperatures = [1000]
 
@@ -275,7 +275,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.legend()
 	plt.yscale('log')
 	plt.grid()
-	# plt.savefig(f'{plotdir}/{timestring}-multinodal_rel_error.png', dpi=300)
+	plt.savefig(f'{plotdir}/{timestring}-multinodal_rel_error.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -283,7 +283,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
-	# plt.savefig(f'{plotdir}/{timestring}-pct_error.png', dpi=300)
+	plt.savefig(f'{plotdir}/{timestring}-pct_error.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -361,7 +361,7 @@ plt.legend()
 plt.xscale('log')
 plt.yscale('log')
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-# plt.savefig(f'{plotdir}/{timestring}-multinodal_plot.png', dpi=300)
+plt.savefig(f'{plotdir}/{timestring}-multinodal_plot.png', dpi=300)
 plt.show()
 
 bounds(minerg, maxerg)
