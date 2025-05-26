@@ -110,9 +110,95 @@ scaled_xs_train = [(xs - xs_train_mean) / xs_train_std for xs in logged_xs_train
 
 
 X_train = np.array([scaled_erg_train, flat_T_Train])
-y_train = scaled_xs_train
+X_train = X_train.transpose()
+y_train = np.array(scaled_xs_train)
 
 
+
+
+
+# Validation data
+T_val = []
+XS_val = []
+ERG_val = []
+
+for validation_temperature in tqdm.tqdm(validation_temperatures, total = len(validation_temperatures)):
+	if round(float(validation_temperature), 1) not in exclusions:
+		roundedtt = str(round(validation_temperature, 1))
+		filename = f'Fe56_{roundedtt}.csv'
+		df = pd.read_csv(f'{data_dir}/{filename}')
+		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
+
+
+
+		logged_T_values = np.log10(df['T'].values)
+		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
+
+
+		T_val.append(scaled_T_values)  # can add or remove ERG here to make energy an input parameter
+		XS_val.append(np.log10(df['XS'].values))
+		ERG_val.append(df['ERG'].values)
+
+flat_T_val = [item for sublist in T_val for item in sublist]
+flat_ERG_val = [item for sublist in ERG_val for item in sublist]
+flat_XS_val = [item for sublist in XS_val for item in sublist]
+
+logged_erg_val = np.log10(flat_ERG_val)
+erg_val_mean = np.mean(logged_erg_val)
+erg_val_std = np.std(logged_erg_val)
+scaled_erg_val = [(erg - erg_val_mean) / erg_val_std for erg in logged_erg_val]
+
+
+logged_xs_val = np.log10(flat_XS_val)
+xs_val_mean = np.mean(logged_xs_val)
+xs_val_std = np.std(logged_xs_val)
+scaled_xs_val = [(xs - xs_val_mean) / xs_val_std for xs in logged_xs_val]
+
+
+X_val = np.array([scaled_erg_val, flat_T_val])
+X_val = X_val.transpose()
+y_val = np.array(scaled_xs_val)
+
+
+
+
+
+# Test data
+T_test = []
+XS_test = []
+ERG_test = []
+
+for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures)):
+	if round(float(test_temperature), 1) not in exclusions:
+		roundedtt = str(round(test_temperature, 1))
+		filename = f'Fe56_{roundedtt}.csv'
+		df = pd.read_csv(f'{data_dir}/{filename}')
+		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
+
+		logged_T_values = np.log10(df['T'].values)
+		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
+
+		T_test.append(scaled_T_values)
+		XS_test.append(np.log10(df['XS'].values))
+		ERG_test.append(df['ERG'].values)
+
+flat_T_test = [item for sublist in T_test for item in sublist]
+flat_ERG_test = [item for sublist in ERG_test for item in sublist]
+flat_XS_test = [item for sublist in XS_test for item in sublist]
+
+logged_erg_test = np.log10(flat_ERG_test)
+erg_test_mean = np.mean(logged_erg_test)
+erg_test_std = np.std(logged_erg_test)
+scaled_erg_test = [(erg - erg_test_mean) / erg_test_std for erg in logged_erg_test]
+
+logged_xs_test = np.log10(flat_XS_test)
+xs_test_mean = np.mean(logged_xs_test)
+xs_test_std = np.std(logged_xs_test)
+scaled_xs_test = [(xs - xs_test_mean) / xs_test_std for xs in logged_xs_test]
+
+X_test = np.array([scaled_erg_test, flat_T_test])
+X_test = X_test.transpose()
+y_test = np.array(scaled_xs_test)
 
 
 # callback = keras.callbacks.EarlyStopping(monitor='val_loss',
