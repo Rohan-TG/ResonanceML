@@ -39,6 +39,7 @@ all_temperatures = np.arange(mintemp, maxtemp, 0.1) # all temperatures in the da
 
 
 data_dir = '/home/rnt26/NJOY/data/Fe56_JEFF/CSVs'
+plot_directory = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/continuousEnergyPlots'
 
 test_temperatures = [1000.0]
 nuclide = [26,56]
@@ -201,173 +202,174 @@ X_test = X_test.transpose()
 y_test = np.array(scaled_xs_test)
 
 
-# callback = keras.callbacks.EarlyStopping(monitor='val_loss',
-# 										 # min_delta=0.005,
-# 										 patience=5,
-# 										 mode='min',
-# 										 start_from_epoch=5,
-# 										 restore_best_weights=True)
-#
-# model = keras.Sequential()
-# model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
-# model.add(keras.layers.Dense(100, activation='relu'))
-# model.add(keras.layers.Dense(50, activation='relu'))
-# model.add(keras.layers.Dense(20, activation='relu'))
-# model.add(keras.layers.Dense(10,activation='relu'))
-# model.add(keras.layers.Dense(1, activation='linear'))
-# model.compile(loss='mae', optimizer='adam')
-#
-# history = model.fit(X_train,
-# 					y_train,
-# 					epochs=100,
-# 					batch_size=32,
-# 					callbacks=callback,
-# 					validation_data=(X_train, y_train),
-# 					verbose=1)
-#
-# predictions = model.predict(X_test)
-# predictions = predictions.ravel()
-#
-#
-#
-# scaled_energies = []
-# for pair in X_test:
-# 	scaled_energies.append(pair[0])
-#
-#
-#
-#
-# # logged_ERG_test = np.log(ERG_test)
-# # logged_y_test = np.log(y_test)
-#
-# rescaled_energies = np.array(scaled_energies) * np.std(logged_ERG_test) + np.mean(logged_ERG_test)
-# rescaled_energies = np.e ** rescaled_energies
-#
-# rescaled_predictions = np.array(predictions) * np.std(logged_y_test) + np.mean(logged_y_test)
-# rescaled_predictions = np.e ** rescaled_predictions
-#
-# rescaled_test_xs = np.array(y_test) #* np.std(df['XS'].values) + np.mean(df['XS'].values)
-#
-#
-#
-#
-#
-# def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
-# 	unheated_energies_limited = []
-# 	unheated_XS_limited = []
-# 	for x, h in zip(unheated_energies, unheated_XS):
-# 		if x <= upper_bound and x >= lower_bound:
-# 			unheated_energies_limited.append(x)
-# 			unheated_XS_limited.append(h)
-#
-# 	test_energies_limited = []
-# 	predictions_limited = []
-# 	test_XS_limited = []
-# 	rescaled_test_XS = test_dataframe['XS'].values
-# 	for o, p, qx in zip(rescaled_energies, rescaled_predictions, rescaled_test_XS):
-# 		if o <= upper_bound and o >= lower_bound:
-# 			test_energies_limited.append(o)
-# 			predictions_limited.append(p)
-# 			test_XS_limited.append(qx)
-#
-# 	plt.figure()
-# 	# plt.plot(unheated_energies_limited, unheated_XS_limited, label = '0 K JEFF-3.3')
-# 	plt.grid()
-# 	plt.plot(test_energies_limited, predictions_limited, label='Predictions', color='red')
-# 	plt.xlabel('Energy / eV')
-# 	plt.ylabel('$\sigma_{n,\gamma} / b$')
-# 	plt.plot(test_energies_limited, test_XS_limited, '--', label=f'{test_temperatures[0]} K JEFF-3.3', color='lightgreen',
-# 			 alpha=0.7)
-# 	plt.legend()
-# 	plt.xscale('log')
-# 	plt.yscale('log')
-# 	plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
-# 	# if scaley == 'log':
-# 	# 	plt.yscale('log')
-# 	# else:
-# 	# 	plt.yscale('linear')
-# 	# if scalex ==' log':
-# 	# 	plt.xscale('log')
-# 	# else:
-# 	# 	plt.xscale('linear')
-# 	plt.show()
-#
-#
-# 	relativeError = []
-# 	percentageError = []
-# 	for p, xs in zip(predictions_limited, test_XS_limited):
-# 		relativeError.append(abs((p-xs)/xs))
-# 		percentageError.append((p/xs * 100) - 100)
-#
-#
-#
-# 	plt.figure()
-# 	plt.plot(test_energies_limited, relativeError, label = 'Error')
-# 	plt.xlabel('Energy / eV')
-# 	plt.ylabel('Relative error')
-# 	plt.xscale('log')
-# 	plt.legend()
-# 	plt.yscale('log')
-# 	plt.grid()
-# 	plt.show()
-#
-# 	plt.figure()
-# 	plt.plot(test_energies_limited, percentageError, label='Error')
-# 	plt.xlabel('Energy / eV')
-# 	plt.ylabel('% Error')
-# 	plt.grid()
-# 	# plt.savefig(f'/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/miscplots/mlpeerrors_{timestring}.png', dpi = 300)
-# 	plt.show()
-#
-# 	plt.figure()
-# 	plt.hist(percentageError, bins=50)
-# 	plt.ylabel('Frequency')
-# 	plt.xlabel('% Error')
-# 	plt.grid()
-# 	plt.show()
-#
-# 	countoverthreshold = 0
-# 	for XX in percentageError:
-# 		if abs(XX) >= 0.1:
-# 			countoverthreshold += 1
-#
-# 	percentageOverThreshold = (countoverthreshold / (len(percentageError))) * 100
-#
-# 	print(f'Max error: {np.max(abs(np.array(percentageError)))}')
-# 	print(f'Mean error: {np.mean(abs(np.array(percentageError)))}')
-# 	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
-#
-#
-#
-#
-#
-# test_xs = test_dataframe['XS'].values
-#
-# timestring = get_datetime_string()
-#
-#
-# plt.figure()
-# # plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
-# plt.plot(ERG_test, test_xs, '--', label = 'JEFF-3.3 1,800 K')
-# plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
-# plt.legend()
-# plt.grid()
-# plt.xlabel('Energy / eV')
-# plt.ylabel('$\sigma_{n,\gamma} / b$')
-# plt.xscale('log')
-# plt.yscale('log')
-# # plt.savefig(f'/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/miscplots/mlpplot-{timestring}_pres.png', dpi = 300)
-# plt.show()
-#
-# plt.figure()
-# plt.plot(history.history['val_loss'], label='Validation Loss')
-# plt.plot(history.history['loss'], label='Training Loss')
-# plt.title('Training and Validation Accuracy')
-# plt.xlabel('Epochs')
-# plt.ylabel('Loss')
-# plt.legend()
-# plt.grid()
-# plt.show()
-#
-# MAE = mean_absolute_error(rescaled_predictions, test_xs)
-# bounds(minerg, maxerg)
+callback = keras.callbacks.EarlyStopping(monitor='val_loss',
+										 # min_delta=0.005,
+										 patience=5,
+										 mode='min',
+										 start_from_epoch=5,
+										 restore_best_weights=True)
+
+model = keras.Sequential()
+model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
+model.add(keras.layers.Dense(100, activation='relu'))
+model.add(keras.layers.Dense(50, activation='relu'))
+model.add(keras.layers.Dense(20, activation='relu'))
+model.add(keras.layers.Dense(10,activation='relu'))
+model.add(keras.layers.Dense(1, activation='linear'))
+model.compile(loss='mae', optimizer='adam')
+
+history = model.fit(X_train,
+					y_train,
+					epochs=100,
+					batch_size=32,
+					callbacks=callback,
+					validation_data=(X_train, y_train),
+					verbose=1)
+
+predictions = model.predict(X_test)
+predictions = predictions.ravel()
+
+
+
+scaled_energies = []
+for pair in X_test:
+	scaled_energies.append(pair[0])
+
+
+
+
+# logged_ERG_test = np.log(ERG_test)
+# logged_y_test = np.log(y_test)
+
+rescaled_energies = np.array(scaled_energies) * erg_test_std + erg_test_mean
+rescaled_energies = 10 ** rescaled_energies
+
+rescaled_predictions = np.array(predictions) * xs_test_std + xs_test_mean
+rescaled_predictions = 10 ** rescaled_predictions
+
+rescaled_test_xs = np.array(y_test) * xs_test_std + xs_test_mean
+
+
+
+
+
+def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
+	unheated_energies_limited = []
+	unheated_XS_limited = []
+	for x, h in zip(unheated_energies, unheated_XS):
+		if x <= upper_bound and x >= lower_bound:
+			unheated_energies_limited.append(x)
+			unheated_XS_limited.append(h)
+
+	test_energies_limited = []
+	predictions_limited = []
+	test_XS_limited = []
+	rescaled_test_XS = rescaled_test_xs
+	for o, p, qx in zip(rescaled_energies, rescaled_predictions, rescaled_test_XS):
+		if o <= upper_bound and o >= lower_bound:
+			test_energies_limited.append(o)
+			predictions_limited.append(p)
+			test_XS_limited.append(qx)
+
+	plt.figure()
+	# plt.plot(unheated_energies_limited, unheated_XS_limited, label = '0 K JEFF-3.3')
+	plt.grid()
+	plt.plot(test_energies_limited, predictions_limited, label='Predictions', color='red')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('$\sigma_{n,\gamma} / b$')
+	plt.plot(test_energies_limited, test_XS_limited, '--', label=f'{test_temperatures[0]} K JEFF-3.3', color='lightgreen',
+			 alpha=0.7)
+	plt.legend()
+	plt.xscale('log')
+	plt.yscale('log')
+	plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
+	# if scaley == 'log':
+	# 	plt.yscale('log')
+	# else:
+	# 	plt.yscale('linear')
+	# if scalex ==' log':
+	# 	plt.xscale('log')
+	# else:
+	# 	plt.xscale('linear')
+	plt.show()
+
+
+	relativeError = []
+	percentageError = []
+	for p, xs in zip(predictions_limited, test_XS_limited):
+		relativeError.append(abs((p-xs)/xs))
+		percentageError.append((p/xs * 100) - 100)
+
+
+
+	plt.figure()
+	plt.plot(test_energies_limited, relativeError, label = 'Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('Relative error')
+	plt.xscale('log')
+	plt.legend()
+	plt.yscale('log')
+	plt.grid()
+	plt.savefig(f"{plot_directory}/{timestring}_rel_err.png", dpi=200)
+	plt.show()
+
+	plt.figure()
+	plt.plot(test_energies_limited, percentageError, label='Error')
+	plt.xlabel('Energy / eV')
+	plt.ylabel('% Error')
+	plt.grid()
+	plt.savefig(f'{plot_directory}/{timestring}_pct_err.png', dpi = 200)
+	plt.show()
+
+	plt.figure()
+	plt.hist(percentageError, bins=50)
+	plt.ylabel('Frequency')
+	plt.xlabel('% Error')
+	plt.grid()
+	plt.show()
+
+	countoverthreshold = 0
+	for XX in percentageError:
+		if abs(XX) >= 0.1:
+			countoverthreshold += 1
+
+	percentageOverThreshold = (countoverthreshold / (len(percentageError))) * 100
+
+	print(f'Max error: {np.max(abs(np.array(percentageError)))}')
+	print(f'Mean error: {np.mean(abs(np.array(percentageError)))}')
+	print(f'{percentageOverThreshold} % of points over limit of 0.1 % error')
+
+
+
+
+
+
+
+timestring = get_datetime_string()
+
+
+plt.figure()
+# plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
+plt.plot(ERG_test, rescaled_test_xs, '--', label = f'JEFF-3.3 {test_temperatures[0]} K')
+plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
+plt.legend()
+plt.grid()
+plt.xlabel('Energy / eV')
+plt.ylabel('$\sigma_{n,\gamma} / b$')
+plt.xscale('log')
+plt.yscale('log')
+plt.savefig(f'{plot_directory}/newdatatestplot_{timestring}.png', dpi = 300)
+plt.show()
+
+plt.figure()
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.plot(history.history['loss'], label='Training Loss')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid()
+plt.show()
+
+MAE = mean_absolute_error(rescaled_predictions, rescaled_test_xs)
+bounds(minerg, maxerg)
