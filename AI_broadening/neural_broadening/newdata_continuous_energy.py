@@ -40,7 +40,7 @@ all_temperatures = np.arange(mintemp, maxtemp, 0.1) # all temperatures in the da
 
 data_dir = '/home/rnt26/NJOY/data/Fe56_JEFF/CSVs'
 
-test_temperatures = [1000]
+test_temperatures = [1000.0]
 nuclide = [26,56]
 
 
