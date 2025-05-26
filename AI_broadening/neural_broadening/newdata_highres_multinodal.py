@@ -26,8 +26,8 @@ mintemp = 800
 
 test_temperatures = [1000]
 
-minerg = 10000 / 1e6
-maxerg = 1000000 / 1e6
+minerg = 10000
+maxerg = 1000000
 
 
 numbers = np.linspace(mintemp, maxtemp, int((maxtemp - mintemp) / 0.1) + 1, dtype=np.float32) # all temperatures in the data file
@@ -38,8 +38,8 @@ all_temperatures = [round(NUM, 1) for NUM in numbers]
 data_dir = '/home/rnt26/NJOY/data/Fe56_JEFF/CSVs'
 
 df0 = pd.read_csv('../AI_data/Fe56_MT_102_eV_0K_to_4000K_Delta20K.csv')
-unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg * 1e6)) & (df0['ERG'] < (maxerg * 1e6))]['ERG'].values
-unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > (minerg * 1e6)) & (df0['ERG'] < (maxerg * 1e6))]['XS'].values
+unheated_energies = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['ERG'].values
+unheated_XS = df0[(df0['T'] == 0) & (df0['ERG'] > minerg) & (df0['ERG'] < maxerg)]['XS'].values
 
 validation_temperatures = []
 while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
@@ -108,7 +108,7 @@ val_labels_matrix = [] # contains the cross sections
 for val_temperature in tqdm.tqdm(validation_temperatures, total=len(validation_temperatures)):
 	if round(float(val_temperature), 1) not in exclusions:
 		roundedtt = str(round(val_temperature, 1))
-		filename = f'Fe_56_{roundedtt}.csv'
+		filename = f'Fe56_{roundedtt}.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
@@ -142,7 +142,7 @@ test_labels_matrix = []
 for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures)):
 	if round(float(test_temperature), 1) not in exclusions:
 		roundedtt = str(round(test_temperature, 1))
-		filename = f'Fe_56_{roundedtt}.csv'
+		filename = f'Fe56_{roundedtt}.csv'
 		df = pd.read_csv(f'{data_dir}/{filename}')
 		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
 
