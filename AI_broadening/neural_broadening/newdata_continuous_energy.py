@@ -247,7 +247,7 @@ rescaled_energies = 10 ** rescaled_energies
 rescaled_predictions = np.array(predictions) * xs_test_std + xs_test_mean
 rescaled_predictions = 10 ** rescaled_predictions
 
-rescaled_test_xs = np.array(y_test) * xs_test_std + xs_test_mean
+rescaled_test_xs = np.array(logged_xs_test) * xs_test_std + xs_test_mean
 
 
 
@@ -346,11 +346,11 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 
 
 timestring = get_datetime_string()
-
+rescaled_test_energies = ERG_test[0]
 
 plt.figure()
 # plt.plot(unheated_energies, unheated_XS, label = 'JEFF-3.3 0 K')
-plt.plot(ERG_test, rescaled_test_xs, '--', label = f'JEFF-3.3 {test_temperatures[0]} K')
+plt.plot(rescaled_test_energies, rescaled_test_xs, '--', label = f'JEFF-3.3 {test_temperatures[0]} K')
 plt.plot(rescaled_energies, rescaled_predictions, label = 'Predictions', color = 'red')
 plt.legend()
 plt.grid()
