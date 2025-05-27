@@ -32,8 +32,8 @@ def get_datetime_string():
 minerg = 1000
 maxerg = 1200
 
-mintemp = 800
-maxtemp = 1200
+mintemp = 950
+maxtemp = 1050
 all_temperatures = np.arange(mintemp, maxtemp, 0.1) # all temperatures in the data file
 
 
@@ -213,8 +213,6 @@ model = keras.Sequential()
 model.add(keras.layers.Dense(200, input_shape=(X_train.shape[1],), kernel_initializer='normal'))
 model.add(keras.layers.Dense(100, activation='relu'))
 model.add(keras.layers.Dense(50, activation='relu'))
-model.add(keras.layers.Dense(20, activation='relu'))
-model.add(keras.layers.Dense(10,activation='relu'))
 model.add(keras.layers.Dense(1, activation='linear'))
 model.compile(loss='mae', optimizer='adam')
 
@@ -247,8 +245,8 @@ rescaled_energies = 10 ** rescaled_energies
 rescaled_predictions = np.array(predictions) * xs_test_std + xs_test_mean
 rescaled_predictions = 10 ** rescaled_predictions
 
-rescaled_test_xs = np.array(logged_xs_test) * xs_test_std + xs_test_mean
-
+rescaled_logged_test_xs = np.array(y_test) * xs_test_std + xs_test_mean
+rescaled_test_xs = [10 ** value for value in rescaled_logged_test_xs]
 
 
 
