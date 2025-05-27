@@ -32,8 +32,8 @@ def get_datetime_string():
 minerg = 1000
 maxerg = 1200
 
-mintemp = 950
-maxtemp = 1050
+mintemp = 550
+maxtemp = 1650
 all_temperatures = np.arange(mintemp, maxtemp, 0.1) # all temperatures in the data file
 
 
