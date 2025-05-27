@@ -91,7 +91,7 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 
 
 		T_train.append(scaled_T_values)  # can add or remove ERG here to make energy an input parameter
-		XS_train.append(np.log10(df['XS'].values))
+		XS_train.append(df['XS'].values)
 		ERG_train.append(df['ERG'].values)
 
 flat_T_Train = [item for sublist in T_train for item in sublist]
@@ -137,7 +137,7 @@ for validation_temperature in tqdm.tqdm(validation_temperatures, total = len(val
 
 
 		T_val.append(scaled_T_values)  # can add or remove ERG here to make energy an input parameter
-		XS_val.append(np.log10(df['XS'].values))
+		XS_val.append(df['XS'].values)
 		ERG_val.append(df['ERG'].values)
 
 flat_T_val = [item for sublist in T_val for item in sublist]
@@ -180,7 +180,7 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
 
 		T_test.append(scaled_T_values)
-		XS_test.append(np.log10(df['XS'].values))
+		XS_test.append(df['XS'].values)
 		ERG_test.append(df['ERG'].values)
 
 flat_T_test = [item for sublist in T_test for item in sublist]
