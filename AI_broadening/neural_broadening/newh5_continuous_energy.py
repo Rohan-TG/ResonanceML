@@ -91,7 +91,7 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 
 		currentdata = currentdata.transpose()
 
-		df = pd.DataFrame(currentdata, columns=['Index', 'ERG', 'XS', 'T'])
+		df = pd.DataFrame({'ERG': currentdata[energyindex], 'XS': currentdata[xsindex], 'T':currentdata[-1]})
 
 		df = df[(df['ERG'] >= minerg) & (df['ERG'] <= maxerg)]
 		filtered_ERG = df['ERG'].values
@@ -143,7 +143,7 @@ for validation_temperature in tqdm.tqdm(validation_temperatures, total = len(val
 			currentdata = h5f['data'][:]
 
 		currentdata = currentdata.transpose()
-		df = pd.DataFrame(currentdata, columns=['Index', 'ERG', 'XS', 'T'])
+		df = pd.DataFrame({'ERG': currentdata[energyindex], 'XS': currentdata[xsindex], 'T':currentdata[-1]})
 
 		df = df[(df['ERG'] >= minerg) & (df['ERG'] <= maxerg)]
 		filtered_ERG = df['ERG'].values
@@ -197,7 +197,7 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 
 		currentdata = currentdata.transpose()
 
-		df = pd.DataFrame(currentdata, columns=['Index', 'ERG', 'XS', 'T'])
+		df = pd.DataFrame({'ERG': currentdata[energyindex], 'XS': currentdata[xsindex], 'T':currentdata[-1]})
 
 		df = df[(df['ERG'] >= minerg) & (df['ERG'] <= maxerg)]
 		filtered_ERG = df['ERG'].values
