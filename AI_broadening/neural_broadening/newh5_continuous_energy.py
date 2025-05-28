@@ -38,6 +38,7 @@ maxtemp = 1650
 all_temperatures = np.arange(mintemp, maxtemp, 0.1) # all temperatures in the data file
 
 energyindex = 1
+xsindex = 2
 
 # data_dir = '/home/rnt26/NJOY/data/Fe56_JEFF/CSVs'
 data_dir = "/home/rnt26/NJOY/data/Fe56_JEFF/h5data"
@@ -89,26 +90,19 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 			currentdata = h5f['data'][:]
 
 		currentdata = currentdata.transpose()
-		# energies = currentdata[1]
-		# xsvalues = currentdata[2]
-		# temperatures = currentdata[-1]
 
-		# df = pd.read_csv(f'{data_dir}/{filename}')
 		filtered_data = currentdata[(currentdata[:, energyindex] >= minerg) & (currentdata[:, energyindex] <= maxerg)]
-		filtered_ERG =
-		filtered_T =
-		filtered_XS =
-		# df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
-
-
+		filtered_ERG = filtered_data[energyindex]
+		filtered_T = filtered_data[-1]
+		filtered_XS = filtered_data[xsindex]
 
 		logged_T_values = np.log10(filtered_T)
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
 
 
 		T_train.append(scaled_T_values)  # can add or remove ERG here to make energy an input parameter
-		XS_train.append(df['XS'].values)
-		ERG_train.append(df['ERG'].values)
+		XS_train.append(filtered_XS)
+		ERG_train.append(filtered_ERG)
 
 flat_T_Train = [item for sublist in T_train for item in sublist]
 flat_ERG_train = [item for sublist in ERG_train for item in sublist]
@@ -143,18 +137,24 @@ for validation_temperature in tqdm.tqdm(validation_temperatures, total = len(val
 	if round(float(validation_temperature), 1) not in exclusions:
 		roundedtt = str(round(validation_temperature, 1))
 		filename = f'Fe56_{roundedtt}.h5'
-		df = pd.read_csv(f'{data_dir}/{filename}')
-		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
+		with h5py.File(f'{data_dir}/{filename}', 'r') as h5f:
+			currentdata = h5f['data'][:]
+
+		currentdata = currentdata.transpose()
+
+		filtered_data = currentdata[(currentdata[:, energyindex] >= minerg) & (currentdata[:, energyindex] <= maxerg)]
+		filtered_ERG = filtered_data[energyindex]
+		filtered_T = filtered_data[-1]
+		filtered_XS = filtered_data[xsindex]
 
 
-
-		logged_T_values = np.log10(df['T'].values)
+		logged_T_values = np.log10(filtered_T)
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
 
 
 		T_val.append(scaled_T_values)  # can add or remove ERG here to make energy an input parameter
-		XS_val.append(df['XS'].values)
-		ERG_val.append(df['ERG'].values)
+		XS_val.append(filtered_XS)
+		ERG_val.append(filtered_ERG)
 
 flat_T_val = [item for sublist in T_val for item in sublist]
 flat_ERG_val = [item for sublist in ERG_val for item in sublist]
@@ -189,15 +189,22 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 	if round(float(test_temperature), 1) not in exclusions:
 		roundedtt = str(round(test_temperature, 1))
 		filename = f'Fe56_{roundedtt}.h5'
-		df = pd.read_csv(f'{data_dir}/{filename}')
-		df = df[(df['ERG'] < maxerg) & (df['ERG'] > minerg)]
+		with h5py.File(f'{data_dir}/{filename}', 'r') as h5f:
+			currentdata = h5f['data'][:]
 
-		logged_T_values = np.log10(df['T'].values)
+		currentdata = currentdata.transpose()
+
+		filtered_data = currentdata[(currentdata[:, energyindex] >= minerg) & (currentdata[:, energyindex] <= maxerg)]
+		filtered_ERG = filtered_data[energyindex]
+		filtered_T = filtered_data[-1]
+		filtered_XS = filtered_data[xsindex]
+
+		logged_T_values = np.log10(filtered_T)
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
 
 		T_test.append(scaled_T_values)
-		XS_test.append(df['XS'].values)
-		ERG_test.append(df['ERG'].values)
+		XS_test.append(filtered_XS)
+		ERG_test.append(filtered_ERG)
 
 flat_T_test = [item for sublist in T_test for item in sublist]
 flat_ERG_test = [item for sublist in ERG_test for item in sublist]
