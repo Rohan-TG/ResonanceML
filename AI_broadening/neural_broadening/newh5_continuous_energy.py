@@ -91,10 +91,12 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 
 		currentdata = currentdata.transpose()
 
-		filtered_data = currentdata[(currentdata[:, energyindex] >= minerg) & (currentdata[:, energyindex] <= maxerg)]
-		filtered_ERG = filtered_data[energyindex]
-		filtered_T = filtered_data[-1]
-		filtered_XS = filtered_data[xsindex]
+		df = pd.DataFrame(currentdata, columns=['Index', 'ERG', 'XS', 'T'])
+
+		df = df[(df['ERG'] >= minerg) & (df['ERG'] <= maxerg)]
+		filtered_ERG = df['ERG'].values
+		filtered_T = df['T'].values
+		filtered_XS = df['XS'].values
 
 		logged_T_values = np.log10(filtered_T)
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
@@ -141,11 +143,12 @@ for validation_temperature in tqdm.tqdm(validation_temperatures, total = len(val
 			currentdata = h5f['data'][:]
 
 		currentdata = currentdata.transpose()
+		df = pd.DataFrame(currentdata, columns=['Index', 'ERG', 'XS', 'T'])
 
-		filtered_data = currentdata[(currentdata[:, energyindex] >= minerg) & (currentdata[:, energyindex] <= maxerg)]
-		filtered_ERG = filtered_data[energyindex]
-		filtered_T = filtered_data[-1]
-		filtered_XS = filtered_data[xsindex]
+		df = df[(df['ERG'] >= minerg) & (df['ERG'] <= maxerg)]
+		filtered_ERG = df['ERG'].values
+		filtered_T = df['T'].values
+		filtered_XS = df['XS'].values
 
 
 		logged_T_values = np.log10(filtered_T)
@@ -194,10 +197,12 @@ for test_temperature in tqdm.tqdm(test_temperatures, total=len(test_temperatures
 
 		currentdata = currentdata.transpose()
 
-		filtered_data = currentdata[(currentdata[:, energyindex] >= minerg) & (currentdata[:, energyindex] <= maxerg)]
-		filtered_ERG = filtered_data[energyindex]
-		filtered_T = filtered_data[-1]
-		filtered_XS = filtered_data[xsindex]
+		df = pd.DataFrame(currentdata, columns=['Index', 'ERG', 'XS', 'T'])
+
+		df = df[(df['ERG'] >= minerg) & (df['ERG'] <= maxerg)]
+		filtered_ERG = df['ERG'].values
+		filtered_T = df['T'].values
+		filtered_XS = df['XS'].values
 
 		logged_T_values = np.log10(filtered_T)
 		scaled_T_values = [(t - mean_alltemps) / std_alltemps for t in logged_T_values]
