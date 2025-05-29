@@ -81,7 +81,7 @@ def bounds(lower_bound, upper_bound, scalex='log', scaley='log'):
 	plt.xlabel('Energy / eV')
 	plt.ylabel('% Error')
 	plt.grid()
-	plt.savefig('preserror.png', dpi=300)
+	# plt.savefig('preserror.png', dpi=300)
 	plt.show()
 
 	plt.figure()
@@ -113,7 +113,7 @@ print('Data loaded')
 # maxerg = 1200 # in eV
 
 minerg = 800 # in eV
-maxerg = 1400 # in eV
+maxerg = 1300 # in eV
 
 
 all_temperatures = np.arange(200, 1801, 1)
@@ -260,7 +260,7 @@ model = xg.XGBRegressor(n_estimators = 11450,
 model.fit(X_train, y_train, verbose = True,
 		  eval_set = [(X_train, y_train),
 					  # (X_val, y_val),
-					  (X_test, y_test)],
+					  (X_val, y_val)],
 		  )
 
 
@@ -291,7 +291,7 @@ plt.legend()
 plt.title(f'{periodictable.elements[nuclide[0]]}-{nuclide[1]} $\sigma_{{n,\gamma}}$ at {test_temperatures[0]} K')
 plt.yscale('log')
 # plt.xscale('log')
-plt.savefig('hightreeplot.png', dpi=300)
+# plt.savefig('hightreeplot.png', dpi=300)
 plt.show()
 
 
