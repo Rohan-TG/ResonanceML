@@ -119,7 +119,7 @@ maxerg = 1300 # in eV
 all_temperatures = np.arange(300.0, 1800.0, 0.1)
 
 
-test_temperatures = [1200]
+test_temperatures = [1200.0]
 validation_temperatures = []
 while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 	choice = random.choice(all_temperatures)
