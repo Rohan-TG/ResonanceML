@@ -116,7 +116,7 @@ minerg = 800 # in eV
 maxerg = 1300 # in eV
 
 
-all_temperatures = np.arange(200, 1801, 1)
+all_temperatures = np.arange(200.0, 1800.0, 0.1)
 
 
 test_temperatures = [1200]
