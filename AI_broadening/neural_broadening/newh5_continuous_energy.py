@@ -37,11 +37,12 @@ mintemp = 550
 maxtemp = 1650
 all_temperatures = np.arange(mintemp, maxtemp, 0.1) # all temperatures in the data file
 
-energyindex = 1
-xsindex = 2
+energyindex = 0
+xsindex = 1
 
 # data_dir = '/home/rnt26/NJOY/data/Fe56_JEFF/CSVs'
-data_dir = "/home/rnt26/NJOY/data/Fe56_JEFF/h5data"
+# data_dir = "/home/rnt26/NJOY/data/Fe56_JEFF/h5data"
+data_dir = "/home/rn438/NJOY/Fe56_data_0.01"
 plot_directory = '/home/rnt26/PycharmProjects/ResonanceML/AI_broadening/neural_broadening/continuousEnergyPlots'
 
 test_temperatures = [1000.0]
@@ -89,13 +90,14 @@ for train_temperature in tqdm.tqdm(training_temperatures, total = len(training_t
 		with h5py.File(f'{data_dir}/{filename}', 'r') as h5f:
 			currentdata = h5f['data'][:]
 
+		T = [roundedtt for xx in currentdata[0]]
 		currentdata = currentdata.transpose()
 
-		df = pd.DataFrame({'ERG': currentdata[energyindex], 'XS': currentdata[xsindex], 'T':currentdata[-1]})
-
+		# df = pd.DataFrame({'ERG': currentdata[energyindex], 'XS': currentdata[xsindex], 'T':currentdata[-1]})
+		df = pd.DataFrame({'ERG': currentdata[energyindex], 'XS': currentdata[xsindex], 'T': T})
 		df = df[(df['ERG'] >= minerg) & (df['ERG'] <= maxerg)]
 		filtered_ERG = df['ERG'].values
-		filtered_T = df['T'].values
+		filtered_T = T
 		filtered_XS = df['XS'].values
 
 		logged_T_values = np.log10(filtered_T)
