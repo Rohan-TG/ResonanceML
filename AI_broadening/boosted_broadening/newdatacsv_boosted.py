@@ -1,10 +1,10 @@
 import os
 
-os.environ["OMP_NUM_THREADS"] = "20"
-os.environ["MKL_NUM_THREADS"] = "20"
-os.environ["OPENBLAS_NUM_THREADS"] = "20"
-os.environ["TF_NUM_INTEROP_THREADS"] = "20"
-os.environ["TF_NUM_INTRAOP_THREADS"] = "20"
+os.environ["OMP_NUM_THREADS"] = "60"
+os.environ["MKL_NUM_THREADS"] = "60"
+os.environ["OPENBLAS_NUM_THREADS"] = "60"
+os.environ["TF_NUM_INTEROP_THREADS"] = "60"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "60"
 
 
 import random
@@ -113,7 +113,7 @@ print('Data loaded')
 # maxerg = 1200 # in eV
 
 minerg = 1000 # in eV
-maxerg = 10000 # in eV
+maxerg = 100000 # in eV
 
 
 all_temperatures = np.arange(1100.0, 1300.0, 0.1)
