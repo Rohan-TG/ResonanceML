@@ -112,11 +112,11 @@ print('Data loaded')
 # minerg = 700 # in eV
 # maxerg = 1200 # in eV
 
-minerg = 800 # in eV
-maxerg = 1300 # in eV
+minerg = 1000 # in eV
+maxerg = 10000 # in eV
 
 
-all_temperatures = np.arange(1000.0, 1400.0, 0.1)
+all_temperatures = np.arange(1100.0, 1300.0, 0.1)
 
 
 test_temperatures = [1200.0]
