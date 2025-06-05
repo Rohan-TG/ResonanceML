@@ -17,7 +17,7 @@ from sklearn.metrics import mean_absolute_error
 import datetime
 
 
-ntreeguess = np.arange(1000, 70000, 500)
+ntreeguess = np.arange(1000, 40000, 500)
 depthguess = [2,3,4,5,6,7,8]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
@@ -233,8 +233,8 @@ best = fmin(fn=optimiser,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=5,
-			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
+			max_evals=100,
+			early_stop_fn=hyperopt.early_stop.no_progress_loss(15))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
 
