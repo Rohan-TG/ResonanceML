@@ -232,7 +232,7 @@ best = fmin(fn=optimiser,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=200,
+			max_evals=5,
 			early_stop_fn=hyperopt.early_stop.no_progress_loss(50))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
