@@ -178,6 +178,7 @@ def optimiser(space):
 			  eval_set=[# (X_train, y_train),
 						# (X_val, y_val),
 						(X_val, y_val)],
+			  early_stopping_rounds = 10
 			  )
 
 	predictions = model.predict(X_test)
