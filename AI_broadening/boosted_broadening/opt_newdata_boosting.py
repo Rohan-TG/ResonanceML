@@ -45,7 +45,7 @@ print('Data loaded')
 
 
 
-all_temperatures = np.arange(1100.0, 1300.0, 0.1)
+all_temperatures = np.arange(1000.0, 1300.0, 0.1)
 
 
 def optimiser(space):
@@ -178,7 +178,7 @@ def optimiser(space):
 			  eval_set=[# (X_train, y_train),
 						# (X_val, y_val),
 						(X_val, y_val)],
-			  early_stopping_rounds = 10
+			  early_stopping_rounds = 50
 			  )
 
 	predictions = model.predict(X_test)
@@ -233,8 +233,8 @@ best = fmin(fn=optimiser,
 			space=space,
 			algo=tpe.suggest,
 			trials=trials,
-			max_evals=100,
-			early_stop_fn=hyperopt.early_stop.no_progress_loss(15))
+			max_evals=200,
+			early_stop_fn=hyperopt.early_stop.no_progress_loss(30))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
 
