@@ -1,9 +1,9 @@
 import os
-os.environ["OMP_NUM_THREADS"] = "100"
-os.environ["MKL_NUM_THREADS"] = "100"
-os.environ["OPENBLAS_NUM_THREADS"] = "100"
-os.environ["TF_NUM_INTEROP_THREADS"] = "100"
-os.environ["TF_NUM_INTRAOP_THREADS"] = "100"
+os.environ["OMP_NUM_THREADS"] = "60"
+os.environ["MKL_NUM_THREADS"] = "60"
+os.environ["OPENBLAS_NUM_THREADS"] = "60"
+os.environ["TF_NUM_INTEROP_THREADS"] = "60"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "60"
 
 import pandas as pd
 import numpy as np
