@@ -17,7 +17,7 @@ from sklearn.metrics import mean_absolute_error
 import datetime
 
 
-ntreeguess = np.arange(1000, 40000, 500)
+ntreeguess = np.arange(10000, 40000, 500)
 depthguess = [2,3,4,5,6,7,8]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
@@ -26,7 +26,7 @@ space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 		 'max_depth': hp.choice('max_depth', depthguess),
 		 'reg_lambda': hp.uniform('reg_lambda', 0, 100),
 		 'gamma': hp.loguniform('gamma', 0, 40),
-		 'learning_rate': hp.loguniform('learning_rate', np.log(1e-5), np.log(1))}
+		 'learning_rate': hp.loguniform('learning_rate', np.log(1e-5), np.log(0.1))}
 
 
 
