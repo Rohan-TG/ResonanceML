@@ -18,7 +18,7 @@ import datetime
 
 
 ntreeguess = np.arange(10000, 40000, 500)
-depthguess = [2,3,4,5,6,7,8]
+depthguess = [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 		 'subsample': hp.uniform('subsample', 0.01, 1.0),
@@ -234,7 +234,7 @@ best = fmin(fn=optimiser,
 			algo=tpe.suggest,
 			trials=trials,
 			max_evals=200,
-			early_stop_fn=hyperopt.early_stop.no_progress_loss(30))
+			early_stop_fn=hyperopt.early_stop.no_progress_loss(20))
 
 best_model = trials.results[np.argmin([r['loss'] for r in trials.results])]['model']
 
