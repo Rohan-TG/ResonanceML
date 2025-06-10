@@ -247,11 +247,11 @@ X_test = np.array([logged_erg_test, flat_T_test])
 X_test = X_test.transpose()
 y_test = np.array(logged_xs_test)
 
-model = xg.XGBRegressor(n_estimators = 3500,
-						max_depth = 7,
-						learning_rate = 0.04189679072009284,
-						reg_lambda = 75.7497068628712,
-						subsample = 0.6391200783617514,
+model = xg.XGBRegressor(n_estimators = 32500,
+						max_depth = 5,
+						learning_rate = 0.0015873878415078515,
+						reg_lambda = 31.27353719926438,
+						subsample = 0.10380269492708963,
 						)
 
 
