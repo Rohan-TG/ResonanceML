@@ -113,13 +113,19 @@ print('Data loaded')
 # maxerg = 1200 # in eV
 
 minerg = 1000 # in eV
-maxerg = 50000 # in eV
+maxerg = 1000000 # in eV
 
 
 all_temperatures = np.arange(1100.0, 1300.0, 0.1)
 
 
-test_temperatures = [1200.0]
+# test_temperatures = [1200.0]
+test_temperatures = []
+while len(test_temperatures) < int(len(all_temperatures) * 0.1):
+	testChoice = random.choice(all_temperatures)
+	if testChoice not in test_temperatures:
+		test_temperatures.append(testChoice)
+
 validation_temperatures = []
 while len(validation_temperatures) < int(len(all_temperatures) * 0.2):
 	choice = random.choice(all_temperatures)
@@ -247,20 +253,20 @@ X_test = np.array([logged_erg_test, flat_T_test])
 X_test = X_test.transpose()
 y_test = np.array(logged_xs_test)
 
-model = xg.XGBRegressor(n_estimators = 32500,
-						max_depth = 5,
-						learning_rate = 0.0015873878415078515,
-						reg_lambda = 31.27353719926438,
-						subsample = 0.10380269492708963,
-						)
-
-
-# model = xg.XGBRegressor(n_estimators = 11450,
-# 						max_depth = 16,
-# 						learning_rate = 0.0025919607000481934,
-# 						reg_lambda = 2.415057075497998,
-# 						subsample = 0.13021504261911765,
+# model = xg.XGBRegressor(n_estimators = 32500,
+# 						max_depth = 5,
+# 						learning_rate = 0.0015873878415078515,
+# 						reg_lambda = 31.27353719926438,
+# 						subsample = 0.10380269492708963,
 # 						)
+
+
+model = xg.XGBRegressor(n_estimators = 41450,
+						max_depth = 16,
+						learning_rate = 0.0025919607000481934,
+						reg_lambda = 2.415057075497998,
+						subsample = 0.13021504261911765,
+						)
 
 model.fit(X_train, y_train, verbose = True,
 		  eval_set = [(X_train, y_train),
