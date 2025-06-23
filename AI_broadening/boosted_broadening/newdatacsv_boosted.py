@@ -261,7 +261,7 @@ y_test = np.array(logged_xs_test)
 # 						)
 
 
-model = xg.XGBRegressor(n_estimators = 41450,
+model = xg.XGBRegressor(n_estimators = 31450,
 						max_depth = 16,
 						learning_rate = 0.0025919607000481934,
 						reg_lambda = 2.415057075497998,
