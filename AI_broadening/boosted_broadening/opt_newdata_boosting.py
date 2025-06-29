@@ -18,7 +18,7 @@ import datetime
 
 
 ntreeguess = np.arange(10000, 40000, 500)
-depthguess = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+depthguess = [,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
 space = {'n_estimators': hp.choice('n_estimators', ntreeguess),
 		 'subsample': hp.uniform('subsample', 0.01, 1.0),
