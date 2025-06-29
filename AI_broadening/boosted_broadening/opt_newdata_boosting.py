@@ -45,7 +45,7 @@ print('Data loaded')
 
 
 
-all_temperatures = np.arange(1000.0, 1300.0, 0.1)
+all_temperatures = np.arange(1100.0, 1300.0, 0.1)
 
 
 def optimiser(space):
