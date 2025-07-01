@@ -113,7 +113,7 @@ print('Data loaded')
 # maxerg = 1200 # in eV
 
 minerg = 1000 # in eV
-maxerg = 25000 # in eV
+maxerg = 100000 # in eV
 
 
 all_temperatures = np.arange(1150.0, 1250.0, 0.1)
@@ -261,7 +261,7 @@ y_test = np.array(logged_xs_test)
 # 						)
 
 
-model = xg.XGBRegressor(n_estimators = 11450,
+model = xg.XGBRegressor(n_estimators = 41450,
 						max_depth = 16,
 						learning_rate = 0.0025919607000481934,
 						reg_lambda = 2.415057075497998,
